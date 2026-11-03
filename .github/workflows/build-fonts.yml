@@ -17,7 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          lfs: true
+          # Only 3D prebuilt fonts use LFS; this job builds from 2D sources.
+          lfs: false
       - uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f
         with:
           python-version: '3.12'
