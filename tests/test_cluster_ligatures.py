@@ -337,6 +337,15 @@ class ModifierTests(unittest.TestCase):
         self.assertEqual(set(self.tones), set(range(5)))
         self.assertEqual(set(self.genders), set(range(3)))
 
+    def test_varied_startup_and_full_feedback_priority(self):
+        # Bootstrap follows the previous output: tone +3 mod 5, gender +1 mod 3.
+        # At 8/7 outputs respectively, full feedback overrides those fallbacks.
+        tones = [0, 3, 1, 4, 2, 0, 3, 1, 4, 1]
+        genders = [0, 1, 2, 0, 1, 2, 0, 2, 2, 2]
+        expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
+        for n in range(1, 11):
+            self.assertEqual(shape(self.font, '🏃' * n), expected[:n])
+
     def test_explicit_sequences_and_calt_off(self):
         for t in range(5):
             tone = chr(0x1F3FB + t)

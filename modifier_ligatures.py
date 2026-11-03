@@ -14,8 +14,12 @@ from fontTools.ttLib import TTFont
 
 TONE_COEFFICIENTS = (0, 0, 0, 0, 0, 1, 1, 2)
 GENDER_COEFFICIENTS = (0, 0, 0, 0, 1, 0, 2)
-TONE_SEED = (1, 2, 3, 4, 1, 2, 3, 4)
-GENDER_SEED = (1, 2, 1, 2, 1, 2, 1)
+# Virtual initial registers chosen to reproduce the fallback cycles below.
+# They keep the reference stream continuous when full feedback takes over.
+TONE_SEED = (4, 2, 2, 4, 4, 4, 0, 3)
+GENDER_SEED = (1, 1, 0, 1, 1, 0, 1)
+TONE_STARTUP_STEP = 3
+GENDER_STARTUP_STEP = 1
 TONES = tuple('DEImojiTone' + str(i) for i in range(5))
 GENDERS = tuple('DEImojiGender' + str(i) for i in range(3))
 MARKERS = TONES + GENDERS
@@ -62,7 +66,7 @@ def discover(font):
     return tone_bases, gender_bases, assembly
 
 
-def _feedback(name, markers, coefficients, seed, stride):
+def _feedback(name, markers, coefficients, seed, stride, startup_step):
     base, degree = len(markers), len(coefficients)
     marker_class = '@tone' if base == 5 else '@gender'
     unit = ['@tonebase', '@tone'] if stride == 2 else ['@genderbase', '@tone', '@gender']
@@ -80,10 +84,16 @@ def _feedback(name, markers, coefficients, seed, stride):
         result = sum(coefficients[i] * v for i, v in zip(taps, values)) % base
         lines.append('sub ' + ' '.join(context + current) +
                      f" {markers[0]}' lookup {name}{result};")
-    initial = stream(base, coefficients, seed, degree)
-    for n in reversed(range(degree)):
-        lines.append('sub ' + ' '.join(unit * n + current) +
-                     f" {markers[0]}' lookup {name}{initial[n]};")
+    # Full feedback has priority. With insufficient history, advance from the
+    # preceding output instead of repeatedly using the same default state.
+    for previous in range(base):
+        context = unit[:-1] + [markers[previous]] + current
+        result = (previous + startup_step) % base
+        lines.append('sub ' + ' '.join(context) +
+                     f" {markers[0]}' lookup {name}{result};")
+    first = stream(base, coefficients, seed, 1)[0]
+    lines.append('sub ' + ' '.join(current) +
+                 f" {markers[0]}' lookup {name}{first};")
     lines.append(f'}} {name}Feedback;')
     return lines
 
@@ -103,13 +113,13 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     for b in sorted(tone_bases):
         lines.append(f"sub {b}' by {b} {TONES[0]};")
     lines.append('} toneExpand;')
-    lines += _feedback('tone', TONES, TONE_COEFFICIENTS, TONE_SEED, 2)
+    lines += _feedback('tone', TONES, TONE_COEFFICIENTS, TONE_SEED, 2, TONE_STARTUP_STEP)
     if gender_bases:
         lines.append('lookup genderAppend {')
         lines += [f'sub {t} by {t} {GENDERS[0]};' for t in TONES]
         lines += ['} genderAppend;', 'lookup genderExpand {',
                   "sub @genderbase @tone' lookup genderAppend;", '} genderExpand;']
-        lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS, GENDER_SEED, 3)
+        lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS, GENDER_SEED, 3, GENDER_STARTUP_STEP)
     lines.append('lookup resolveTone {')
     lines += [f'sub {t} by {a};' for t, a in zip(TONES, actual_tones)]
     lines.append('} resolveTone;')

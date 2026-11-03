@@ -20,26 +20,33 @@ changes.
 
 Coefficients and seeds below are **newest first**. For a register `s`, emit
 `v = sum(coefficients[i] * s[i]) mod base`, then shift to `[v] + s[:-1]`.
-The mixed nonzero seed supplies virtual history at the start of every run.
+The virtual initial registers reproduce the short-history fallback sequence.
 
 | Stream | Base | Coefficients | Seed | Period |
 | --- | --- | --- | --- | --- |
-| Tone | 5 | `[0,0,0,0,0,1,1,2]` | `[1,2,3,4,1,2,3,4]` | 390624 |
-| Gender | 3 | `[0,0,0,0,1,0,2]` | `[1,2,1,2,1,2,1]` | 2186 |
+| Tone | 5 | `[0,0,0,0,0,1,1,2]` | `[4,2,2,4,4,4,0,3]` | 390624 |
+| Gender | 3 | `[0,0,0,0,1,0,2]` | `[1,1,0,1,1,0,1]` | 2186 |
 
-Tone outputs start `3,4,4,4,3,4,3,4,4,1,0,0,3,0,4,3` (zero means U+1F3FB).
-Gender outputs start `0,0,0,0,0,1,2,0,0,0,1,2,2,1,0,1`. A short prefix therefore
-need not show every state. These deterministic streams provide pseudorandom
-visual variation. Tests iterate each register until its first return
-to the seed to verify the full maximal periods.
+When full feedback cannot match, fallback rules use the preceding output:
+tone advances by 3 modulo 5, and gender by 1 modulo 3. With no preceding output,
+both start at zero. This gives all five tones in the first five positions and
+all three genders in the first three, instead of a repeated startup default.
+Full feedback has priority and takes over after eight tone outputs or seven
+gender outputs. Unsupported glyphs restart these fallbacks.
+
+Tone outputs start `0,3,1,4,2,0,3,1,4,1,3,0,2,4,1,2` (zero means U+1F3FB).
+Gender outputs start `0,1,2,0,1,2,0,2,2,2,2,2,0,2,0,0`. These deterministic
+streams provide pseudorandom visual variation. Tests iterate each register until
+its first return to the seed to verify the full maximal periods.
 
 ## Shaping and build cache
 
 Tone expansion creates `BASE TONE_INTERNAL` units at stride two. Tone feedback
-matches 125 sparse tap combinations; eight descending startup contexts handle
-short history. Gender expansion then creates
+matches 125 sparse tap combinations, followed by five previous-state fallbacks
+and a first-output default. Gender expansion then creates
 `BASE TONE_INTERNAL GENDER_INTERNAL` units at stride three. Gender feedback uses
-nine tap combinations and seven startup contexts. Only after feedback finishes
+nine tap combinations, three previous-state fallbacks, and a first-output
+default. Only after feedback finishes
 are the eight unencoded, zero-advance marker glyphs resolved into real Unicode
 modifier glyphs and ZWJ gender sequences. A restricted clone of canonical native
 ligatures assembles those sequences into existing artwork. No artwork is rebuilt.
@@ -63,9 +70,9 @@ with `calt` enabled/disabled in each font format and checks that explicit
 sequences render identically. HarfBuzz tests check glyph identities and neutral
 marker removal rather than relying on equal-advance artwork widths.
 
-Measured on the full native font pair, the installed GSUB is 119,936 bytes for
-CBDT (+66,014 bytes including both custom bundles), and 101,520 bytes for COLRv1
-(+70,094 bytes including both custom bundles). The modifier installer appends
+Measured on the full native font pair, the installed GSUB is 114,592 bytes for
+CBDT (+60,670 bytes including both custom bundles), and 96,146 bytes for COLRv1
+(+64,720 bytes including both custom bundles). The modifier installer appends
 17 lookups and eight glyphs. Full-font validation also checks 120-run glyph
 identities, all explicit runner tone/gender variants with and without VS16,
 `calt` disabled, mixed explicit/plain boundaries, and serialized cache recovery.
