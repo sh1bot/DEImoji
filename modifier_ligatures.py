@@ -63,6 +63,19 @@ def discover(font):
                 (len(seq) == 2 and seq[1] in tones or
                  seq[0] in gender_bases and len(seq) == 4 and seq[1] in tones
                  and seq[2:] in tails)}
+    # Person uses separate woman/man bases instead of native ZWJ gender forms.
+    # Accept our generated suffixes and explicit suffixes already partly
+    # assembled by ccmp, reusing the existing artwork in both cases.
+    people = [cmap.get(cp) for cp in (0x1F9D1, 0x1F469, 0x1F468)]
+    if all(base in tone_bases for base in people):
+        person, woman, man = people
+        gender_bases[person] = [list(pair) for pair in
+                                zip(tone_bases[woman], tone_bases[man])]
+        for target_base, tail in zip((woman, man), tails):
+            assembly[(person, *tail)] = target_base
+            for tone, neutral, target in zip(tones, tone_bases[person], tone_bases[target_base]):
+                assembly[(person, tone, *tail)] = target
+                assembly[(neutral, *tail)] = target
     return tone_bases, gender_bases, assembly
 
 

@@ -10,7 +10,10 @@ plain input rendering and disables the existing zombie/sunflower clustering.
 Eligibility comes from native GSUB direct ligatures, using glyph identities rather
 than naming conventions. A tone base must have all five tone outputs. A gender
 base must additionally have both ZWJ gender outputs for every tone. The current
-full fonts provide 135 tone bases and 49 gender bases, including runners. This
+full fonts provide 135 tone bases and 50 gender bases, including runners and
+person. For person (🧑), additional assembly aliases map the woman/man suffixes
+to the existing 👩/👨 artwork, preserving tone. They also handle explicitly typed
+person gender suffixes, including a tone already assembled by native `ccmp`. This
 also allows intrinsically gendered base characters, such as woman, to vary tone;
 they interrupt gender history. Unsupported glyphs and spaces interrupt history.
 The two streams advance across adjacent eligible bases, even when the base emoji
@@ -70,9 +73,9 @@ with `calt` enabled/disabled in each font format and checks that explicit
 sequences render identically. HarfBuzz tests check glyph identities and neutral
 marker removal rather than relying on equal-advance artwork widths.
 
-Measured on the full native font pair, the installed GSUB is 114,592 bytes for
-CBDT (+60,670 bytes including both custom bundles), and 96,146 bytes for COLRv1
-(+64,720 bytes including both custom bundles). The modifier installer appends
+Measured on the full native font pair, the installed GSUB is 114,910 bytes for
+CBDT (+60,988 bytes including both custom bundles), and 96,444 bytes for COLRv1
+(+65,018 bytes including both custom bundles). The modifier installer appends
 17 lookups and eight glyphs. Full-font validation also checks 120-run glyph
 identities, all explicit runner tone/gender variants with and without VS16,
 `calt` disabled, mixed explicit/plain boundaries, and serialized cache recovery.

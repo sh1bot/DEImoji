@@ -298,8 +298,8 @@ class NativeCacheTests(unittest.TestCase):
 
 def make_modifier_font():
     font = make_font()
-    names = ['runner', 'woman', 'male'] + ['skin' + str(i) for i in range(5)]
-    names += [b + str(t) + str(g) for b in ('runner', 'woman') for t in range(5)
+    names = ['runner', 'woman', 'man', 'person', 'male'] + ['skin' + str(i) for i in range(5)]
+    names += [b + str(t) + str(g) for b in ('runner', 'woman', 'man', 'person') for t in range(5)
               for g in (range(3) if b == 'runner' else range(1))]
     font.setGlyphOrder(font.getGlyphOrder() + names)
     for name in names:
@@ -308,13 +308,14 @@ def make_modifier_font():
     font['maxp'].numGlyphs = len(font.getGlyphOrder())
     for table in font['cmap'].tables:
         if table.isUnicode() and table.format == 12:
-            table.cmap.update({0x1F3C3: 'runner', 0x1F469: 'woman', 0x2642: 'male',
+            table.cmap.update({0x1F3C3: 'runner', 0x1F469: 'woman', 0x1F468: 'man',
+                               0x1F9D1: 'person', 0x2642: 'male',
                                **{0x1F3FB + t: 'skin' + str(t) for t in range(5)}})
     rules = []
     for t in range(5):
         for g, gender in ((1, 'female'), (2, 'male')):
             rules.append(f'sub runner skin{t} zwj {gender} by runner{t}{g};')
-        rules += [f'sub runner skin{t} by runner{t}0;', f'sub woman skin{t} by woman{t}0;']
+        rules += [f'sub {b} skin{t} by {b}{t}0;' for b in ('runner', 'woman', 'man', 'person')]
     rules += ['sub runner zwj female by woman;', 'sub z z z by z3;', 'sub z z by z2;',
               'sub f f f by f3;', 'sub f f by f2;']
     addOpenTypeFeaturesFromString(font, 'languagesystem DFLT dflt; feature ccmp {\n' +
@@ -345,6 +346,22 @@ class ModifierTests(unittest.TestCase):
         expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
         for n in range(1, 11):
             self.assertEqual(shape(self.font, '🏃' * n), expected[:n])
+
+    def test_person_uses_separate_gender_bases_and_shared_history(self):
+        expected = [f'{("person", "woman", "man")[g]}{t}0'
+                    for t, g in zip(self.tones[:40], self.genders[:40])]
+        self.assertEqual(shape(self.font, '🧑' * 40), expected)
+        self.assertEqual(shape(self.font, '🧑' * 40, calt=False), ['person'] * 40)
+        mixed = ''.join('🧑' if i % 2 == 0 else '🏃' for i in range(40))
+        expected[1::2] = [f'runner{self.tones[i]}{self.genders[i]}' for i in range(1, 40, 2)]
+        self.assertEqual(shape(self.font, mixed), expected)
+
+    def test_person_explicit_gender_aliases_preserve_tone(self):
+        for sign, base in (('♀', 'woman'), ('♂', 'man')):
+            self.assertEqual(shape(self.font, '🧑\u200d' + sign), [base])
+            for t in range(5):
+                text = '🧑' + chr(0x1F3FB + t) + '\u200d' + sign
+                self.assertEqual(shape(self.font, text), [f'{base}{t}0'])
 
     def test_explicit_sequences_and_calt_off(self):
         for t in range(5):

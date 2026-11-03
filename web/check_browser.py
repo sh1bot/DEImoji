@@ -50,7 +50,8 @@ def main():
             for fmt in ('colr', 'cbdt'):
                 page.select_option('#format', fmt)
                 page.wait_for_function(loaded)
-                for text, should_differ in (('🏃' * 8, True), ('🏃🏽‍♀️🏃🏻‍♂️🏃🏿', False)):
+                for text, should_differ in (('🏃' * 8, True), ('🧑' * 8, True),
+                                            ('🏃🏽‍♀️🏃🏻‍♂️🏃🏿', False)):
                     page.locator('#text').fill(text)
                     # Capture the same element at the same position/background;
                     # width cannot establish whether tone/gender artwork changed.
