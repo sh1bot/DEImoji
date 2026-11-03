@@ -323,36 +323,59 @@ def make_modifier_font():
     return font
 
 
+def reference_tones(font, following, count):
+    from modifier_ligatures import TONE_COEFFICIENTS
+    first = 0 if following is None else (font.getGlyphID(font.getBestCmap()[ord(following)]) & 3) + 1
+    values = [(first + 3 * i) % 5 for i in range(min(count, 8))]
+    while len(values) < count:
+        values.append(sum(c * values[-1-i] for i, c in enumerate(TONE_COEFFICIENTS)) % 5)
+    return values
+
+
 class ModifierTests(unittest.TestCase):
     def setUp(self):
         from modifier_ligatures import stream, TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
         self.font = make_modifier_font()
         self.info = add_cluster_ligatures(self.font)
-        self.tones = stream(5, TONE_COEFFICIENTS, TONE_SEED, 500)
+        self.tones = reference_tones(self.font, '🏃', 500)
         self.genders = stream(3, GENDER_COEFFICIENTS, GENDER_SEED, 500)
 
     def test_independent_feedback_and_neutral_deletion(self):
         for n in (1, 7, 8, 9, 40, 500):
+            tones = reference_tones(self.font, '🏃' if n > 1 else None, n)
             self.assertEqual(shape(self.font, '🏃' * n),
-                             [f'runner{t}{g}' for t, g in zip(self.tones[:n], self.genders[:n])])
+                             [f'runner{t}{g}' for t, g in zip(tones, self.genders[:n])])
         self.assertEqual(set(self.tones), set(range(5)))
         self.assertEqual(set(self.genders), set(range(3)))
 
     def test_varied_startup_and_full_feedback_priority(self):
         # Bootstrap follows the previous output: tone +3 mod 5, gender +1 mod 3.
         # At 8/7 outputs respectively, full feedback overrides those fallbacks.
-        tones = [0, 3, 1, 4, 2, 0, 3, 1, 4, 1]
+        tones = [3, 1, 4, 2, 0, 3, 1, 4, 1, 3]
         genders = [0, 1, 2, 0, 1, 2, 0, 2, 2, 2]
         expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
-        for n in range(1, 11):
+        self.assertEqual(shape(self.font, '🏃'), ['runner00'])
+        for n in range(2, 11):
             self.assertEqual(shape(self.font, '🏃' * n), expected[:n])
 
+    def test_lookahead_seed_buckets_and_history_priority(self):
+        # All four buckets seed a new run. Later lookahead cannot override the
+        # preceding-output fallback or full feedback. Text glyphs are sufficient.
+        for ch in 'ab🧟🌻':
+            tone = (self.font.getGlyphID(self.font.getBestCmap()[ord(ch)]) & 3) + 1
+            self.assertEqual(shape(self.font, '🏃' + ch)[0], f'runner{tone}0')
+        self.assertEqual(shape(self.font, '🏃🏃b')[1], 'runner11')
+        self.assertEqual(shape(self.font, '🏃a🏃'), ['runner10', 'a', 'runner00'])
+
     def test_person_uses_separate_gender_bases_and_shared_history(self):
+        tones = reference_tones(self.font, '🧑', 40)
         expected = [f'{("person", "woman", "man")[g]}{t}0'
-                    for t, g in zip(self.tones[:40], self.genders[:40])]
+                    for t, g in zip(tones, self.genders[:40])]
         self.assertEqual(shape(self.font, '🧑' * 40), expected)
         self.assertEqual(shape(self.font, '🧑' * 40, calt=False), ['person'] * 40)
         mixed = ''.join('🧑' if i % 2 == 0 else '🏃' for i in range(40))
+        expected = [f'{("person", "woman", "man")[g]}{t}0'
+                    for t, g in zip(self.tones[:40], self.genders[:40])]
         expected[1::2] = [f'runner{self.tones[i]}{self.genders[i]}' for i in range(1, 40, 2)]
         self.assertEqual(shape(self.font, mixed), expected)
 

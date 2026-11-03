@@ -23,7 +23,8 @@ changes.
 
 Coefficients and seeds below are **newest first**. For a register `s`, emit
 `v = sum(coefficients[i] * s[i]) mod base`, then shift to `[v] + s[:-1]`.
-The virtual initial registers reproduce the short-history fallback sequence.
+The virtual initial registers below reproduce the short-history fallback
+sequence when the initial output is zero.
 
 | Stream | Base | Coefficients | Seed | Period |
 | --- | --- | --- | --- | --- |
@@ -31,13 +32,17 @@ The virtual initial registers reproduce the short-history fallback sequence.
 | Gender | 3 | `[0,0,0,0,1,0,2]` | `[1,1,0,1,1,0,1]` | 2186 |
 
 When full feedback cannot match, fallback rules use the preceding output:
-tone advances by 3 modulo 5, and gender by 1 modulo 3. With no preceding output,
-both start at zero. This gives all five tones in the first five positions and
+tone advances by 3 modulo 5, and gender by 1 modulo 3. A new tone run hashes the
+following mapped glyph with `glyphID & 3`: buckets 0 through 3 select initial
+tones 1 through 4. With no classified lookahead it starts at zero. Gender starts
+at zero. This gives all five tones in the first five positions and
 all three genders in the first three, instead of a repeated startup default.
 Full feedback has priority and takes over after eight tone outputs or seven
 gender outputs. Unsupported glyphs restart these fallbacks.
 
-Tone outputs start `0,3,1,4,2,0,3,1,4,1,3,0,2,4,1,2` (zero means U+1F3FB).
+With initial tone zero, outputs start `0,3,1,4,2,0,3,1,4,1,3,0,2,4,1,2`
+(zero means U+1F3FB). Other initial tones rotate the first eight fallback
+outputs; the same full feedback then applies to the resulting register.
 Gender outputs start `0,1,2,0,1,2,0,2,2,2,2,2,0,2,0,0`. These deterministic
 streams provide pseudorandom visual variation. Tests iterate each register until
 its first return to the seed to verify the full maximal periods.
@@ -45,8 +50,14 @@ its first return to the seed to verify the full maximal periods.
 ## Shaping and build cache
 
 Tone expansion creates `BASE TONE_INTERNAL` units at stride two. Tone feedback
-matches 125 sparse tap combinations, followed by five previous-state fallbacks
-and a first-output default. Gender expansion then creates
+matches 125 sparse tap combinations, followed by five previous-state fallbacks,
+four lookahead seed rules, and a first-output default. The four seed classes
+are generated at build time from encoded glyph IDs, excluding internal markers.
+GSUB stores their membership as coverage lists/ranges; it performs no bitwise
+operation during shaping. No extra lookup or state glyph is needed.
+Lookahead only sees glyphs in the same shaping run, and identical glyphs give
+identical seeds. Glyph ordering can give the two font formats different seeds.
+Gender expansion then creates
 `BASE TONE_INTERNAL GENDER_INTERNAL` units at stride three. Gender feedback uses
 nine tap combinations, three previous-state fallbacks, and a first-output
 default. Only after feedback finishes
@@ -73,9 +84,9 @@ with `calt` enabled/disabled in each font format and checks that explicit
 sequences render identically. HarfBuzz tests check glyph identities and neutral
 marker removal rather than relying on equal-advance artwork widths.
 
-Measured on the full native font pair, the installed GSUB is 114,910 bytes for
-CBDT (+60,988 bytes including both custom bundles), and 96,444 bytes for COLRv1
-(+65,018 bytes including both custom bundles). The modifier installer appends
+Measured on the full native font pair, the installed GSUB is 119,066 bytes for
+CBDT (+65,144 bytes including both custom bundles), and 100,716 bytes for COLRv1
+(+69,290 bytes including both custom bundles). The modifier installer appends
 17 lookups and eight glyphs. Full-font validation also checks 120-run glyph
 identities, all explicit runner tone/gender variants with and without VS16,
 `calt` disabled, mixed explicit/plain boundaries, and serialized cache recovery.
