@@ -50,6 +50,17 @@ def main():
             page.locator('#count').fill('18')
             page.locator('#count').dispatch_event('input')
             assert page.locator('#text').input_value() == '🌻' * 18
+            page.locator('#text').fill('hello 🧟🧟🧟 world 123 #️⃣')
+            assert page.locator('#clustered').inner_text() == 'hello 🧟🧟🧟 world 123 #️⃣'
+            assert 'system-ui' in page.locator('#clustered').evaluate(
+                'node => getComputedStyle(node).fontFamily')
+            page.locator('#text').fill('🧟' * 36)
+            assert page.locator('#clustered .emoji-run').count() == 1
+            page.locator('#text').fill('abc 🧟\u200d♀\ufe0f xyz')
+            debug = page.locator('#codepoints').inner_text()
+            assert '"abc "' in debug and '" xyz"' in debug
+            assert 'U+200D (ZWJ)' in debug and 'U+FE0F (VS16 (emoji))' in debug
+            assert 'U+0061' not in debug
             page.set_viewport_size({'width': 390, 'height': 844})
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
             # Force an uncached font load failure and ensure it is visible.

@@ -34,6 +34,10 @@
     <label class="input-label" for="text">Or type your own sequence</label>
     <textarea id="text" rows="3" spellcheck="false" aria-describedby="scope"></textarea>
     <p class="muted" id="scope">Clustering currently matches repeated plain 🧟 or 🌻. Spaces and other emoji start a new group.</p>
+    <details class="debug" open>
+      <summary>Input codepoints</summary>
+      <output id="codepoints" aria-label="Input Unicode codepoints"></output>
+    </details>
     <p id="status" role="status">Loading the built font…</p>
 
     <section class="sample" aria-labelledby="on-title">

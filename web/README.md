@@ -72,6 +72,12 @@ directly: the page fetches its build metadata and loads font files.
 The controls change the sample family, run length, size, font format, or custom
 input. Both output panels use the built font, differing only in `calt` settings.
 Failed font loads hide the output rather than silently displaying system emoji.
+Ordinary text and spaces use system UI spans; adjacent emoji stay together in
+one custom-font span so contextual rules can see the whole emoji run. Font space
+metrics are unchanged. The debug readout groups ASCII into quoted strings and
+shows each non-ASCII codepoint, labeling ZWJ, variation selectors, and tag characters.
+GSUB cannot inspect glyphs in another shaping run, including runs split by fallback
+or by a browser's own emoji itemization.
 
 The build also runs `web/check_browser.py` with Chromium against the packaged
 fonts: both families and formats must render differently with `calt` enabled,
