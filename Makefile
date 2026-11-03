@@ -26,6 +26,7 @@ BODY_DIMENSIONS = 136x128
 IMOPS := -size $(BODY_DIMENSIONS) canvas:none -compose copy -gravity center
 
 ZOPFLIPNG = zopflipng
+ZOPFLIPNGFLAGS ?=
 TTX = ttx
 
 EMOJI_BUILDER = third_party/color_emoji/emoji_builder.py
@@ -196,7 +197,7 @@ $(QUANTIZED_DIR)/%.png: $(EMOJI_DIR)/%.png | $(QUANTIZED_DIR)
 	@($(PNGQUANT) $(PNGQUANTFLAGS) -o "$@" "$<"; case "$$?" in "98"|"99") echo "reuse $<";cp $< $@;; *) exit "$$?";; esac)
 
 $(COMPRESSED_DIR)/%.png: $(QUANTIZED_DIR)/%.png | check_tools $(COMPRESSED_DIR)
-	@$(ZOPFLIPNG) -y "$<" "$@" 1> /dev/null 2>&1
+	@$(ZOPFLIPNG) $(ZOPFLIPNGFLAGS) -y "$<" "$@" 1> /dev/null 2>&1
 
 # Make 3.81 can endless loop here if the target is missing but no
 # prerequisite is updated and make has been invoked with -j, e.g.:
