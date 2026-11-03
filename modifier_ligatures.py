@@ -127,20 +127,27 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     # excluded, so the lookahead samples the next character's mapped glyph.
     encoded = set(cmap.values())
     lookahead = []
-    for bucket in range(4):
+    for bucket in range(5):
         members = [name for gid, name in enumerate(font.getGlyphOrder())
-                   if name in encoded and gid & 3 == bucket]
+                   if name in encoded and gid % 5 == bucket]
         if members:
             glyph_class = f'@seed{bucket}'
             lines.append(glyph_class + ' = [' + ' '.join(members) + '];')
-            lookahead.append((glyph_class, bucket + 1))
+            lookahead.append((glyph_class, bucket))
     if gender_bases:
         lines += ['@genderbase = [' + ' '.join(sorted(gender_bases)) + '];',
                   '@gender = [' + ' '.join(GENDERS) + '];']
+    lines.append('lookup toneAppend {')
+    for b in sorted(tone_bases):
+        lines.append(f"sub {b} by {b} {TONES[0]};")
+    lines.append('} toneAppend;')
     lines.append('lookup toneExpand useExtension {')
     lines.append("ignore sub @tonebase' @explicit;")
-    for b in sorted(tone_bases):
-        lines.append(f"sub {b}' by {b} {TONES[0]};")
+    # Do not introduce a skin tone when neither seed context nor prior output
+    # exists. The unmodified base keeps its original default artwork.
+    lines.append("sub @tonebase @tone @tonebase' lookup toneAppend;")
+    for glyph_class, _ in lookahead:
+        lines.append(f"sub @tonebase' lookup toneAppend {glyph_class};")
     lines.append('} toneExpand;')
     lines += _feedback('tone', TONES, TONE_COEFFICIENTS, TONE_SEED, 2, TONE_STARTUP_STEP, lookahead)
     if gender_bases:
