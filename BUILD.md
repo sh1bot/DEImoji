@@ -2,6 +2,15 @@
 
 Typically build the CBDT then the COLRv1 as COLRv1 copies some information from CBDT.
 
+DEImoji's zombie/sunflower pair and triple ligatures are included in both builds.
+See [ligatures/README.md](ligatures/README.md) for artwork regeneration, the
+period-seven grouping policy, and shaping tests. Sources and output fonts live
+under `2D/`; custom wide artwork lives under `ligatures/`.
+
+GitHub Actions can build and publish matching downloadable fonts and a browser
+playground on every push to `main`; see [web/README.md](web/README.md) for the
+one-time GitHub Pages setting and local preview instructions.
+
 ## Is this a Unicode rev?
 
 * Update https://github.com/notofonts/nototools, publish the new version

@@ -36,7 +36,10 @@ ADD_GLYPHS_FLAGS = -a emoji_aliases.txt
 PUA_ADDER = map_pua_emoji.py
 VS_ADDER = add_vs_cmap.py # from nototools
 
-EMOJI_SRC_DIR ?= png/128
+EMOJI_SRC_DIR ?= 2D/png/128
+CLUSTER_SRC_DIR := ligatures/png/128
+CLUSTER_NAMES := emoji_u1f33b_1f33b.png emoji_u1f33b_1f33b_1f33b.png \
+	emoji_u1f9df_1f9df.png emoji_u1f9df_1f9df_1f9df.png
 FLAGS_SRC_DIR := third_party/region-flags/png
 
 SEQUENCE_CHECK_PY = check_emoji_sequences.py
@@ -114,8 +117,8 @@ endif
 RENAMED_FLAG_NAMES = $(FLAG_GLYPH_NAMES:%=emoji_%.png)
 RENAMED_FLAG_FILES = $(addprefix $(RENAMED_FLAGS_DIR)/, $(RENAMED_FLAG_NAMES))
 
-EMOJI_NAMES = $(notdir $(wildcard $(EMOJI_SRC_DIR)/emoji_u*.png))
-EMOJI_FILES= $(addprefix $(EMOJI_DIR)/,$(EMOJI_NAMES)))
+EMOJI_NAMES = $(notdir $(wildcard $(EMOJI_SRC_DIR)/emoji_u*.png)) $(CLUSTER_NAMES)
+EMOJI_FILES = $(addprefix $(EMOJI_DIR)/,$(EMOJI_NAMES))
 
 ALL_NAMES = $(EMOJI_NAMES) $(RENAMED_FLAG_NAMES)
 
@@ -166,6 +169,10 @@ waveflag: waveflag.c
 $(EMOJI_DIR)/%.png: $(EMOJI_SRC_DIR)/%.png | $(EMOJI_DIR)
 	@convert $(IMOPS) "$<" -composite "PNG32:$@"
 
+# Cluster artwork is deliberately wider than one emoji; never crop to 136px.
+$(addprefix $(EMOJI_DIR)/,$(CLUSTER_NAMES)): $(EMOJI_DIR)/%.png: $(CLUSTER_SRC_DIR)/%.png | $(EMOJI_DIR)
+	@cp "$<" "$@"
+
 $(FLAGS_DIR)/%.png: $(FLAGS_SRC_DIR)/%.png ./waveflag | $(FLAGS_DIR)
 	@./waveflag $(FLAGS_DIR)/ "$<"
 
@@ -210,7 +217,7 @@ $(EMOJI_WINDOWS).tmpl.ttx: $(EMOJI).tmpl.ttx.tmpl $(ADD_GLYPHS) $(ALL_COMPRESSED
 	@rm -f "$@"
 	ttx "$<"
 
-$(EMOJI).ttf: check_sequence $(EMOJI).tmpl.ttf $(EMOJI_BUILDER) $(PUA_ADDER) \
+$(EMOJI).ttf: check_sequence $(EMOJI).tmpl.ttf $(EMOJI_BUILDER) $(PUA_ADDER) cluster_ligatures.py \
 	$(ALL_COMPRESSED_FILES) | check_tools
 
 	@$(PYTHON) $(EMOJI_BUILDER) $(SMALL_METRICS) -V $(word 2,$^) "$@" "$(COMPRESSED_DIR)/emoji_u"
@@ -218,8 +225,9 @@ $(EMOJI).ttf: check_sequence $(EMOJI).tmpl.ttf $(EMOJI_BUILDER) $(PUA_ADDER) \
 	@$(VS_ADDER) -vs 2640 2642 2695 --dstdir '.' -o "$@-with-pua-varsel" "$@-with-pua"
 	@mv "$@-with-pua-varsel" "$@"
 	@rm "$@-with-pua"
+	@$(PYTHON) cluster_ligatures.py "$@"
 
-$(EMOJI_WINDOWS).ttf: check_sequence $(EMOJI_WINDOWS).tmpl.ttf $(EMOJI_BUILDER) $(PUA_ADDER) \
+$(EMOJI_WINDOWS).ttf: check_sequence $(EMOJI_WINDOWS).tmpl.ttf $(EMOJI_BUILDER) $(PUA_ADDER) cluster_ligatures.py \
 	$(ALL_COMPRESSED_FILES) | check_tools
 
 	@$(PYTHON) $(EMOJI_BUILDER) -O $(SMALL_METRICS) -V $(word 2,$^) "$@" "$(COMPRESSED_DIR)/emoji_u"
@@ -227,13 +235,14 @@ $(EMOJI_WINDOWS).ttf: check_sequence $(EMOJI_WINDOWS).tmpl.ttf $(EMOJI_BUILDER) 
 	@$(VS_ADDER) -vs 2640 2642 2695 --dstdir '.' -o "$@-with-pua-varsel" "$@-with-pua"
 	@mv "$@-with-pua-varsel" "$@"
 	@rm "$@-with-pua"
+	@$(PYTHON) cluster_ligatures.py "$@"
 
 
 check_sequence:
 ifdef BYPASS_SEQUENCE_CHECK
 	@echo Bypassing the emoji sequence checks
 else
-	@$(PYTHON) $(SEQUENCE_CHECK_PY) -n $(ALL_NAMES) -c
+	@$(PYTHON) $(SEQUENCE_CHECK_PY) -n $(filter-out $(CLUSTER_NAMES),$(ALL_NAMES)) -c
 endif
 
 clean:
@@ -250,4 +259,3 @@ print-%: ; @echo $* = $($*)
   $(ALL_QUANTIZED_FILES) $(ALL_COMPRESSED_FILES)
 
 .PHONY:	clean flags emoji renamed_flags quantized compressed check_tools
-

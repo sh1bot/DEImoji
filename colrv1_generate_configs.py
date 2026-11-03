@@ -19,7 +19,8 @@ from pathlib import Path
 
 
 _NOTO_FAMILY_NAME = "Noto Color Emoji"
-_NOTO_SVG_DIR = Path("svg")
+_NOTO_SVG_DIR = Path("2D/svg")
+_CLUSTER_SVG_DIR = Path("ligatures/svg")
 _REGIONAL_INDICATORS = {
     Path(_NOTO_SVG_DIR / f"emoji_u{i:x}.svg") for i in range(0x1F1E6, 0x1F1FF + 1)
 }
@@ -66,7 +67,7 @@ wght = 400
 
 def _write_all_noto_configs():
     # includes all of noto-emoji svgs plus all the waved region flags
-    regular = tuple(_NOTO_SVG_DIR.glob("*.svg"))
+    regular = tuple(_NOTO_SVG_DIR.glob("*.svg")) + tuple(_CLUSTER_SVG_DIR.glob("*.svg"))
     flags = tuple(_NOTO_WAVED_FLAG_SVG_DIR.glob("*.svg"))
 
     dups = {p.name for p in regular} & {p.name for p in flags}
@@ -85,6 +86,7 @@ def _write_noto_noflag_configs():
     # the Black Flag and ending with a Cancel Tag.
     svgs = (
         tuple(p for p in _NOTO_SVG_DIR.glob("*.svg") if p not in _REGIONAL_INDICATORS)
+        + tuple(_CLUSTER_SVG_DIR.glob("*.svg"))
         + _NOTO_SUBDIVISION_FLAGS
     )
     _write_config("noflags", "NotoColorEmoji-noflags.ttf", svgs)

@@ -1,0 +1,84 @@
+name: Build fonts and browser test page
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          lfs: true
+      - uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcairo2-dev imagemagick pngquant zopfli libharfbuzz-bin
+          python -m venv .venv
+          .venv/bin/pip install -r requirements.txt 'fonttools[woff]'
+      - name: Test grouping with HarfBuzz
+        run: .venv/bin/python -m pytest tests/test_cluster_ligatures.py -q
+      - name: Build bitmap fonts
+        run: |
+          source .venv/bin/activate
+          make -j 2
+          cp NotoColorEmoji.ttf NotoColorEmoji_WindowsCompatible.ttf 2D/fonts/
+      - name: Build vector fonts
+        run: |
+          source .venv/bin/activate
+          python colrv1_generate_configs.py
+          (cd colrv1 && nanoemoji all.toml noflags.toml)
+          cp colrv1/build/NotoColorEmoji.ttf 2D/fonts/Noto-COLRv1.ttf
+          cp colrv1/build/NotoColorEmoji-noflags.ttf 2D/fonts/Noto-COLRv1-noflags.ttf
+          python colrv1_postproc.py
+      - name: Package matching fonts and test page
+        run: .venv/bin/python web/package.py --output build/site
+      - name: Check the built fonts in Chromium
+        run: |
+          .venv/bin/pip install playwright
+          .venv/bin/python -m playwright install --with-deps chromium
+          .venv/bin/python web/check_browser.py build/site
+      - name: Keep downloadable build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: DEImoji-${{ github.sha }}
+          path: build/site/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Prepare Pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: build/site/
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+      - name: Publish matching test page and fonts
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e

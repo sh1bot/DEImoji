@@ -20,5 +20,7 @@ jobs:
       uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
     - name: Install FontTools
       run: pip install fonttools pytest
+    - name: Install HarfBuzz for cluster shaping tests
+      run: sudo apt-get update && sudo apt-get install -y libharfbuzz0b
     - name: pytest
       run: pytest
