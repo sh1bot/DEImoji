@@ -1,7 +1,7 @@
 # Automated builds and browser playground
 
-`.github/workflows/build-fonts.yml` builds the regular and Windows-compatible
-bitmap fonts, builds and post-processes both COLRv1 variants, and packages a
+On a cold cache, `.github/workflows/build-fonts.yml` builds the regular and Windows-compatible
+bitmap fonts, builds and post-processes the full COLRv1 browser font, and packages a
 static test page with matching COLRv1 TTF/WOFF2 and CBDT TTF downloads.
 
 - Runs on pushes to `main`, pull requests, or a manual **Run workflow**.
@@ -15,6 +15,35 @@ The browser build uses every available CPU core and `OPTIMIZE_PNGS=0` to
 embed the source PNG pixels without PNGQuant/Zopfli optimization. This makes
 the bitmap download larger but preserves the source artwork and gives quicker
 preview builds. A normal local `make` retains the upstream compression defaults.
+
+## Persistent compiled-artwork cache
+
+The workflow caches the native CBDT and COLRv1 fonts **before** the custom GSUB
+patch. The cache key covers artwork, native build scripts/options, and compiler
+versions. Changes to `cluster_ligatures.py` or the web UI reuse those compiled
+fonts; the current GSUB rules are reapplied, then packaging and browser tests
+run normally. Changes to native artwork/build inputs trigger compilation.
+
+GitHub Actions caches persist between runs but can be evicted. If a matching
+build is still published on Pages, the workflow downloads its font pair and
+recovers the native lookups to reseed the cache. Published font checksums and
+the native input key prevent mixing builds. The first pre-cache preview has a
+strict one-time migration path tied to its known source commit.
+
+On a first run with no cache or published font pair, recovery can wait up to
+ten minutes for an in-flight build to publish before falling back to compilation.
+A published pair with incompatible native inputs triggers a rebuild immediately.
+Only the vector variant used by the browser page is built here; the normal local
+full rebuild still supports the no-flags variant as well.
+
+Cache files and checksums live in `build/native-fonts/`, separately from the
+font downloads. No cache-only data is inserted into the release fonts. The
+small `build.json` file on the test page identifies the build and its inputs.
+The workflow's “Restore compiled artwork cache” and conditional build steps
+show whether a run reused artwork or compiled it.
+
+Runs on the same branch are serialized so a cold build can finish seeding its
+cache. A completed older commit cannot replace the latest commit's Pages site.
 
 ## One-time hosting setup
 

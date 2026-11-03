@@ -1,5 +1,6 @@
 """Package a static test page with the fonts from the same build."""
 import argparse
+import hashlib
 from datetime import datetime, timezone
 import json
 import os
@@ -29,6 +30,9 @@ def package(output, source):
         'commit': os.environ.get('GITHUB_SHA', 'local'),
         'repository': os.environ.get('GITHUB_REPOSITORY', 'sh1bot/DEImoji'),
         'built_at': datetime.now(timezone.utc).isoformat(),
+        'native_key': os.environ.get('DEIMOJI_NATIVE_KEY'),
+        'font_hashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in fonts.glob('*') if p.suffix in ('.ttf', '.woff2')},
     }
     (output / 'build.json').write_text(json.dumps(metadata, indent=2) + '\n')
     (output / '.nojekyll').touch()

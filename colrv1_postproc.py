@@ -311,10 +311,10 @@ def _font(path, check_fn, check_fail_str):
     return font
 
 
-def main(_):
+def main(argv):
     cbdt_font = _font(_CBDT_FILE, _is_cbdt, " must be a CBDT font")
 
-    for colr_file in _COLR_FILES:
+    for colr_file in ({Path(p) for p in argv[1:]} or _COLR_FILES):
         colr_font = _font(colr_file, _is_colrv1, " must be a COLRv1 font")
 
         print(f"Updating {colr_file} from {_CBDT_FILE}")
@@ -334,11 +334,14 @@ def main(_):
 
         _add_fallback_subs_for_unknown_flags(colr_font)
 
-        add_cluster_ligatures(colr_font)
-
         _set_no_font_embedding_restrictions(colr_font)
 
         _set_head_version_to_name_version(colr_font)
+
+        native_cache = Path('build/native-fonts')
+        native_cache.mkdir(parents=True, exist_ok=True)
+        colr_font.save(native_cache / colr_file.name)
+        add_cluster_ligatures(colr_font)
 
         print("Writing", colr_file)
         colr_font.save(colr_file)

@@ -168,11 +168,82 @@ def add_cluster_ligatures(font):
     gsub.FeatureList.FeatureCount = len(records)
 
 
+def remove_cluster_ligatures(font):
+    """Recover the native GSUB for a build cache from our known full-font format.
+
+    This deliberately refuses unknown/pre-existing calt features rather than
+    removing arbitrary font behavior. It supports the two-family bundle emitted
+    above, so an earlier published build can bootstrap a clean native-font cache.
+    """
+    gsub = font['GSUB'].table
+    records = gsub.FeatureList.FeatureRecord
+    if len(CLUSTER_CODEPOINTS) != 2:
+        raise ValueError('Cache recovery only recognizes the original two-family bundle')
+    calts = [(i, record) for i, record in enumerate(records) if record.FeatureTag == 'calt']
+    lookups = gsub.LookupList.Lookup
+    start = len(lookups) - 5
+    root_types = [s.ExtensionLookupType if lookups[-1].LookupType == 7 else lookups[-1].LookupType
+                  for s in lookups[-1].SubTable] if lookups else []
+    if (len(calts) != 1 or start < 1 or not root_types or set(root_types) != {6}
+            or calts[0][1].Feature.LookupListIndex != [len(lookups) - 1]):
+        raise ValueError('Not a recognized DEImoji cluster feature bundle')
+    if getattr(gsub, 'FeatureVariations', None):
+        raise ValueError('Cannot recover a variable-feature cache')
+    for record in records:
+        if record is not calts[0][1] and any(i >= start for i in record.Feature.LookupListIndex):
+            raise ValueError('Cluster lookup bundle is shared with another feature')
+    restore = []
+    for family, cp in enumerate(CLUSTER_CODEPOINTS):
+        base = font.getBestCmap()[cp]
+        for choice, count in enumerate((2, 3)):
+            lookup = lookups[start + family * 2 + choice]
+            tables = list(_ligature_tables(lookup))
+            if len(tables) != 1 or set(tables[0].ligatures) != {base}:
+                raise ValueError('Unexpected cluster ligature lookup')
+            ligatures = tables[0].ligatures[base]
+            if len(ligatures) != 1 or tuple(ligatures[0].Component) != (base,) * (count - 1):
+                raise ValueError('Unexpected cluster ligature components')
+            restore.append((base, deepcopy(ligatures[0])))
+    ccmps = [r for r in records if r.FeatureTag == 'ccmp']
+    if len(ccmps) != 1:
+        raise ValueError('Expected a single native ccmp feature')
+    native_tables = [t for index in ccmps[0].Feature.LookupListIndex
+                     for t in _ligature_tables(lookups[index])]
+    if not native_tables:
+        raise ValueError('No native emoji ligature table')
+    for base, ligature in restore:
+        native_tables[0].ligatures.setdefault(base, []).append(ligature)
+        native_tables[0].ligatures[base].sort(key=lambda item: -len(item.Component))
+    removed = calts[0][0]
+    for script_record in gsub.ScriptList.ScriptRecord:
+        script = script_record.Script
+        languages = [r.LangSys for r in script.LangSysRecord]
+        if script.DefaultLangSys is not None:
+            languages.append(script.DefaultLangSys)
+        for lang in languages:
+            if lang.ReqFeatureIndex == removed:
+                raise ValueError('Refusing to remove a required feature')
+            lang.FeatureIndex = [i - (i > removed) for i in lang.FeatureIndex if i != removed]
+            lang.FeatureCount = len(lang.FeatureIndex)
+            if lang.ReqFeatureIndex != 0xFFFF:
+                lang.ReqFeatureIndex -= lang.ReqFeatureIndex > removed
+    records.pop(removed)
+    gsub.FeatureList.FeatureCount = len(records)
+    del lookups[start:]
+    gsub.LookupList.LookupCount = len(lookups)
+
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('font', help='Built emoji TTF to update in place')
+    parser.add_argument('--native-cache', help='Save a native font before the custom GSUB patch')
     args = parser.parse_args()
     font = TTFont(args.font)
+    if args.native_cache:
+        from pathlib import Path
+        target = Path(args.native_cache)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        font.save(target)
     add_cluster_ligatures(font)
     font.save(args.font)
