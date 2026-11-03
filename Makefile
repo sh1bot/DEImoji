@@ -239,7 +239,7 @@ $(EMOJI).ttf: check_sequence $(EMOJI).tmpl.ttf $(EMOJI_BUILDER) $(PUA_ADDER) clu
 	@$(VS_ADDER) -vs 2640 2642 2695 --dstdir '.' -o "$@-with-pua-varsel" "$@-with-pua"
 	@mv "$@-with-pua-varsel" "$@"
 	@rm "$@-with-pua"
-	@$(PYTHON) cluster_ligatures.py "$@"
+	@$(PYTHON) cluster_ligatures.py --native-cache "$(BUILD_DIR)/native-fonts/$@" "$@"
 
 $(EMOJI_WINDOWS).ttf: check_sequence $(EMOJI_WINDOWS).tmpl.ttf $(EMOJI_BUILDER) $(PUA_ADDER) cluster_ligatures.py \
 	$(ALL_COMPRESSED_FILES) | check_tools
@@ -249,7 +249,7 @@ $(EMOJI_WINDOWS).ttf: check_sequence $(EMOJI_WINDOWS).tmpl.ttf $(EMOJI_BUILDER) 
 	@$(VS_ADDER) -vs 2640 2642 2695 --dstdir '.' -o "$@-with-pua-varsel" "$@-with-pua"
 	@mv "$@-with-pua-varsel" "$@"
 	@rm "$@-with-pua"
-	@$(PYTHON) cluster_ligatures.py "$@"
+	@$(PYTHON) cluster_ligatures.py --native-cache "$(BUILD_DIR)/native-fonts/$@" "$@"
 
 
 check_sequence:

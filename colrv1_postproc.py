@@ -334,11 +334,14 @@ def main(_):
 
         _add_fallback_subs_for_unknown_flags(colr_font)
 
-        add_cluster_ligatures(colr_font)
-
         _set_no_font_embedding_restrictions(colr_font)
 
         _set_head_version_to_name_version(colr_font)
+
+        native_cache = Path('build/native-fonts')
+        native_cache.mkdir(parents=True, exist_ok=True)
+        colr_font.save(native_cache / colr_file.name)
+        add_cluster_ligatures(colr_font)
 
         print("Writing", colr_file)
         colr_font.save(colr_file)

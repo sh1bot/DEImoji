@@ -5,16 +5,22 @@ from io import BytesIO
 from pathlib import Path
 import sys
 import struct
+import tempfile
 import tomllib
 import unittest
+from unittest import mock
+import subprocess
+import json
 import xml.etree.ElementTree as ET
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from cluster_ligatures import add_cluster_ligatures, CLUSTER_NAMES
+from cluster_ligatures import add_cluster_ligatures, remove_cluster_ligatures, CLUSTER_NAMES
 from fontTools.fontBuilder import FontBuilder
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib import TTFont
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'web'))
+import cache_fonts
 
 
 GLYPHS = ['.notdef', 'space', 'z', 'f', 'z2', 'z3', 'f2', 'f3',
@@ -156,6 +162,40 @@ class ClusterTests(unittest.TestCase):
         add_cluster_ligatures(self.font)
         self.assertEqual(before, self.font['GSUB'].compile(self.font))
 
+    def test_recover_native_font_for_cache(self):
+        original = make_font()['GSUB'].compile(make_font())
+        remove_cluster_ligatures(self.font)
+        self.assertEqual(original, self.font['GSUB'].compile(self.font))
+        add_cluster_ligatures(self.font)
+        self.assertEqual(shape(self.font, '🧟' * 18),
+                         ['z3', 'z3', 'z3', 'z2', 'z3', 'z2', 'z2'])
+
+    def test_cache_recovery_rejects_unrecognized_font(self):
+        with self.assertRaises(ValueError):
+            remove_cluster_ligatures(make_font())
+
+    def test_cache_recovery_supports_extension_lookups(self):
+        from fontTools.ttLib.tables import otTables
+        for lookup in self.font['GSUB'].table.LookupList.Lookup:
+            if lookup.LookupType not in (4, 6):
+                continue
+            wrapped = []
+            for table in lookup.SubTable:
+                extension = otTables.ExtensionSubst()
+                extension.Format = 1
+                extension.ExtensionLookupType = lookup.LookupType
+                extension.ExtSubTable = table
+                wrapped.append(extension)
+            lookup.LookupType = 7
+            lookup.SubTable = wrapped
+        binary = BytesIO()
+        self.font.save(binary)
+        font = TTFont(BytesIO(binary.getvalue()))
+        remove_cluster_ligatures(font)
+        add_cluster_ligatures(font)
+        self.assertEqual(shape(font, '🧟' * 18),
+                         ['z3', 'z3', 'z3', 'z2', 'z3', 'z2', 'z2'])
+
     def test_missing_artwork_is_noop(self):
         font = make_font()
         for table in font['GSUB'].table.LookupList.Lookup[0].SubTable:
@@ -186,6 +226,59 @@ class ClusterTests(unittest.TestCase):
             for asset in CLUSTER_NAMES:
                 self.assertEqual(sources.count('../ligatures/svg/' + asset + '.svg'), 1)
             self.assertFalse(any(s.startswith('../svg/') for s in sources))
+
+
+class NativeCacheTests(unittest.TestCase):
+    def test_rules_and_ui_do_not_invalidate_artwork(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            def git(*args):
+                return subprocess.run(['git', *args], cwd=root, check=True,
+                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            def commit():
+                git('add', '.')
+                git('-c', 'user.name=Cache Test', '-c', 'user.email=cache@example.invalid',
+                    'commit', '-m', 'test')
+            git('init')
+            (root / 'Makefile').write_text('native build')
+            (root / 'cluster_ligatures.py').write_text('rules v1')
+            (root / 'web').mkdir()
+            (root / 'web/app.js').write_text('ui v1')
+            (root / '2D/svg').mkdir(parents=True)
+            art = root / '2D/svg/emoji_u1f9df.svg'
+            art.write_text('artwork v1')
+            commit()
+            with mock.patch.object(cache_fonts, 'ROOT', root), mock.patch.object(
+                    cache_fonts, 'compiler_info', return_value={'compiler': 'v1'}):
+                original = cache_fonts.cache_key()
+                (root / 'cluster_ligatures.py').write_text('rules v2')
+                (root / 'web/app.js').write_text('ui v2')
+                commit()
+                self.assertEqual(original, cache_fonts.cache_key())
+                art.write_text('artwork v2')
+                commit()
+                self.assertNotEqual(original, cache_fonts.cache_key())
+
+    def test_apply_preserves_cached_native_fonts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cache = root / 'native'
+            cache.mkdir()
+            for name in cache_fonts.FONTS:
+                make_font().save(cache / name)
+            metadata = {'key': 'test', 'hashes': {
+                name: cache_fonts.digest(cache / name) for name in cache_fonts.FONTS}}
+            (cache / 'cache.json').write_text(json.dumps(metadata))
+            with mock.patch.object(cache_fonts, 'ROOT', root), mock.patch.object(cache_fonts, 'CACHE', cache):
+                self.assertTrue(cache_fonts.verify('test'))
+                self.assertFalse(cache_fonts.verify('different-key'))
+                cache_fonts.apply('test')
+                font = TTFont(root / '2D/fonts/NotoColorEmoji.ttf')
+                self.assertEqual(shape(font, '🧟' * 18),
+                                 ['z3', 'z3', 'z3', 'z2', 'z3', 'z2', 'z2'])
+                self.assertTrue(cache_fonts.verify('test'))
+                (cache / 'NotoColorEmoji.ttf').write_bytes(b'corrupt')
+                self.assertFalse(cache_fonts.verify('test'))
 
 
 if __name__ == '__main__':
