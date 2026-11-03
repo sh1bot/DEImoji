@@ -45,6 +45,23 @@ def main():
                         return range.getBoundingClientRect().width;
                     })''')
                     assert on < off, (family, fmt, on, off)
+            page.select_option('#preset', 'runners')
+            assert page.locator('#text').input_value() == '🏃' * 36
+            for fmt in ('colr', 'cbdt'):
+                page.select_option('#format', fmt)
+                page.wait_for_function(loaded)
+                for text, should_differ in (('🏃' * 8, True), ('🏃🏽‍♀️🏃🏻‍♂️🏃🏿', False)):
+                    page.locator('#text').fill(text)
+                    # Capture the same element at the same position/background;
+                    # width cannot establish whether tone/gender artwork changed.
+                    sample = page.locator('#clustered .emoji-run')
+                    on = sample.screenshot()
+                    page.locator('#clustered').evaluate(
+                        "node => node.style.fontFeatureSettings = \"'calt' 0\"")
+                    off = sample.screenshot()
+                    page.locator('#clustered').evaluate(
+                        "node => node.style.fontFeatureSettings = ''")
+                    assert (on != off) == should_differ, (fmt, text)
             page.select_option('#preset', 'flowers')
             assert page.locator('#text').input_value() == '🌻' * 36
             page.locator('#count').fill('18')
@@ -72,7 +89,7 @@ def main():
                 "node => getComputedStyle(node).visibility") == 'hidden'
             assert not errors, errors
             browser.close()
-        print('PASS: both families/formats, calt on/off, controls, mobile, font errors')
+        print('PASS: clusters and runner pixels in both formats, calt on/off, controls, mobile, font errors')
     finally:
         server.shutdown()
         server.server_close()

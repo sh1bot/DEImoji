@@ -16,6 +16,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from cluster_ligatures import add_cluster_ligatures, remove_cluster_ligatures
+from modifier_ligatures import remove_modifier_ligatures
 from fontTools.ttLib import TTFont, TTLibError
 
 CACHE = ROOT / 'build/native-fonts'
@@ -120,6 +121,7 @@ def bootstrap(key):
             target = CACHE / native
             target.write_bytes(data)
             font = TTFont(target)
+            remove_modifier_ligatures(font, metadata.get('modifiers', {}).get(published))
             remove_cluster_ligatures(font)
             font.save(target)
         stamp(key)
@@ -153,10 +155,14 @@ def apply(key):
         raise ValueError('Native cache key or font checksums do not match')
     output = ROOT / '2D/fonts'
     output.mkdir(parents=True, exist_ok=True)
-    for name in FONTS:
+    modifiers = {}
+    for name, published in FONTS.items():
         font = TTFont(CACHE / name)
-        add_cluster_ligatures(font)
+        modifiers[published] = add_cluster_ligatures(font)
         font.save(output / name)
+    manifest = ROOT / 'build/modifiers.json'
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(json.dumps(modifiers, indent=2) + '\n')
 
 
 if __name__ == '__main__':

@@ -73,7 +73,7 @@ def _offset_references(table, offset):
                 _offset_references(value, offset)
 
 
-def add_cluster_ligatures(font):
+def _add_cluster_ligatures(font):
     """Keep native GSUB; move just our four repeated sequences to default calt.
 
     Discover output names from native ligatures, so both add_glyphs and
@@ -166,6 +166,13 @@ def add_cluster_ligatures(font):
             lang.FeatureIndex.sort()
             lang.FeatureCount = len(lang.FeatureIndex)
     gsub.FeatureList.FeatureCount = len(records)
+
+
+def add_cluster_ligatures(font):
+    """Install the contextual clusters and independent modifier generators."""
+    _add_cluster_ligatures(font)
+    from modifier_ligatures import add_modifier_ligatures
+    return add_modifier_ligatures(font)
 
 
 def remove_cluster_ligatures(font):

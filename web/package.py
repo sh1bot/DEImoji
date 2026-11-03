@@ -31,6 +31,8 @@ def package(output, source):
         'repository': os.environ.get('GITHUB_REPOSITORY', 'sh1bot/DEImoji'),
         'built_at': datetime.now(timezone.utc).isoformat(),
         'native_key': os.environ.get('DEIMOJI_NATIVE_KEY'),
+        'modifiers': json.loads((ROOT / 'build/modifiers.json').read_text())
+                     if (ROOT / 'build/modifiers.json').exists() else {},
         'font_hashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                         for p in fonts.glob('*') if p.suffix in ('.ttf', '.woff2')},
     }

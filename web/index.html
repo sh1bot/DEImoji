@@ -12,13 +12,13 @@
     <header>
       <a class="eyebrow" href="https://github.com/sh1bot/DEImoji">DEImoji / font playground ↗</a>
       <h1>A little more life<br>in the line.</h1>
-      <p class="intro">Zombie hordes. Sunflower patches. Try the latest font, right here.</p>
+      <p class="intro">Zombie hordes. Sunflower patches. Varied runners. Try the latest font, right here.</p>
       <p id="build" class="muted">Reading build information…</p>
     </header>
 
     <section class="controls" aria-label="Font controls">
       <label>Start with
-        <select id="preset"><option value="zombies">Zombies</option><option value="flowers">Sunflowers</option></select>
+        <select id="preset"><option value="zombies">Zombies</option><option value="flowers">Sunflowers</option><option value="runners">Runners</option></select>
       </label>
       <label>Emoji count <output id="count-value">36</output>
         <input id="count" type="range" min="1" max="80" value="36">
@@ -33,7 +33,7 @@
 
     <label class="input-label" for="text">Or type your own sequence</label>
     <textarea id="text" rows="3" spellcheck="false" aria-describedby="scope"></textarea>
-    <p class="muted" id="scope">Clustering currently matches repeated plain 🧟 or 🌻. Spaces and other emoji start a new group.</p>
+    <p class="muted" id="scope">Plain 🧟 and 🌻 form clusters. Compatible plain emoji such as 🏃 vary in skin tone and gender. Explicit modifiers stay as typed; spaces restart the variation.</p>
     <details class="debug" open>
       <summary>Input codepoints</summary>
       <output id="codepoints" aria-label="Input Unicode codepoints"></output>
@@ -41,12 +41,12 @@
     <p id="status" role="status">Loading the built font…</p>
 
     <section class="sample" aria-labelledby="on-title">
-      <div class="sample-heading"><h2 id="on-title">Clustering on</h2><span>calt = 1</span></div>
-      <div id="clustered" class="emoji on waiting" aria-label="Text rendered with contextual clusters"></div>
+      <div class="sample-heading"><h2 id="on-title">Variation on</h2><span>calt = 1</span></div>
+      <div id="clustered" class="emoji on waiting" aria-label="Text rendered with contextual variation"></div>
     </section>
     <section class="sample reference" aria-labelledby="off-title">
       <div class="sample-heading"><h2 id="off-title">Individual emoji</h2><span>calt = 0 · same font</span></div>
-      <div id="individual" class="emoji off waiting" aria-label="The same text with clustering disabled"></div>
+      <div id="individual" class="emoji off waiting" aria-label="The same text with contextual variation disabled"></div>
     </section>
     <p class="explanation">In a long run, group sizes repeat <strong>3 · 3 · 3 · 2 · 3 · 2 · 2</strong>.
       Short tails adjust to avoid leaving one emoji behind. Scroll sideways through long samples; each line stays unwrapped so line breaking does not change the grouping.</p>

@@ -264,6 +264,7 @@ class NativeCacheTests(unittest.TestCase):
                     cache_fonts, 'compiler_info', return_value={'compiler': 'v1'}):
                 original = cache_fonts.cache_key()
                 (root / 'cluster_ligatures.py').write_text('rules v2')
+                (root / 'modifier_ligatures.py').write_text('modifier rules v2')
                 (root / 'web/app.js').write_text('ui v2')
                 commit()
                 self.assertEqual(original, cache_fonts.cache_key())
@@ -285,12 +286,134 @@ class NativeCacheTests(unittest.TestCase):
                 self.assertTrue(cache_fonts.verify('test'))
                 self.assertFalse(cache_fonts.verify('different-key'))
                 cache_fonts.apply('test')
+                self.assertTrue((root / 'build/modifiers.json').exists())
                 font = TTFont(root / '2D/fonts/NotoColorEmoji.ttf')
                 self.assertEqual(shape(font, '🧟' * 18),
                                  ['z3', 'z3', 'z3', 'z2', 'z3', 'z2', 'z2'])
                 self.assertTrue(cache_fonts.verify('test'))
                 (cache / 'NotoColorEmoji.ttf').write_bytes(b'corrupt')
                 self.assertFalse(cache_fonts.verify('test'))
+
+
+
+def make_modifier_font():
+    font = make_font()
+    names = ['runner', 'woman', 'male'] + ['skin' + str(i) for i in range(5)]
+    names += [b + str(t) + str(g) for b in ('runner', 'woman') for t in range(5)
+              for g in (range(3) if b == 'runner' else range(1))]
+    font.setGlyphOrder(font.getGlyphOrder() + names)
+    for name in names:
+        font['glyf'].glyphs[name] = TTGlyphPen(None).glyph()
+        font['hmtx'].metrics[name] = (1000, 0)
+    font['maxp'].numGlyphs = len(font.getGlyphOrder())
+    for table in font['cmap'].tables:
+        if table.isUnicode() and table.format == 12:
+            table.cmap.update({0x1F3C3: 'runner', 0x1F469: 'woman', 0x2642: 'male',
+                               **{0x1F3FB + t: 'skin' + str(t) for t in range(5)}})
+    rules = []
+    for t in range(5):
+        for g, gender in ((1, 'female'), (2, 'male')):
+            rules.append(f'sub runner skin{t} zwj {gender} by runner{t}{g};')
+        rules += [f'sub runner skin{t} by runner{t}0;', f'sub woman skin{t} by woman{t}0;']
+    rules += ['sub runner zwj female by woman;', 'sub z z z by z3;', 'sub z z by z2;',
+              'sub f f f by f3;', 'sub f f by f2;']
+    addOpenTypeFeaturesFromString(font, 'languagesystem DFLT dflt; feature ccmp {\n' +
+                                 '\n'.join(rules) + '\n} ccmp;')
+    return font
+
+
+class ModifierTests(unittest.TestCase):
+    def setUp(self):
+        from modifier_ligatures import stream, TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
+        self.font = make_modifier_font()
+        self.info = add_cluster_ligatures(self.font)
+        self.tones = stream(5, TONE_COEFFICIENTS, TONE_SEED, 500)
+        self.genders = stream(3, GENDER_COEFFICIENTS, GENDER_SEED, 500)
+
+    def test_independent_feedback_and_neutral_deletion(self):
+        for n in (1, 7, 8, 9, 40, 500):
+            self.assertEqual(shape(self.font, '🏃' * n),
+                             [f'runner{t}{g}' for t, g in zip(self.tones[:n], self.genders[:n])])
+        self.assertEqual(set(self.tones), set(range(5)))
+        self.assertEqual(set(self.genders), set(range(3)))
+
+    def test_explicit_sequences_and_calt_off(self):
+        for t in range(5):
+            tone = chr(0x1F3FB + t)
+            for gender, g in (('', 0), ('\u200d♀', 1), ('\u200d♂', 2)):
+                text = ('🏃' + tone + gender) * 3
+                self.assertEqual(shape(self.font, text), [f'runner{t}{g}'] * 3)
+                self.assertEqual(shape(self.font, text), shape(self.font, text, calt=False))
+        self.assertEqual(shape(self.font, '🏃' * 40, calt=False), ['runner'] * 40)
+        # An incomplete explicit sequence must not acquire our modifiers.
+        self.assertEqual(shape(self.font, '🏃\u200d'), shape(self.font, '🏃\u200d', calt=False))
+
+    def test_boundaries_and_gendered_bases(self):
+        run = shape(self.font, '🏃' * 20)
+        self.assertEqual(shape(self.font, '🏃' * 20 + ' ' + '🏃' * 20), run + ['space'] + run)
+        # Gendered bases participate in tone history but restart gender history.
+        text = '🏃' * 12 + '👩' + '🏃' * 20
+        expected = [f'runner{t}{g}' for t, g in zip(self.tones[:12], self.genders[:12])]
+        expected += [f'woman{self.tones[12]}0']
+        expected += [f'runner{t}{g}' for t, g in zip(self.tones[13:33], self.genders[:20])]
+        self.assertEqual(shape(self.font, text), expected)
+        # A fully assembled explicit emoji breaks both histories.
+        self.assertEqual(shape(self.font, '🏃' * 20 + '🏃🏻' + '🏃' * 20), run + ['runner00'] + run)
+
+    def test_roundtrip_uninstall_and_reinstall(self):
+        from modifier_ligatures import remove_modifier_ligatures
+        before = shape(self.font, '🏃' * 50)
+        out = BytesIO()
+        self.font.save(out)
+        font = TTFont(BytesIO(out.getvalue()))
+        self.assertEqual(shape(font, '🏃' * 50), before)
+        remove_modifier_ligatures(font, self.info)
+        remove_cluster_ligatures(font)
+        original = make_modifier_font()
+        self.assertEqual(font.getGlyphOrder(), original.getGlyphOrder())
+        self.assertEqual(font.getBestCmap(), original.getBestCmap())
+        self.assertEqual(font['OS/2'].usMaxContext, original['OS/2'].usMaxContext)
+        self.assertEqual(font['GSUB'].compile(font), original['GSUB'].compile(original))
+        add_cluster_ligatures(font)
+        self.assertEqual(shape(font, '🏃' * 50), before)
+
+    def test_install_idempotent(self):
+        before = self.font['GSUB'].compile(self.font)
+        self.assertEqual(add_cluster_ligatures(self.font), self.info)
+        self.assertEqual(before, self.font['GSUB'].compile(self.font))
+
+    def test_modifiers_without_optional_cluster_artwork(self):
+        from modifier_ligatures import remove_modifier_ligatures
+        font = make_modifier_font()
+        for lookup in font['GSUB'].table.LookupList.Lookup:
+            for table in getattr(lookup, 'SubTable', []):
+                if hasattr(table, 'ligatures'):
+                    table.ligatures.pop('z', None)
+                    table.ligatures.pop('f', None)
+        original = font['GSUB'].compile(font)
+        info = add_cluster_ligatures(font)
+        self.assertTrue(info['created_calt'])
+        self.assertEqual(shape(font, '🏃' * 30), shape(self.font, '🏃' * 30))
+        remove_modifier_ligatures(font, info)
+        self.assertEqual(font['GSUB'].compile(font), original)
+
+    def test_marker_collision_rejected(self):
+        del self.font._deimoji_modifiers
+        with self.assertRaisesRegex(ValueError, 'native baseline'):
+            add_cluster_ligatures(self.font)
+
+    def test_maximal_periods(self):
+        from modifier_ligatures import TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
+        for base, coefficients, seed, period in ((5, TONE_COEFFICIENTS, TONE_SEED, 390624),
+                                                 (3, GENDER_COEFFICIENTS, GENDER_SEED, 2186)):
+            state = tuple(seed)
+            for n in range(1, period + 1):
+                value = sum(a * b for a, b in zip(coefficients, state)) % base
+                state = (value,) + state[:-1]
+                if state == seed:
+                    break
+            self.assertEqual(n, period)
+            self.assertEqual(state, seed)
 
 
 if __name__ == '__main__':
