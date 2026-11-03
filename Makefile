@@ -22,6 +22,7 @@ LDFLAGS = -lm `pkg-config --libs cairo`
 PNGQUANT = pngquant
 PYTHON = python3
 PNGQUANTFLAGS = --speed 1 --skip-if-larger --quality 85-95 --force
+OPTIMIZE_PNGS ?= 1
 BODY_DIMENSIONS = 136x128
 IMOPS := -size $(BODY_DIMENSIONS) canvas:none -compose copy -gravity center
 
@@ -191,13 +192,25 @@ flag-symlinks: $(RESIZED_FLAG_FILES) | $(RENAMED_FLAGS_DIR)
 $(RENAMED_FLAG_FILES): | flag-symlinks
 
 $(QUANTIZED_DIR)/%.png: $(RENAMED_FLAGS_DIR)/%.png | $(QUANTIZED_DIR)
+ifeq ($(OPTIMIZE_PNGS),0)
+	@cp "$<" "$@"
+else
 	@($(PNGQUANT) $(PNGQUANTFLAGS) -o "$@" "$<"; case "$$?" in "98"|"99") echo "reuse $<"; cp $< $@;; *) exit "$$?";; esac)
+endif
 
 $(QUANTIZED_DIR)/%.png: $(EMOJI_DIR)/%.png | $(QUANTIZED_DIR)
+ifeq ($(OPTIMIZE_PNGS),0)
+	@cp "$<" "$@"
+else
 	@($(PNGQUANT) $(PNGQUANTFLAGS) -o "$@" "$<"; case "$$?" in "98"|"99") echo "reuse $<";cp $< $@;; *) exit "$$?";; esac)
+endif
 
 $(COMPRESSED_DIR)/%.png: $(QUANTIZED_DIR)/%.png | check_tools $(COMPRESSED_DIR)
+ifeq ($(OPTIMIZE_PNGS),0)
+	@cp "$<" "$@"
+else
 	@$(ZOPFLIPNG) $(ZOPFLIPNGFLAGS) -y "$<" "$@" 1> /dev/null 2>&1
+endif
 
 # Make 3.81 can endless loop here if the target is missing but no
 # prerequisite is updated and make has been invoked with -j, e.g.:

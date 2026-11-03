@@ -34,8 +34,8 @@ jobs:
       - name: Build bitmap fonts
         run: |
           source .venv/bin/activate
-          # One lossless compression iteration is enough for browser builds.
-          make -j "$(nproc)" ZOPFLIPNGFLAGS=--iterations=1
+          # Preview builds retain the source pixels and skip PNG optimization.
+          make -j "$(nproc)" OPTIMIZE_PNGS=0
           cp NotoColorEmoji.ttf NotoColorEmoji_WindowsCompatible.ttf 2D/fonts/
       - name: Build vector fonts
         run: |

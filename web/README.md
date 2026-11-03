@@ -11,9 +11,10 @@ static test page with matching COLRv1 TTF/WOFF2 and CBDT TTF downloads.
 - Pull requests build artifacts but do not deploy.
 - Build metadata and font URL cache keys identify the exact commit being shown.
 
-The browser build uses every available CPU core and one Zopfli iteration;
-this changes compression size/time, not the bitmap pixels. A normal local
-`make` retains the upstream compression defaults.
+The browser build uses every available CPU core and `OPTIMIZE_PNGS=0` to
+embed the source PNG pixels without PNGQuant/Zopfli optimization. This makes
+the bitmap download larger but preserves the source artwork and gives quicker
+preview builds. A normal local `make` retains the upstream compression defaults.
 
 ## One-time hosting setup
 
