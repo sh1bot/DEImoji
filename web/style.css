@@ -14,6 +14,7 @@ select { width: 100%; display: block; padding: 9px; margin-top: 8px; }
 input[type=range] { width: 100%; display: block; margin: 16px 0 0; accent-color: var(--accent); }
 output { float: right; color: var(--muted); font-weight: 400; }
 textarea { width: 100%; padding: 12px; resize: vertical; margin-top: 8px; font-size: 21px; }
+#palette { font-family: var(--emoji-font, 'DEImojiPreview'), system-ui, sans-serif; font-size: 28px; line-height: 1.5; overflow-wrap: anywhere; font-feature-settings: 'calt' 0; }
 #status { font-size: 13px; color: var(--accent); min-height: 20px; }
 #status.error { color: #a13126; }
 .sample { background: #fff; border: 1px solid #dce0d2; border-radius: 14px; padding: 22px; margin: 20px 0; }
