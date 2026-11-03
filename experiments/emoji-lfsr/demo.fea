@@ -1,0 +1,43 @@
+languagesystem DFLT dflt;
+
+# Abstract glyph names: map these to real Noto glyphs when integrating.
+@BASE = [person runner];
+@STATE = [state0 state1];
+
+lookup Expand {
+    sub person by state0 person;
+    sub runner by state0 runner;
+} Expand;
+
+lookup Zero {
+    sub state0 by state0;
+} Zero;
+lookup One {
+    sub state0 by state1;
+} One;
+
+# b[i] = b[i-3] XOR b[i-1]; seed the first three bits with 1.
+# Each previous bit is followed by its base glyph.
+# A single forward pass sees earlier substitutions in its backtrack.
+lookup Feedback {
+    sub state0 @BASE @STATE @BASE state0 @BASE state0' lookup Zero;
+    sub state0 @BASE @STATE @BASE state1 @BASE state0' lookup One;
+    sub state1 @BASE @STATE @BASE state0 @BASE state0' lookup One;
+    sub state1 @BASE @STATE @BASE state1 @BASE state0' lookup Zero;
+    sub state0' lookup One;
+} Feedback;
+
+lookup Assemble {
+    sub state0 person by person.light;
+    sub state1 person by person.dark;
+    sub state0 runner by runner.light;
+    sub state1 runner by runner.dark;
+} Assemble;
+
+# Keep these in one stage, in this order. In Noto, these must precede
+# any existing assembly that consumes the glyphs matched by Expand.
+feature ccmp {
+    lookup Expand;
+    lookup Feedback;
+    lookup Assemble;
+} ccmp;
