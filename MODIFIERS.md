@@ -24,24 +24,24 @@ changes.
 Coefficients and seeds below are **newest first**. For a register `s`, emit
 `v = sum(coefficients[i] * s[i]) mod base`, then shift to `[v] + s[:-1]`.
 The virtual initial registers below reproduce the short-history fallback
-sequence when the initial output is zero.
+sequence with the default initial outputs: middle tone (2) and neutral gender (0).
 
 | Stream | Base | Coefficients | Seed | Period |
 | --- | --- | --- | --- | --- |
-| Tone | 5 | `[0,0,0,0,0,1,1,2]` | `[4,2,2,4,4,4,0,3]` | 390624 |
+| Tone | 5 | `[0,0,0,0,0,1,1,2]` | `[3,0,2,1,4,4,1,1]` | 390624 |
 | Gender | 3 | `[0,0,0,0,1,0,2]` | `[1,1,0,1,1,0,1]` | 2186 |
 
 When full feedback cannot match, fallback rules use the preceding output:
 tone advances by 3 modulo 5, and gender by 1 modulo 3. A new tone run hashes the
 following mapped glyph with `glyphID % 5`: buckets 0 through 4 select all five
 initial tones. With neither classified lookahead nor preceding generated tone,
-the base is left unmodified, retaining its original default color. Gender starts
+the initial tone is 2: U+1F3FD, the middle (medium) skin tone. Gender starts
 at zero. A seeded run gives all five tones in the first five positions and
 all three genders in the first three, instead of a repeated startup default.
 Full feedback has priority and takes over after eight tone outputs or seven
 gender outputs. Unsupported glyphs restart these fallbacks.
 
-With initial tone zero, outputs start `0,3,1,4,2,0,3,1,4,1,3,0,2,4,1,2`
+With default initial tone 2, outputs start `2,0,3,1,4,2,0,3,2,4,1,3,0,2,0,2`
 (zero means U+1F3FB). Other initial tones rotate the first eight fallback
 outputs; the same full feedback then applies to the resulting register.
 Gender outputs start `0,1,2,0,1,2,0,2,2,2,2,2,0,2,0,0`. These deterministic
@@ -50,10 +50,7 @@ its first return to the seed to verify the full maximal periods.
 
 ## Shaping and build cache
 
-Tone expansion creates `BASE TONE_INTERNAL` units at stride two only when there
-is seed context or a preceding generated unit. Otherwise the original glyph
-passes through without any skin modifier, rather than defaulting to lightest.
-Tone feedback
+Tone expansion creates `BASE TONE_INTERNAL` units at stride two. Tone feedback
 matches 125 sparse tap combinations, followed by five previous-state fallbacks,
 five lookahead seed rules, and an internal first-output default. The five seed classes
 are generated at build time from encoded glyph IDs, excluding internal markers.
@@ -88,9 +85,9 @@ with `calt` enabled/disabled in each font format and checks that explicit
 sequences render identically. HarfBuzz tests check glyph identities and neutral
 marker removal rather than relying on equal-advance artwork widths.
 
-Measured on the full native font pair, the installed GSUB is 123,756 bytes for
-CBDT (+69,834 bytes including both custom bundles), and 105,582 bytes for COLRv1
-(+74,156 bytes including both custom bundles). The modifier installer appends
+Measured on the full native font pair, the installed GSUB is 119,350 bytes for
+CBDT (+65,428 bytes including both custom bundles), and 101,030 bytes for COLRv1
+(+69,604 bytes including both custom bundles). The modifier installer appends
 17 lookups and eight glyphs. Full-font validation also checks 120-run glyph
 identities, all explicit runner tone/gender variants with and without VS16,
 `calt` disabled, mixed explicit/plain boundaries, and serialized cache recovery.

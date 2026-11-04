@@ -343,7 +343,7 @@ class ModifierTests(unittest.TestCase):
     def test_independent_feedback_and_neutral_deletion(self):
         for n in (1, 7, 8, 9, 40, 500):
             if n == 1:
-                self.assertEqual(shape(self.font, '🏃'), ['runner'])
+                self.assertEqual(shape(self.font, '🏃'), ['runner20'])
                 continue
             tones = reference_tones(self.font, '🏃', n)
             self.assertEqual(shape(self.font, '🏃' * n),
@@ -357,7 +357,7 @@ class ModifierTests(unittest.TestCase):
         tones = [4, 2, 0, 3, 1, 4, 2, 0, 0, 2]
         genders = [0, 1, 2, 0, 1, 2, 0, 2, 2, 2]
         expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
-        self.assertEqual(shape(self.font, '🏃'), ['runner'])
+        self.assertEqual(shape(self.font, '🏃'), ['runner20'])
         for n in range(2, 11):
             self.assertEqual(shape(self.font, '🏃' * n), expected[:n])
 
@@ -368,13 +368,14 @@ class ModifierTests(unittest.TestCase):
             tone = self.font.getGlyphID(self.font.getBestCmap()[ord(ch)]) % 5
             self.assertEqual(shape(self.font, '🏃' + ch)[0], f'runner{tone}0')
         self.assertEqual(shape(self.font, '🏃🏃👩')[1], 'runner21')
-        self.assertEqual(shape(self.font, '🏃a🏃'), ['runner30', 'a', 'runner'])
+        self.assertEqual(shape(self.font, '🏃a🏃'), ['runner30', 'a', 'runner20'])
 
-    def test_missing_seed_context_preserves_unmodified_artwork(self):
-        for text in ('🏃', '🧑', '👩', '👨'):
-            self.assertEqual(shape(self.font, text), shape(self.font, text, calt=False))
+    def test_missing_seed_context_defaults_to_middle_tone(self):
+        for text, base in (('🏃', 'runner'), ('🧑', 'person'), ('👩', 'woman'), ('👨', 'man')):
+            self.assertEqual(shape(self.font, text), [base + '20'])
+            self.assertEqual(shape(self.font, text, calt=False), [base])
         # An already assembled following emoji has no encoded seed membership.
-        self.assertEqual(shape(self.font, '🏃🏃🏻'), ['runner', 'runner00'])
+        self.assertEqual(shape(self.font, '🏃🏃🏻'), ['runner20', 'runner00'])
 
     def test_person_uses_separate_gender_bases_and_shared_history(self):
         tones = reference_tones(self.font, '🧑', 40)

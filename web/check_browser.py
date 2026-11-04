@@ -51,7 +51,7 @@ def main():
                 page.select_option('#format', fmt)
                 page.wait_for_function(loaded)
                 for text, should_differ in (('🏃' * 8, True), ('🧑' * 8, True),
-                                            ('🏃', False), ('🧑', False),
+                                            ('🏃', True), ('🧑', True),
                                             ('🏃🏽‍♀️🏃🏻‍♂️🏃🏿', False)):
                     page.locator('#text').fill(text)
                     # Capture the same element at the same position/background;

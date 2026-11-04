@@ -16,7 +16,7 @@ TONE_COEFFICIENTS = (0, 0, 0, 0, 0, 1, 1, 2)
 GENDER_COEFFICIENTS = (0, 0, 0, 0, 1, 0, 2)
 # Virtual initial registers chosen to reproduce the fallback cycles below.
 # They keep the reference stream continuous when full feedback takes over.
-TONE_SEED = (4, 2, 2, 4, 4, 4, 0, 3)
+TONE_SEED = (3, 0, 2, 1, 4, 4, 1, 1)
 GENDER_SEED = (1, 1, 0, 1, 1, 0, 1)
 TONE_STARTUP_STEP = 3
 GENDER_STARTUP_STEP = 1
@@ -137,17 +137,10 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     if gender_bases:
         lines += ['@genderbase = [' + ' '.join(sorted(gender_bases)) + '];',
                   '@gender = [' + ' '.join(GENDERS) + '];']
-    lines.append('lookup toneAppend {')
-    for b in sorted(tone_bases):
-        lines.append(f"sub {b} by {b} {TONES[0]};")
-    lines.append('} toneAppend;')
     lines.append('lookup toneExpand useExtension {')
     lines.append("ignore sub @tonebase' @explicit;")
-    # Do not introduce a skin tone when neither seed context nor prior output
-    # exists. The unmodified base keeps its original default artwork.
-    lines.append("sub @tonebase @tone @tonebase' lookup toneAppend;")
-    for glyph_class, _ in lookahead:
-        lines.append(f"sub @tonebase' lookup toneAppend {glyph_class};")
+    for b in sorted(tone_bases):
+        lines.append(f"sub {b}' by {b} {TONES[0]};")
     lines.append('} toneExpand;')
     lines += _feedback('tone', TONES, TONE_COEFFICIENTS, TONE_SEED, 2, TONE_STARTUP_STEP, lookahead)
     if gender_bases:
