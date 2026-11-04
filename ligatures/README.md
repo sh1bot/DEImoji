@@ -96,3 +96,13 @@ and preview PNGs remain under `experiments/emoji-lfsr/artwork/`.
 The poop pack's original generated/approved concepts are checked in alongside
 the derived assets under the same Apache-2.0 license. The unmodified Noto poop
 SVG is retained as a build reference; its normal base glyph remains unchanged.
+
+Adjacent singles, pairs and triples of the same family receive negative kerning
+of 4% of an em. This gently overlaps their edges without changing spacing next
+to text or other emoji. It is installed as a separate `kern` GPOS feature on
+the native Noto fonts (which have no existing GPOS), and removed during cache
+recovery. Existing positioning tables in other input fonts are retained.
+
+The poop heaps were generated from the approved concepts, then vectorised;
+they are not direct arrangements of the Noto singleton SVG. Their softer shading
+and facial proportions therefore differ from the unchanged Noto singleton.

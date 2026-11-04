@@ -47,6 +47,15 @@ def main():
                         return range.getBoundingClientRect().width;
                     })''')
                     assert on < off, (family, fmt, on, off)
+                    overlap = page.locator('#clustered .emoji-run').evaluate("""node => {
+                        const before = node.getBoundingClientRect().width;
+                        const original = node.style.fontFeatureSettings;
+                        node.style.fontFeatureSettings = "'calt' 1, 'kern' 0";
+                        const after = node.getBoundingClientRect().width;
+                        node.style.fontFeatureSettings = original;
+                        return [after - before, parseFloat(getComputedStyle(node).fontSize)];
+                    }""")
+                    assert abs(overlap[0] - overlap[1] * .04) < .15, (family, fmt, overlap)
                     if family == '💩':
                         for n in (2, 3):
                             page.locator('#text').fill('💩' * n)

@@ -280,6 +280,13 @@ class PoopClusterTests(unittest.TestCase):
         original_palette = font['CPAL'].compile(font)
         info = add_supplemental_artwork(font)
         self.assertIsNotNone(info)
+        self.assertTrue(info['overlap_gpos'])
+        self.assertEqual(font['GPOS'].table.FeatureList.FeatureRecord[0].FeatureTag, 'kern')
+        subtable = font['GPOS'].table.LookupList.Lookup[0].SubTable[0]
+        values = [record.Value1.XAdvance for row in subtable.Class1Record
+                  for record in row.Class2Record]
+        self.assertIn(-41, values)
+        self.assertEqual(set(values), {0, -41})
         order = font.getGlyphOrder()[:]
         self.assertEqual(add_supplemental_artwork(font), info)
         self.assertEqual(font.getGlyphOrder(), order)
@@ -287,6 +294,7 @@ class PoopClusterTests(unittest.TestCase):
         font.save(data)
         restored = TTFont(BytesIO(data.getvalue()), recalcBBoxes=False)
         remove_supplemental_artwork(restored, info)
+        self.assertNotIn('GPOS', restored)
         self.assertEqual(len(restored.getGlyphOrder()), len(original_order))
         self.assertEqual(restored['CPAL'].compile(restored), original_palette)
         self.assertEqual(restored['GSUB'].compile(restored), native_gsub)
