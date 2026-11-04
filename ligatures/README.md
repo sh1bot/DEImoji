@@ -109,3 +109,6 @@ recovery. Existing positioning tables in other input fonts are retained.
 The poop heaps were generated from the approved concepts, then vectorised;
 they are not direct arrangements of the Noto singleton SVG. Their softer shading
 and facial proportions therefore differ from the unchanged Noto singleton.
+
+Singleton-to-singleton spacing is always preserved. Custom kerning applies only
+when at least one glyph in the adjacent same-family pair is a cluster.

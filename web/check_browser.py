@@ -47,6 +47,15 @@ def main():
                         return range.getBoundingClientRect().width;
                     })''')
                     assert on < off, (family, fmt, on, off)
+                    single_delta = page.locator('#individual .emoji-run').evaluate("""node => {
+                        const before = node.getBoundingClientRect().width;
+                        const original = node.style.fontFeatureSettings;
+                        node.style.fontFeatureSettings = "'calt' 0, 'kern' 0";
+                        const after = node.getBoundingClientRect().width;
+                        node.style.fontFeatureSettings = original;
+                        return after - before;
+                    }""")
+                    assert abs(single_delta) < .01, (family, fmt, single_delta)
                     overlap = page.locator('#clustered .emoji-run').evaluate("""node => {
                         const before = node.getBoundingClientRect().width;
                         const original = node.style.fontFeatureSettings;

@@ -225,10 +225,12 @@ def add_supplemental_artwork(font):
         lines = ['languagesystem DFLT dflt;']
         for i, (names, fraction) in enumerate(families):
             lines.append(f"@overlap{i} = [{' '.join(names)}];")
+            lines.append(f"@clusters{i} = [{' '.join(names[1:])}];")
         lines.append('feature kern {')
         for i, (names, fraction) in enumerate(families):
             amount = round(font['head'].unitsPerEm * fraction)
-            lines.append(f'pos @overlap{i} @overlap{i} -{amount};')
+            lines.append(f'pos @clusters{i} @overlap{i} -{amount};')
+            lines.append(f'pos {names[0]} @clusters{i} -{amount};')
         lines.append('} kern;')
         addOpenTypeFeaturesFromString(font, '\n'.join(lines), tables=['GPOS'])
         info['overlap_gpos'] = True

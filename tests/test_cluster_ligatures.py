@@ -287,6 +287,14 @@ class PoopClusterTests(unittest.TestCase):
                   for record in row.Class2Record]
         self.assertIn(-41, values)
         self.assertEqual(set(values), {0, -41})
+        base = font.getBestCmap()[0x1F4A9]
+        for lookup in font['GPOS'].table.LookupList.Lookup:
+            for table in lookup.SubTable:
+                if base not in table.Coverage.glyphs:
+                    continue
+                left = table.ClassDef1.classDefs.get(base, 0)
+                right = table.ClassDef2.classDefs.get(base, 0)
+                self.assertEqual(table.Class1Record[left].Class2Record[right].Value1.XAdvance, 0)
         order = font.getGlyphOrder()[:]
         self.assertEqual(add_supplemental_artwork(font), info)
         self.assertEqual(font.getGlyphOrder(), order)
