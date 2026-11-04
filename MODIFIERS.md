@@ -78,6 +78,9 @@ Bootstrap recovery first validates and removes the modifier lookups and marker
 glyphs, restores the prior maximum context, and then removes the cluster bundle.
 The native artwork cache is never modified by rule application. No custom font
 table or workflow/Makefile cache-key change is needed.
+If the compiler fingerprint changes, recovery verifies that all native artwork
+and build sources match the published commit before reusing its fonts. The
+original fingerprint is retained as `native_origin_key` in `build.json`.
 
 Validation lives in `tests/test_cluster_ligatures.py`, which the existing font
 workflow already runs. The browser smoke check compares actual runner pixels

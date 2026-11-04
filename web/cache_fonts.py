@@ -66,7 +66,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def stamp(key):
+def stamp(key, origin_key=None):
     for name in FONTS:
         font = TTFont(CACHE / name)
         expected = 'CBDT' if name == 'NotoColorEmoji.ttf' else 'COLR'
@@ -74,7 +74,8 @@ def stamp(key):
             raise ValueError(f'{name} is missing {expected}')
         if any(r.FeatureTag == 'calt' for r in font['GSUB'].table.FeatureList.FeatureRecord):
             raise ValueError('Native cache must precede the custom calt feature')
-    metadata = {'key': key, 'hashes': {name: digest(CACHE / name) for name in FONTS}}
+    metadata = {'key': key, 'origin_key': origin_key or key,
+                'hashes': {name: digest(CACHE / name) for name in FONTS}}
     (CACHE / 'cache.json').write_text(json.dumps(metadata, indent=2) + '\n')
 
 
@@ -102,16 +103,21 @@ def bootstrap(key):
         metadata = json.loads(fetch(base + 'build.json'))
         commit = metadata['commit']
         if metadata.get('native_key') != key:
-            # One-time migration of the first preview, which predates the cache
-            # manifest. Only the reviewed cache/export wrappers may differ.
-            if commit != LEGACY_PREVIEW or metadata.get('native_key'):
-                raise ValueError('Published font uses different native build inputs')
+            # Compiler/runner upgrades need not re-render unchanged artwork.
+            # Prove the native sources match, and retain the original compiler
+            # fingerprint separately from this environment's cache key.
+            legacy = commit == LEGACY_PREVIEW and not metadata.get('native_key')
+            if not legacy and not metadata.get('native_key'):
+                raise ValueError('Published font has no native build fingerprint')
             subprocess.run(['git', 'fetch', '--depth=1', 'origin', commit], cwd=ROOT, check=True,
                            stdout=sys.stderr, stderr=sys.stderr)
             changed = set(git('diff', '--name-only', commit, 'HEAD', '--', *INPUTS).splitlines())
-            allowed = {'Makefile', 'colrv1_postproc.py', '.github/workflows/build-fonts.yml'}
+            allowed = ({'Makefile', 'colrv1_postproc.py', '.github/workflows/build-fonts.yml'}
+                       if legacy else set())
             if changed - allowed:
                 raise ValueError('Published preview artwork/build sources differ')
+            print('Native sources match; reusing the published artwork across compiler environments',
+                  file=sys.stderr)
         CACHE.mkdir(parents=True, exist_ok=True)
         for native, published in FONTS.items():
             data = fetch(base + f'fonts/{published}?build={commit}')
@@ -124,7 +130,8 @@ def bootstrap(key):
             remove_modifier_ligatures(font, metadata.get('modifiers', {}).get(published))
             remove_cluster_ligatures(font)
             font.save(target)
-        stamp(key)
+        origin_key = metadata.get('native_origin_key') or metadata.get('native_key') or 'legacy-' + commit
+        stamp(key, origin_key=origin_key)
         print('Recovered native fonts from the matching published build', file=sys.stderr)
         return True
     except OSError as error:

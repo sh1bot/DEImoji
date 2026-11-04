@@ -229,6 +229,34 @@ class ClusterTests(unittest.TestCase):
 
 
 class NativeCacheTests(unittest.TestCase):
+    def test_bootstrap_across_compilers_requires_identical_native_sources(self):
+        native = make_font()
+        font = make_font()
+        add_cluster_ligatures(font)
+        data = BytesIO()
+        font.save(data)
+        payload = data.getvalue()
+        metadata = {'commit': 'published', 'native_key': 'old-compiler',
+                    'native_origin_key': 'original-compiler'}
+        def fetch(url):
+            return json.dumps(metadata).encode() if url.endswith('build.json') else payload
+        for changed, expected in (('', True), ('2D/svg/changed.svg\n', False)):
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as directory:
+                cache = Path(directory)
+                with mock.patch.object(cache_fonts, 'CACHE', cache), mock.patch.object(
+                        cache_fonts, 'fetch', side_effect=fetch), mock.patch.object(
+                        cache_fonts, 'git', return_value=changed), mock.patch.object(
+                        cache_fonts.subprocess, 'run'), mock.patch.object(cache_fonts, 'stamp') as stamp:
+                    self.assertEqual(cache_fonts.bootstrap('new-compiler'), expected)
+                    if expected:
+                        stamp.assert_called_once_with('new-compiler', origin_key='original-compiler')
+                        for name in cache_fonts.FONTS:
+                            recovered = TTFont(cache / name)
+                            self.assertEqual(recovered['GSUB'].compile(recovered),
+                                             native['GSUB'].compile(native))
+                    else:
+                        stamp.assert_not_called()
+
     def test_ready_waits_only_for_a_missing_publication(self):
         with mock.patch.object(cache_fonts, 'verify', return_value=False), mock.patch.object(
                 cache_fonts, 'bootstrap', side_effect=[None, True]), mock.patch.object(

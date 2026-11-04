@@ -26,11 +26,14 @@ def package(output, source):
     font = TTFont(source / 'Noto-COLRv1.ttf')
     font.flavor = 'woff2'
     font.save(fonts / 'DEImoji-COLRv1.woff2')
+    cache_manifest = ROOT / 'build/native-fonts/cache.json'
+    cache_metadata = json.loads(cache_manifest.read_text()) if cache_manifest.exists() else {}
     metadata = {
         'commit': os.environ.get('GITHUB_SHA', 'local'),
         'repository': os.environ.get('GITHUB_REPOSITORY', 'sh1bot/DEImoji'),
         'built_at': datetime.now(timezone.utc).isoformat(),
         'native_key': os.environ.get('DEIMOJI_NATIVE_KEY'),
+        'native_origin_key': cache_metadata.get('origin_key', cache_metadata.get('key')),
         'modifiers': json.loads((ROOT / 'build/modifiers.json').read_text())
                      if (ROOT / 'build/modifiers.json').exists() else {},
         'font_hashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
