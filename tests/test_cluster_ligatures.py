@@ -673,5 +673,73 @@ class ModifierTests(unittest.TestCase):
         self.assertFalse(set(MARKERS) & set(shape(self.font, text)))
 
 
+class ZombieVariantTests(unittest.TestCase):
+    def setUp(self):
+        from zombie_artwork import install_registry
+        self.font = make_modifier_font()
+        self.variants = {f'z{n}':[f'crowd{n}v{i}' for i in range(5)] for n in (2,3)}
+        names = [g for values in self.variants.values() for g in values]
+        self.font.setGlyphOrder(self.font.getGlyphOrder()+names)
+        for name in names:
+            self.font['glyf'].glyphs[name] = TTGlyphPen(None).glyph()
+            self.font['hmtx'].metrics[name] = (1000,0)
+        self.font['maxp'].numGlyphs = len(self.font.getGlyphOrder())
+        install_registry(self.font,self.variants)
+        self.original = self.font['GSUB'].compile(self.font)
+        self.info = add_cluster_ligatures(self.font)
+
+    def test_five_variants_follow_one_shared_base_five_clock(self):
+        for n in (1,2,3,4,8,40,4000):
+            groups = reference(n)
+            inputs = [f'z{size}' if size > 1 else 'z' for size in groups]
+            tones, _ = reference_private_states(self.font,inputs)
+            expected = [self.variants[base][tone] if base in self.variants else base
+                        for base,tone in zip(inputs,tones)]
+            actual = shape(self.font,'🧟'*n)
+            self.assertEqual(actual,expected)
+            if n == 4000:
+                self.assertEqual(set(actual),{g for v in self.variants.values() for g in v})
+        self.assertEqual(shape(self.font,'🧟'),['z'])
+        self.assertEqual(shape(self.font,'🧟'*40,calt=False),['z']*40)
+        self.assertEqual(shape(self.font,'🧟\u200d♀'),shape(self.font,'🧟\u200d♀',calt=False))
+        self.assertEqual(self.info['custom_bases'],2)
+        self.assertEqual(self.info['tone_bases'],8)
+
+    def test_mixed_people_and_crowds_keep_both_histories(self):
+        from modifier_ligatures import discover
+        text = '🏃'*12 + '🧟'*20 + '🏃'*20
+        inputs = ['runner']*12+[f'z{n}' for n in reference(20)]+['runner']*20
+        tones,genders = reference_private_states(self.font,inputs)
+        bases,gendered,_ = discover(self.font)
+        expected = [gendered[b][t][g-1] if g and b in gendered else bases[b][t]
+                    for b,t,g in zip(inputs,tones,genders)]
+        self.assertEqual(shape(self.font,text),expected)
+
+    def test_registry_survives_serialization_and_uninstall(self):
+        from modifier_ligatures import remove_modifier_ligatures
+        from zombie_artwork import variant_mappings
+        before = shape(self.font,'🧟'*80)
+        data=BytesIO();self.font.save(data)
+        font=TTFont(BytesIO(data.getvalue()))
+        self.assertEqual(variant_mappings(font),self.variants)
+        self.assertEqual(shape(font,'🧟'*80),before)
+        remove_modifier_ligatures(font,self.info);remove_cluster_ligatures(font)
+        self.assertEqual(font['GSUB'].compile(font),self.original)
+
+    def test_artwork_is_complete_distinct_and_unencoded(self):
+        from zombie_artwork import ART,NAMES,verify_bundle
+        self.assertEqual(len(verify_bundle()),64)
+        for n in (2,3):
+            pngs=[]
+            for i in range(5):
+                path=ART/'png/128'/f'zombie{n}_v{i}.png'
+                data=path.read_bytes();pngs.append(data)
+                self.assertEqual(struct.unpack('>II',data[16:24]),(184 if n==2 else 240,128))
+            self.assertEqual(len(set(pngs)),5)
+        mini=TTFont(ART/'Zombies-COLRv1.ttf')
+        self.assertTrue(set(NAMES).issubset(mini.getGlyphOrder()))
+        self.assertFalse(set(NAMES).intersection(mini.getBestCmap().values()))
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -114,3 +114,9 @@ The manifest style is `noto-white-smile-v2`.
 
 Singleton-to-singleton spacing is always preserved. Custom kerning applies only
 when at least one glyph in the adjacent same-family pair is a cluster.
+
+The original zombie pair/trio glyphs now act as cluster-size states. Five
+supplemental compositions for each size are appended from `supplemental/zombies/`
+and selected by the generic base-5 diversity generator. The base-3 state is
+ignored for this artwork family. See that directory's README for source parts,
+recipes, vector/bitmap files and regeneration. Single zombies remain native.

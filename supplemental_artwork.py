@@ -56,16 +56,16 @@ def _append_metrics(font, names, metrics, vertical):
                                       max(advance for advance, bearing in metrics))
 
 
-def _append_bitmaps(font, info):
-    base = font.getBestCmap()[0x1F4A9]
+def _append_bitmaps(font, info, art=ART, assets=NAMES, output_names=None, base_cp=0x1F4A9):
+    base = font.getBestCmap()[base_cp]
     if len(font['CBDT'].strikeData) != 1 or len(font['CBLC'].strikes) != 1:
         raise ValueError('Supplemental bitmap artwork expects the native 128px strike')
     strike = font['CBLC'].strikes[0]
     old = font['CBDT'].strikeData[0][base]
     if old.metrics.height != 128:
         raise ValueError('Unexpected native bitmap height')
-    names = ['DEImojiPoop2', 'DEImojiPoop3']
-    pngs = [(ART / 'png/128' / (name + '.png')).read_bytes() for name in NAMES]
+    names = output_names or ['DEImojiPoop2', 'DEImojiPoop3']
+    pngs = [(art / 'png/128' / (name + '.png')).read_bytes() for name in assets]
     sizes = [struct.unpack('>II', png[16:24]) for png in pngs]
     if any(h != 128 or not 0 < w <= 255 for w, h in sizes):
         raise ValueError('Supplemental bitmap exceeds CBDT metrics')
@@ -112,21 +112,25 @@ def _remap(value, glyphs, colors, layer_offset):
                 _remap(child, glyphs, colors, layer_offset)
 
 
-def _append_colr(font, info):
-    mini = TTFont(ART / 'Poop-COLRv1.ttf', recalcBBoxes=False)
+def _append_colr(font, info, art=ART, filename='Poop-COLRv1.ttf', output_sources=None,
+                 output_names=None, base_cp=0x1F4A9, part_prefix='DEImojiPoopPart'):
+    mini = TTFont(art / filename, recalcBBoxes=False)
     if (font['COLR'].version != 1 or mini['COLR'].version != 1 or
             font['head'].unitsPerEm != mini['head'].unitsPerEm or
             len(font['CPAL'].palettes) != 1 or len(mini['CPAL'].palettes) != 1):
         raise ValueError('Incompatible supplemental COLRv1 artwork')
-    outputs = _outputs(mini)
-    if set(outputs) != {2, 3}:
-        raise ValueError('Missing supplemental COLRv1 ligatures')
-    sources = [outputs[2], outputs[3]] + [name for name in mini.getGlyphOrder()
-               if name != '.notdef' and name not in outputs.values()]
-    names = ['DEImojiPoop2', 'DEImojiPoop3'] + [f'DEImojiPoopPart{i}' for i in range(len(sources)-2)]
+    if output_sources is None:
+        outputs = _outputs(mini)
+        if set(outputs) != {2, 3}:
+            raise ValueError('Missing supplemental COLRv1 ligatures')
+        output_sources = [outputs[2], outputs[3]]
+    output_names = output_names or ['DEImojiPoop2', 'DEImojiPoop3']
+    sources = list(output_sources) + [name for name in mini.getGlyphOrder()
+               if name != '.notdef' and name not in output_sources]
+    names = list(output_names) + [f'{part_prefix}{i}' for i in range(len(sources)-len(output_sources))]
     mapping = dict(zip(sources, names))
     mapping['.notdef'] = '.notdef'
-    base = font.getBestCmap()[0x1F4A9]
+    base = font.getBestCmap()[base_cp]
     vertical = font['vmtx'][base] if 'vmtx' in font else None
     # Decode loca/glyf against the original glyph count before appending IDs.
     glyf = font['glyf']
@@ -179,7 +183,7 @@ def _append_colr(font, info):
             table.ClipList.Format, table.ClipList.clips = 1, {}
         table.ClipList.clips.update({mapping[name]: deepcopy(box)
                                     for name, box in extra.ClipList.clips.items()})
-    return names[:2]
+    return names[:len(output_sources)]
 
 
 def add_supplemental_artwork(font):
@@ -209,6 +213,10 @@ def add_supplemental_artwork(font):
         ligature.Component, ligature.CompCount, ligature.LigGlyph = [base] * (n-1), n, output
         tables[0].ligatures.setdefault(base, []).append(ligature)
     tables[0].ligatures[base].sort(key=lambda lig: -len(lig.Component))
+    info['glyph_count'] = len(font.getGlyphOrder()) - info['original_glyph_count']
+    from zombie_artwork import add_zombie_artwork, variant_mappings
+    info['zombies'] = add_zombie_artwork(font)
+    variants = variant_mappings(font)
     # Native Noto has no GPOS. Keep any supplied positioning table untouched.
     # Family-specific kerning closes the measured gaps between visible silhouettes.
     if 'GPOS' not in font:
@@ -222,6 +230,7 @@ def add_supplemental_artwork(font):
             for table in _tables(font):
                 names.extend(lig.LigGlyph for lig in table.ligatures.get(base, [])
                              if tuple(lig.Component) in ((base,), (base, base)))
+            names.extend(alt for cluster in list(names[1:]) for alt in variants.get(cluster, []))
             families.append((list(dict.fromkeys(names)),
                              {0x1F9DF: .22, 0x1F33B: .35, 0x1F4A9: .04}[cp]))
         lines = ['languagesystem DFLT dflt;']
@@ -236,7 +245,6 @@ def add_supplemental_artwork(font):
         lines.append('} kern;')
         addOpenTypeFeaturesFromString(font, '\n'.join(lines), tables=['GPOS'])
         info['overlap_gpos'] = True
-    info['glyph_count'] = len(font.getGlyphOrder()) - info['original_glyph_count']
     font._deimoji_artwork = info
     return info
 
@@ -244,6 +252,9 @@ def add_supplemental_artwork(font):
 def remove_supplemental_artwork(font, info):
     if not info:
         return
+    if info.get('zombies'):
+        from zombie_artwork import remove_zombie_artwork
+        remove_zombie_artwork(font, info['zombies'])
     order = font.getGlyphOrder()
     start = info['original_glyph_count']
     if info['version'] != 1 or len(order) != start + info['glyph_count']:
@@ -270,6 +281,17 @@ def remove_supplemental_artwork(font, info):
             table.ligatures[base] = [lig for lig in records if lig.LigGlyph not in outputs]
             if not table.ligatures[base]:
                 del table.ligatures[base]
+    _remove_artwork_tail(font, info, outputs)
+    if hasattr(font, '_deimoji_artwork'):
+        del font._deimoji_artwork
+
+
+def _remove_artwork_tail(font, info, outputs):
+    order = font.getGlyphOrder()
+    start = info['original_glyph_count']
+    if len(order) != start + info['glyph_count']:
+        raise ValueError('Unrecognized supplemental glyph tail')
+    added = set(order[start:])
     if 'bitmap' in info:
         strike = font['CBLC'].strikes[0]
         state = info['bitmap']
@@ -309,5 +331,3 @@ def remove_supplemental_artwork(font, info):
         setattr(font['head'], key, value)
     for key, value in info['horizontal'].items():
         setattr(font['hhea'], key, value)
-    if hasattr(font, '_deimoji_artwork'):
-        del font._deimoji_artwork

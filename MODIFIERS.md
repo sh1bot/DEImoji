@@ -133,3 +133,19 @@ For the current complete fonts, the modifier bundle still uses 17 lookups and
 8 private glyphs. It has 4,013 source carriers in CBDT and 4,019 in COLRv1.
 Total GSUB sizes are 259,152 and 241,046 bytes respectively; most added storage
 is the one-entry-per-source insertion map.
+
+## Custom zombie compositions
+
+A private, normally inactive `DVAR` alternate feature records five choices for
+each original zombie pair/trio glyph. The generic discovery step reads it as a
+five-state artwork family without inventing skin-tone or hair Unicode sequences.
+Binary grouping completes first; the two cluster-size glyphs then join the
+eligible diversity class. Each cluster advances the shared base-5 clock once.
+The base-3 clock also advances, but its value is ignored for zombie compositions.
+Native tone eligibility remains 135 bases; two custom bases make 137 diversity
+bases. The singleton and explicit native zombie forms are unchanged.
+
+The zombie pack is nested in the public artwork manifest. Recovery removes
+modifier rules and cluster rules first, then the zombie registry and glyph tail,
+then the earlier poop pack. Native cache inputs and original glyph IDs stay
+unchanged. Kerning covers the ten new outputs while preserving singleton pairs.

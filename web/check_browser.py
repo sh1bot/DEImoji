@@ -7,7 +7,7 @@ import argparse
 import json
 from datetime import datetime, timezone
 
-from check_font_package import check_font_package
+from check_font_package import check_font_package, zombie_proof_font
 from io import BytesIO
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -87,6 +87,33 @@ def main():
                                        for r, g, b in pixels.getdata())
                             assert pink < 2, ('old pink-tongue poop artwork', fmt, n, pink)
                         page.locator('#text').fill(family * 4)
+            # Paint all private crowd glyphs, not just whichever the demo's
+            # current seed happens to select. Probe cmaps exist only in memory.
+            for fmt in ('colr', 'cbdt'):
+                proof = zombie_proof_font(args.site, fmt)
+                page.evaluate("""async ({url, fmt}) => {
+                    const face = new FontFace('ZombieProof'+fmt, `url("${url}")`);
+                    await face.load();document.fonts.add(face);
+                    const box = document.createElement('div');box.id='zombie-proof';
+                    Object.assign(box.style, {position:'absolute',left:'0',top:'0',
+                        display:'grid',gridTemplateColumns:'repeat(5, max-content)',
+                        gap:'10px',background:'white',padding:'12px',zIndex:'1000',
+                        fontFamily:'ZombieProof'+fmt,fontSize:'96px',lineHeight:'1.5'});
+                    for(let i=0;i<10;i++) {
+                        const span=document.createElement('span');span.textContent=String.fromCharCode(65+i);
+                        box.append(span);
+                    }
+                    document.body.append(box);
+                }""", dict(url=proof,fmt=fmt))
+                pictures=[]
+                for span in page.locator('#zombie-proof span').all():
+                    data=span.screenshot();pictures.append(data)
+                    pixels=Image.open(BytesIO(data)).convert('RGB')
+                    green=sum(g>r*1.02 and g>b*1.1 for r,g,b in pixels.getdata())
+                    assert green>100, ('missing zombie artwork',fmt,green)
+                assert len(set(pictures[:5]))==5 and len(set(pictures[5:]))==5, ('duplicate zombie art',fmt)
+                page.locator('#zombie-proof').screenshot(path=str(args.site/f'zombie-proof-{fmt}.png'))
+                page.locator('#zombie-proof').evaluate('node => node.remove()')
             page.select_option('#preset', 'poop')
             assert page.locator('#text').input_value() == '💩' * 36
             page.select_option('#preset', 'runners')
@@ -137,6 +164,7 @@ def main():
             browser.close()
         report.update(browser='Chromium', browser_checks='passed',
                       poop_white_smile_artwork='passed',
+                      zombie_artwork_glyphs_painted_per_format=10,
                       checked_at=datetime.now(timezone.utc).isoformat())
         (args.site / 'checks.json').write_text(json.dumps(report, indent=2) + '\n')
         print('PASS: clusters and runner pixels in both formats, calt on/off, controls, mobile, font errors')

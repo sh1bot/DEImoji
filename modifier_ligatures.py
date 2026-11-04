@@ -85,6 +85,9 @@ def discover(font):
             for tone, neutral, target in zip(tones, tone_bases[person], tone_bases[target_base]):
                 assembly[(person, tone, *tail)] = target
                 assembly[(neutral, *tail)] = target
+    # Explicit non-Unicode artwork families share the same five-state clock.
+    from zombie_artwork import variant_mappings
+    tone_bases.update(variant_mappings(font))
     return tone_bases, gender_bases, assembly
 
 
@@ -297,10 +300,15 @@ def add_modifier_ligatures(font):
         record.Feature.LookupCount = len(record.Feature.LookupListIndex)
     gsub.LookupList.Lookup.extend(new_lookups)
     gsub.LookupList.LookupCount = len(gsub.LookupList.Lookup)
+    from zombie_artwork import variant_mappings
+    custom_count = len(variant_mappings(font))
     info = dict(version=3, seeding="reverse-suffix-all-source-glyphs",
                 seed_source_glyphs=len(source_glyphs(font)), created_calt=created_calt, original_lookup_count=offset, lookup_count=len(new_lookups),
                 original_glyph_count=len(original_order), marker_count=len(MARKERS),
-                calt_roots=roots, state_periods=[625, 81], combined_period=50625, tone_bases=len(tone_bases), gender_bases=len(gender_bases))
+                calt_roots=roots, state_periods=[625, 81], combined_period=50625,
+                tone_bases=len(tone_bases)-custom_count,
+                custom_bases=custom_count,
+                diversity_bases=len(tone_bases), gender_bases=len(gender_bases))
     if 'OS/2' in font:
         info['original_max_context'] = font['OS/2'].usMaxContext
         font['OS/2'].usMaxContext = maxCtxFont(font)

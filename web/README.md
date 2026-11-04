@@ -107,3 +107,10 @@ Page scripts and styles also receive commit-specific URLs, and the verification
 report records their checksums. The page shows whether startup uses the old
 current/next hash or the right-to-left source-glyph sweep. Packaged-font checks
 change noneligible noise more than 40 glyphs away to verify the latter.
+
+The zombie pack adds five pair and five trio compositions. Package verification
+checks 4,000-zombie output against the grouping and diversity reference in every
+font download, verifies all bitmap assets and COLRv1 paint records, and paints
+all ten private glyphs in each browser format. The resulting actual-font PNG
+galleries are linked from the playground; the in-memory probe fonts are not
+published or used for the interactive samples.

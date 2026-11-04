@@ -12,10 +12,11 @@ from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests'))
-from test_cluster_ligatures import shape, reference_tones, reference_genders, reference_variations
+from test_cluster_ligatures import shape, reference, reference_private_states, reference_tones, reference_genders, reference_variations
 from modifier_ligatures import discover
 from cluster_ligatures import _ligature_tables
 from supplemental_artwork import ART, NAMES, _verify_bundle
+from zombie_artwork import variant_mappings, verify_bundle as verify_zombies, ART as ZOMBIES, NAMES as ZOMBIE_NAMES
 
 
 def check_font_package(site):
@@ -63,7 +64,28 @@ def check_font_package(site):
             assert actual_noise == reference_variations(font, text), ('distant seed noise', name, tail)
             noise_results.append(actual_noise[0])
         assert len(set(noise_results)) > 1, ('suffix noise ignored', name)
+        variants = variant_mappings(font)
+        zombie_info = metadata['artwork'][published]['zombies']
+        assert zombie_info['bundle'] == verify_zombies()
+        assert len(variants) == 2 and all(len(v) == 5 for v in variants.values())
+        order = font.getGlyphOrder()
+        crowd_bases = [order[gid] for gid in zombie_info['cluster_gids']]
+        units = [crowd_bases[size-2] for size in reference(4000)]
+        states, _ = reference_private_states(font, units)
+        expected_crowds = [variants[b][state] for b,state in zip(units,states)]
+        actual_crowds = shape(font, '🧟'*4000)
+        assert actual_crowds == expected_crowds, ('zombie composition feedback', name)
+        assert set(actual_crowds) == {g for choices in variants.values() for g in choices}
+        assert shape(font, '🧟') == shape(font, '🧟', calt=False)
+        assert shape(font, '🧟\u200d♀') == shape(font, '🧟\u200d♀', calt=False)
+        if 'COLR' in font:
+            painted = {r.BaseGlyph for r in font['COLR'].table.BaseGlyphList.BaseGlyphPaintRecord}
+            assert set(actual_crowds).issubset(painted), ('missing zombie paint graph', name)
         if 'CBDT' in font:
+            for row, size in zip(zombie_info['variant_gids'], (2,3)):
+                for i,gid in enumerate(row):
+                    assert font['CBDT'].strikeData[0][order[gid]].imageData == (
+                        ZOMBIES/'png/128'/f'zombie{size}_v{i}.png').read_bytes(), ('zombie bitmap',size,i)
             # Compare embedded PNG bytes, not just a claimed manifest label.
             poop = font.getBestCmap()[0x1F4A9]
             outputs = {}
@@ -85,4 +107,27 @@ def check_font_package(site):
                 explicit_runner_sequences_checked_per_font=25,
                 seeding='reverse-suffix-all-source-glyphs',
                 distant_noneligible_noise_checked=True,
+                zombie_compositions_checked=10, zombie_grouping_input_length=4000,
+                zombie_artwork_bundle=verify_zombies(),
                 private_state_cleanup=True, bitmap_artwork_bytes_verified=True)
+
+
+def zombie_proof_font(site, fmt):
+    """Test-only cmap for painting private glyphs individually. Never published."""
+    import base64
+    from io import BytesIO
+    from fontTools.ttLib import newTable
+    from fontTools.ttLib.tables._c_m_a_p import CmapSubtable
+    filename = 'DEImoji-COLRv1.ttf' if fmt == 'colr' else 'DEImoji-CBDT.ttf'
+    font = TTFont(site/'fonts'/filename, recalcBBoxes=False)
+    metadata = json.loads((site/'build.json').read_text())
+    rows = metadata['artwork'][filename]['zombies']['variant_gids']
+    order = font.getGlyphOrder()
+    table = CmapSubtable.newSubtable(12)
+    table.platformID, table.platEncID, table.language = 3, 10, 0
+    table.cmap = {65+i:order[gid] for i,gid in enumerate(g for row in rows for g in row)}
+    font['cmap'] = newTable('cmap');font['cmap'].tableVersion=0;font['cmap'].tables=[table]
+    for tag in ('GSUB','GPOS'):
+        if tag in font:del font[tag]
+    data=BytesIO();font.save(data)
+    return 'data:font/ttf;base64,'+base64.b64encode(data.getvalue()).decode()
