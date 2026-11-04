@@ -56,7 +56,7 @@ def main():
                         return [after - before, parseFloat(getComputedStyle(node).fontSize)];
                     }""")
                     # Chromium versions differ in fractional glyph-advance rounding.
-                    assert abs(overlap[0] - overlap[1] * .04) < .6, (family, fmt, overlap)
+                    assert abs(overlap[0] - overlap[1] * {'🧟': .22, '🌻': .35, '💩': .04}[family]) < .6, (family, fmt, overlap)
                     if family == '💩':
                         for n in (2, 3):
                             page.locator('#text').fill('💩' * n)

@@ -208,7 +208,7 @@ def add_supplemental_artwork(font):
         tables[0].ligatures.setdefault(base, []).append(ligature)
     tables[0].ligatures[base].sort(key=lambda lig: -len(lig.Component))
     # Native Noto has no GPOS. Keep any supplied positioning table untouched.
-    # Four percent of an em gently closes adjacent same-family silhouettes.
+    # Family-specific kerning closes the measured gaps between visible silhouettes.
     if 'GPOS' not in font:
         from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
         families = []
@@ -220,13 +220,14 @@ def add_supplemental_artwork(font):
             for table in _tables(font):
                 names.extend(lig.LigGlyph for lig in table.ligatures.get(base, [])
                              if tuple(lig.Component) in ((base,), (base, base)))
-            families.append(list(dict.fromkeys(names)))
-        amount = round(font['head'].unitsPerEm * 0.04)
+            families.append((list(dict.fromkeys(names)),
+                             {0x1F9DF: .22, 0x1F33B: .35, 0x1F4A9: .04}[cp]))
         lines = ['languagesystem DFLT dflt;']
-        for i, names in enumerate(families):
+        for i, (names, fraction) in enumerate(families):
             lines.append(f"@overlap{i} = [{' '.join(names)}];")
         lines.append('feature kern {')
-        for i in range(len(families)):
+        for i, (names, fraction) in enumerate(families):
+            amount = round(font['head'].unitsPerEm * fraction)
             lines.append(f'pos @overlap{i} @overlap{i} -{amount};')
         lines.append('} kern;')
         addOpenTypeFeaturesFromString(font, '\n'.join(lines), tables=['GPOS'])

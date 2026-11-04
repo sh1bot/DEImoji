@@ -98,7 +98,10 @@ the derived assets under the same Apache-2.0 license. The unmodified Noto poop
 SVG is retained as a build reference; its normal base glyph remains unchanged.
 
 Adjacent singles, pairs and triples of the same family receive negative kerning
-of 4% of an em. This gently overlaps their edges without changing spacing next
+of 22% of an em for zombies, 35% for sunflowers, and 4% for poop.
+Zombie and sunflower adjustments account for the artwork’s transparent margins
+and leave a small visible overlap (roughly 2–5 pixels at source resolution).
+This changes no spacing next
 to text or other emoji. It is installed as a separate `kern` GPOS feature on
 the native Noto fonts (which have no existing GPOS), and removed during cache
 recovery. Existing positioning tables in other input fonts are retained.
