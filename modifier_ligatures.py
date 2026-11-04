@@ -13,11 +13,11 @@ from fontTools.otlLib.maxContextCalc import maxCtxFont
 from fontTools.ttLib import TTFont
 
 TONE_COEFFICIENTS = (0, 1, 1, 2)
-GENDER_COEFFICIENTS = (0, 0, 0, 0, 1, 0, 2)
+GENDER_COEFFICIENTS = (0, 0, 1, 1)
 # Virtual initial registers chosen to reproduce the fallback cycles below.
 # They keep the reference stream continuous when full feedback takes over.
 TONE_SEED = (2, 2, 3, 1)
-GENDER_SEED = (1, 1, 0, 1, 1, 0, 1)
+GENDER_SEED = (0, 2, 2, 1)
 TONE_STARTUP_STEP = 3
 GENDER_STARTUP_STEP = 1
 TONES = tuple('DEImojiTone' + str(i) for i in range(5))

@@ -29,7 +29,7 @@ sequence with the default initial outputs: middle tone (2) and neutral gender (0
 | Stream | Base | Coefficients | Seed | Period |
 | --- | --- | --- | --- | --- |
 | Tone | 5 | `[0,1,1,2]` | `[2,2,3,1]` | 624 |
-| Gender | 3 | `[0,0,0,0,1,0,2]` | `[1,1,0,1,1,0,1]` | 2186 |
+| Gender | 3 | `[0,0,1,1]` | `[0,2,2,1]` | 80 |
 
 When full feedback cannot match, fallback rules use the preceding output:
 tone advances by 3 modulo 5, and gender by 1 modulo 3. A new tone run hashes the
@@ -46,13 +46,13 @@ select woman and man respectively; buckets 0, 3 and 4 select neutral. For pairs,
 eight man combinations. Neutral remains the defensive gender default.
 Startup visits four distinct tones and all three genders before their
 respective full feedback rules can match.
-Full feedback has priority and takes over after four tone outputs or seven
-gender outputs. Unsupported glyphs restart these fallbacks.
+Full feedback has priority and takes over after four outputs in either stream.
+Unsupported glyphs restart these fallbacks.
 
 With default initial tone 2, outputs start `2,0,3,1,2,4,4,3,2,0,3,3,2,1,1,4`
 (zero means U+1F3FB). Other initial tones rotate the first four fallback
 outputs; the same full feedback then applies to the resulting register.
-With neutral initial gender, outputs start `0,1,2,0,1,2,0,2,2,2,2,2,0,2,0,0`. These deterministic
+With neutral initial gender, outputs start `0,1,2,0,1,0,2,1,1,2,0,2,0,2,2,2`. These deterministic
 streams provide pseudorandom visual variation. Tests iterate each register until
 its first return to the seed to verify the full maximal periods.
 
@@ -98,9 +98,9 @@ with `calt` enabled/disabled in each font format and checks that explicit
 sequences render identically. HarfBuzz tests check glyph identities and neutral
 marker removal rather than relying on equal-advance artwork widths.
 
-Measured on the full native font pair, the installed GSUB is 149,290 bytes for
-CBDT (+95,368 bytes including both custom bundles), and 130,784 bytes for COLRv1
-(+99,358 bytes including both custom bundles). The modifier installer appends
+Measured on the full native font pair, the installed GSUB is 149,128 bytes for
+CBDT (+95,206 bytes including both custom bundles), and 130,622 bytes for COLRv1
+(+99,196 bytes including both custom bundles). The modifier installer appends
 17 lookups and eight glyphs. Full-font validation also checks 120-run glyph
 identities, all explicit runner tone/gender variants with and without VS16,
 `calt` disabled, mixed explicit/plain boundaries, and serialized cache recovery.

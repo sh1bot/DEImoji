@@ -400,14 +400,18 @@ class ModifierTests(unittest.TestCase):
                 self.assertEqual(actual_tones[:624], actual_tones[624:1248])
                 self.assertEqual([actual_tones[:624].count(t) for t in range(5)],
                                  [124, 125, 125, 125, 125])
+                actual_genders = [int(name[-1]) for name in actual]
+                self.assertEqual(actual_genders[:80], actual_genders[80:160])
+                self.assertEqual([actual_genders[:80].count(g) for g in range(3)],
+                                 [26, 27, 27])
         self.assertEqual(set(self.tones), set(range(5)))
         self.assertEqual(set(self.genders), set(range(3)))
 
     def test_varied_startup_and_full_feedback_priority(self):
         # Bootstrap follows the previous output: tone +3 mod 5, gender +1 mod 3.
-        # At 4/7 outputs respectively, full feedback overrides those fallbacks.
+        # After four outputs, full feedback overrides both startup fallbacks.
         tones = [3, 1, 4, 2, 1, 3, 1, 3, 1, 0]
-        genders = [1, 2, 0, 1, 2, 0, 1, 2, 2, 2]
+        genders = [1, 2, 0, 1, 0, 2, 1, 1, 2, 0]
         expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
         self.assertEqual(shape(self.font, '🏃'), ['runner40'])
         for n in range(2, 11):
@@ -559,7 +563,7 @@ class ModifierTests(unittest.TestCase):
     def test_maximal_periods(self):
         from modifier_ligatures import TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
         for base, coefficients, seed, period in ((5, TONE_COEFFICIENTS, TONE_SEED, 624),
-                                                 (3, GENDER_COEFFICIENTS, GENDER_SEED, 2186)):
+                                                 (3, GENDER_COEFFICIENTS, GENDER_SEED, 80)):
             state = tuple(seed)
             for n in range(1, period + 1):
                 value = sum(a * b for a, b in zip(coefficients, state)) % base
