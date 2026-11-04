@@ -6,12 +6,13 @@ The `source/` directory retains the zombie, hairstyle and occupation originals.
 No image generation or bitmap tracing is used.
 
 The ten compositions contain 25 distinct deterministic character recipes.
-Exactly five characters wear hats: two of the ten pair members and three of
-the fifteen trio members, so headwear stays at 20% for either group size.
+Six characters have head coverings: two of the ten pair members and four of
+the fifteen trio members (24% overall). One wears a headscarf. Its native hair
+and added hairstyle are both removed; the cloth is layered behind the hands.
 The recipes mix:
 neutral/woman/man zombie bases; original, ginger, white and curly hair; one
 bearded character and one bald character; police,
-construction, chef, graduation and firefighter headwear; five muted green/grey
+construction, chef, graduation, firefighter and headscarf coverings; five muted green/grey
 skin palettes suggesting different decay; and varied shirt colours. Recipes
 are stored in `manifest.json` as gender, hairstyle, headwear, decay palette,
 shirt palette, and beard flag. The bald skull and beard also come from the

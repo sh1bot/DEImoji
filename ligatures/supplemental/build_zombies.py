@@ -24,7 +24,8 @@ BASES = ('1f9df', '1f9df_200d_2640', '1f9df_200d_2642')
 HAIR = {'ginger': ('1f9d1_200d_1f9b0', (0,), (9,)),
         'white': ('1f9d1_200d_1f9b3', (0,), (9,)),
         'curly': ('1f9d1_200d_1f9b1', (0,), (4, 5, 6))}
-HATS = {'hardhat': ('1f477', 'helmet_2_', 'translate(11.5 -6) scale(.82)'),
+HATS = {'headscarf': ('1f9d5', 'headscarf', 'translate(0 0)'),
+        'hardhat': ('1f477', 'helmet_2_', 'translate(11.5 -6) scale(.82)'),
         'police': ('1f46e', 'police_x5F_hat', 'translate(10 -4) scale(.84)'),
         'chef': ('1f9d1_200d_1f373', 10, 'translate(10 0) scale(.9)'),
         'graduate': ('1f9d1_200d_1f393', 'hat', 'translate(11 -2) scale(.82)'),
@@ -82,6 +83,8 @@ def beard(prefix):
 
 def character(spec, prefix):
     gender, hair, hat, palette, shirt, has_beard = spec
+    if hat == 'headscarf':
+        hair = 'covered'  # Remove native hair and do not add donor hair.
     root = source(BASES[gender])
     discard = ({0, 1, 12, 13}, {0, 12, 13, 14}, {5})[gender] if hair != 'original' else set()
     skin, shade, dark = PALETTES[palette]
@@ -91,6 +94,7 @@ def character(spec, prefix):
     for old in ('#530EEB', '#009E89', '#ED6D23'):
         colors[old] = SHIRTS[shirt][1]
     group = ET.Element(TAG('g'))
+    late_hands = []
     if hair in HAIR:
         stem, back, front = HAIR[hair]
         donor = source(stem)
@@ -105,7 +109,11 @@ def character(spec, prefix):
                     if '#82CC2B' in path.get('style',''):
                         path.set('d',source('1f9d1_200d_1f9b2')[3][0].get('d'))
                         break
-            group.append(renamed(node, prefix + 'body_', colors))
+            painted = renamed(node, prefix + 'body_', colors)
+            if hair == 'covered' and i in ((15,17),(18,19),(14,15))[gender]:
+                late_hands.append(painted)
+            else:
+                group.append(painted)
     if has_beard:
         group.append(beard(prefix+'beard_'))
     if hair in HAIR:
@@ -118,6 +126,7 @@ def character(spec, prefix):
             node for node in donor.iter() if node.get('id') == identifier)
         overlay = ET.SubElement(group, TAG('g'), transform=transform)
         overlay.append(renamed(decoration, prefix + 'hat_'))
+    group.extend(late_hands)
     return group
 
 
@@ -125,13 +134,14 @@ def recipes():
     rng = random.Random(0xDE1)
     genders = list(range(3)) * 9
     hairs = ['original', 'ginger', 'white', 'curly'] * 7
-    # Two of ten pair members and three of fifteen trio members wear hats.
-    # Retain one of each decoration, spread across five compositions.
+    # Six head coverings across 25 members, one of each decoration.
+    # Headscarves replace hair completely rather than sitting over it.
     hats = ['none'] * 25
-    for i, hat in {2:'police', 7:'chef', 10:'hardhat', 14:'graduate', 17:'firefighter'}.items():
+    for i, hat in {2:'police', 7:'chef', 10:'hardhat', 14:'graduate', 17:'firefighter', 22:'headscarf'}.items():
         hats[i] = hat
     rng.shuffle(genders); rng.shuffle(hairs)
     hairs[9] = 'bald'
+    hairs[22] = 'covered'
     specs = []
     for i in range(25):
         shirt = (i*3) % 5
@@ -144,7 +154,8 @@ def recipes():
     assert sum(spec[5] for spec in specs) == 1
     assert sum(spec[1] == 'bald' for spec in specs) == 1
     assert sum(spec[2] != 'none' for spec in specs[:10]) == 2
-    assert sum(spec[2] != 'none' for spec in specs[10:]) == 3
+    assert sum(spec[2] != 'none' for spec in specs[10:]) == 4
+    assert all(spec[1] == 'covered' for spec in specs if spec[2] == 'headscarf')
     return specs
 
 

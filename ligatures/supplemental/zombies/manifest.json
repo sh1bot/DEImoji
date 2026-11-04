@@ -249,10 +249,10 @@
       "characters": [
         [
           1,
-          "curly",
-          "none",
+          "covered",
+          "headscarf",
           2,
-          2,
+          1,
           false
         ],
         [
@@ -275,8 +275,8 @@
     }
   ],
   "files": {
-    "README.md": "52454969607789e9c69999c3944e44c38a1dc91b4f1a912cfe1364a38162e42a",
-    "Zombies-COLRv1.ttf": "562f1bbf36bb005e8cfcd3f182e564aed97a340e12b7b623810c59684810c9dc",
+    "README.md": "9784cb3013dfc4361486f5e6e5039a8db5ab21aa12893c52b74710dbae246bb7",
+    "Zombies-COLRv1.ttf": "4864c34ab80b621d77731a4aeb059834fcbb5bbf1f02a586adda2f2c8e689c99",
     "png/128/zombie2_v0.png": "fd8b7faaf6e5f3d2de7166140a1e0f80fe0824da8eebbbbf4f7d74276f95c76b",
     "png/128/zombie2_v1.png": "dcce969d885cf552ffd717c521c5d86185c7af300b8c649cce17fad220d8b60e",
     "png/128/zombie2_v2.png": "0c2fce030c8406ed8b29f3c874c8fd109a34d48bff7a35ddcd846d250b45353f",
@@ -286,8 +286,8 @@
     "png/128/zombie3_v1.png": "d0c387121e85c6932eaecb33c9952d0f587ed2037f39cc4f0f36eadfeb42b6cc",
     "png/128/zombie3_v2.png": "e3c695972017e6fe902ee2bba556f876ff222a175ace0c547d8f907a81ce84a7",
     "png/128/zombie3_v3.png": "4814b17ddb1be162391e9118f533a790a72b8e58ed990c27697c33be7e522ac0",
-    "png/128/zombie3_v4.png": "df569da1ddb8513ab44ac82b2132f3f2fa9032a602bb7c8b3ef72cd1c50246b9",
-    "preview.png": "82b8eb3693b4be8353ebe626ed62d8734747c34095eae71e9778834880e41f6f",
+    "png/128/zombie3_v4.png": "428cae32362f81fc9572c756006b5731b9e91a0a09d446f3da01ee28e220677e",
+    "preview.png": "0fa4b14f02b6235999393b13c247af48193140ca0dbe48bdc8d52651d77ddf97",
     "source/emoji_u1f46e.svg": "1664f640a800e54ad011d912f1fd4efee9b80c8b8890b4fcb1b63a51b13095bf",
     "source/emoji_u1f477.svg": "5b92fbc4fe0beb14304448b1de0442a8941ab250b0c49ef515568b24dac0b4f3",
     "source/emoji_u1f9d1_200d_1f373.svg": "061c8c196e05b63a34bfdd01babbbddfd9a5c3fdd5e265f29fd519c6c36f1945",
@@ -298,6 +298,7 @@
     "source/emoji_u1f9d1_200d_1f9b2.svg": "ce7c7b147b30caf6600520882dd2b96630d465be46fe9ea352484ab894e7ef42",
     "source/emoji_u1f9d1_200d_1f9b3.svg": "8cc5bc4287835a00c25162c7a1bf5ebd597ba7bb8f94f40f435305c917b28fcc",
     "source/emoji_u1f9d4.svg": "824a80b521e2de9cf627c486783f21b937276ea4582f5078a24ae446d036f54c",
+    "source/emoji_u1f9d5.svg": "050fdfde81585e6516b468b9d6b9805b1c241f6691deeb7106b2f94c573cd31c",
     "source/emoji_u1f9df.svg": "59e574d0c44140560c6c046aadf06877a52daf1f14f2028598c10256c120c21c",
     "source/emoji_u1f9df_200d_2640.svg": "59a1510586127307217f55eec5af1864ebffcdda5353e5cd294bfaab92dd3678",
     "source/emoji_u1f9df_200d_2642.svg": "e1e216909a8044ad2f125f7f458bc53d70eda276476b95e38e101b9a7052c05c",
@@ -310,6 +311,6 @@
     "svg/zombie3_v1.svg": "a3a075b16b569a4360f4f6f4c27de183ba6d573dfceb7651059852a3a61d60f4",
     "svg/zombie3_v2.svg": "6e3dc6d71010cff9af16bb1fa6d9b54e41e2fdd7a60b80af2c1c1d6213e8972b",
     "svg/zombie3_v3.svg": "4b6a2b6eb153c86bc1f2a1c45ce3d2eb5675668aaddfc292d9a2d8616f63e371",
-    "svg/zombie3_v4.svg": "594fd54857be4fd0eb5f9873b6f74c0b89667f78664e12643eedd425d35337e4"
+    "svg/zombie3_v4.svg": "1e1f9b96b3bcf03b56dd36169f63499f904360f53746705e7404bef6971e8628"
   }
 }
