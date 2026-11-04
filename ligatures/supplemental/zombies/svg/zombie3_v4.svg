@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="128" viewBox="0 0 240 128"><title>3-zombie crowd, variant 5</title><desc>Composed from Google Noto Emoji SVGs, Apache-2.0; pinned source 30649a050403b9f4d05f8502d761ecb55c6838b9. Mixed gender, hairstyle, headwear and decay colours. Singleton artwork unchanged.</desc><g transform="translate(59 0) scale(.92) rotate(-1 64 70)"><path id="zombie3_v4_p0_hair_hair_1_" style="fill:#543930;" d="M109.01,37.96c-0.35-3.54-2.76-4.8-2.76-4.8c2.41-4.52,1.35-7.88-3.19-10.08  c0.53-5.27-1.78-7.98-6.52-8.58c-1.17-5.06-4.24-7.01-8.95-5.73c-2.57-4.33-6.05-5.26-10.36-2.8c-3.72-4.21-8.96-5.34-13.25-0.67v0  c0,0,0,0,0,0c0,0,0,0,0,0v0c-4.29-4.68-9.53-3.54-13.25,0.67c-4.31-2.46-7.79-1.53-10.36,2.8c-4.71-1.28-7.78,0.66-8.95,5.73  c-4.74,0.6-7.05,3.31-6.52,8.58c-4.54,2.2-5.61,5.57-3.19,10.09c0,0-2.4,1.26-2.76,4.8c-0.34,3.44,1.91,5.92,1.91,5.92  c-2.88,3.54-1.94,7.25,1.56,9.82c0,0-2.31,7.39,5.8,9.43c0,0,0.06,6.38,5.76,7.11v-3.01c-2.05-0.37-2.78-2.33-2.79-4.27  c0.31,0.06,0.62,0.11,0.96,0.16c0.21-0.39,57.02-1.29,64.52-1.46c0.35,2.27-0.19,5.12-2.7,5.58v3.01c5.71-0.74,5.76-7.11,5.76-7.11  c8.11-2.04,5.8-9.43,5.8-9.43c3.5-2.57,4.44-6.28,1.56-9.82C107.11,43.88,109.36,41.4,109.01,37.96z" />
 <linearGradient id="zombie3_v4_p0_body_SVGID_1_" gradientUnits="userSpaceOnUse" x1="64" y1="95.894" x2="64" y2="130.879">
-	<stop offset="0" style="stop-color:#D9A441" />
-	<stop offset="1" style="stop-color:#B68432" />
+	<stop offset="0" style="stop-color:#9E5358" />
+	<stop offset="1" style="stop-color:#7E4148" />
 </linearGradient>
 <path style="fill:url(#zombie3_v4_p0_body_SVGID_1_);" d="M64.1,96H64c-25.7,0-52,7.1-52,25v3.1h1.5v0.1h101v-0.1h1.5V121C116,104.1,89.9,96,64.1,96z" />
 <path style="fill:#647C4E;" d="M73.1,90.1H54.9v10c0,4.5,3.7,8.2,8.3,8.2h1.7c4.6,0,8.3-3.7,8.3-8.2L73.1,90.1z" />
@@ -310,8 +310,8 @@
 	</g>
 </g>
 <linearGradient id="zombie3_v4_p2_body_SVGID_1_" gradientUnits="userSpaceOnUse" x1="64" y1="96" x2="64" y2="130.8609">
-	<stop offset="4.382138e-03" style="stop-color:#9E5358" />
-	<stop offset="1" style="stop-color:#7E4148" />
+	<stop offset="4.382138e-03" style="stop-color:#687E8C" />
+	<stop offset="1" style="stop-color:#526672" />
 </linearGradient>
 <path style="fill:url(#zombie3_v4_p2_body_SVGID_1_);" d="M116,121c0-16.7-26.3-25-51.9-25H64c-25.5,0-52,7.3-52,25.1v3h1.5H15h99.5V124h1.5V121z" />
 <path style="fill:#657E3C;" d="M73.1,90.1H54.9v10c0,4.5,3.7,8.2,8.3,8.2h1.7c4.6,0,8.3-3.7,8.3-8.2L73.1,90.1z" />

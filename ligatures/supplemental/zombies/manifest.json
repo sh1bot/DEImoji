@@ -53,7 +53,7 @@
         [
           0,
           "curly",
-          "chef",
+          "none",
           4,
           2
         ],
@@ -95,14 +95,14 @@
         [
           0,
           "curly",
-          "graduate",
+          "none",
           3,
           4
         ],
         [
           2,
           "white",
-          "firefighter",
+          "none",
           4,
           2
         ]
@@ -123,14 +123,14 @@
         [
           1,
           "original",
-          "police",
+          "none",
           1,
           3
         ],
         [
           1,
           "curly",
-          "hardhat",
+          "none",
           2,
           1
         ]
@@ -158,7 +158,7 @@
         [
           1,
           "curly",
-          "police",
+          "none",
           0,
           0
         ]
@@ -172,9 +172,9 @@
         [
           1,
           "original",
-          "graduate",
+          "none",
           1,
-          3
+          4
         ],
         [
           0,
@@ -200,7 +200,7 @@
         [
           2,
           "original",
-          "hardhat",
+          "none",
           4,
           2
         ],
@@ -230,7 +230,7 @@
           "curly",
           "none",
           2,
-          1
+          2
         ],
         [
           1,
@@ -244,24 +244,25 @@
           "white",
           "none",
           4,
-          2
+          3
         ]
       ]
     }
   ],
   "files": {
-    "Zombies-COLRv1.ttf": "cecddb4bcf2d3f6f6220d619fb3bbc6ff7648cd083e9ed0ac0693d0a86e4cd85",
+    "README.md": "6e28f2ff32d1081bbc131ec9418984cbfbc3de73ffe947818b9d4eaee554b1df",
+    "Zombies-COLRv1.ttf": "b7be9dd01b1175043000d15b8e58a0290741a0253727474f4bf5628ac69d19b9",
     "png/128/zombie2_v0.png": "fd8b7faaf6e5f3d2de7166140a1e0f80fe0824da8eebbbbf4f7d74276f95c76b",
     "png/128/zombie2_v1.png": "dcce969d885cf552ffd717c521c5d86185c7af300b8c649cce17fad220d8b60e",
-    "png/128/zombie2_v2.png": "d217cc31713e72a668d6af5f4859577af99251ff2f5cd2ff4f08c40adc78d432",
+    "png/128/zombie2_v2.png": "68f2ffe714b145e30e40234b9c7dc0f775ad5f0d023c1a0b826e6288ec3737d4",
     "png/128/zombie2_v3.png": "06d3c0a8f1004cd8c6978df509927cf02b2357de1e9206a851cd4af6eb4b661e",
-    "png/128/zombie2_v4.png": "344617c02da537d11012f4bdce90786d723f4a392ac7d4575a50bc7ef0fe95a7",
-    "png/128/zombie3_v0.png": "3d054543c71017da1bb8b67f9addcd6f3c0018cc2ea178804099e6a7b73b7be5",
-    "png/128/zombie3_v1.png": "203e141734313e27acfc45837f081dfc760bc5ea455eb8c929a1ea2c46b03a17",
-    "png/128/zombie3_v2.png": "7336b355f819424dafa2da419f618f6f06c997e09e20c4309138409e377558c3",
-    "png/128/zombie3_v3.png": "55d09884f5c75a2d6cf275715a25dcf8b074caff8db33a6f91c867a74caa3d24",
-    "png/128/zombie3_v4.png": "94081186083ecab33432fc61bdab4700469c8bbdcaf95618351448caf1b7ef34",
-    "preview.png": "005cd272eda7e3a07f14ad4136d54c0b68c8250482903ca19a01bde46dd4fe38",
+    "png/128/zombie2_v4.png": "95b1bfa2a1c095fec0e2433e758c2bde3401fcf4601221f1079bf5d86622fafa",
+    "png/128/zombie3_v0.png": "8f9f3448b26b83f777f44876d2ca37a90b1a3c8ff948a3c47b08a3526a3d0345",
+    "png/128/zombie3_v1.png": "d0c387121e85c6932eaecb33c9952d0f587ed2037f39cc4f0f36eadfeb42b6cc",
+    "png/128/zombie3_v2.png": "e3c695972017e6fe902ee2bba556f876ff222a175ace0c547d8f907a81ce84a7",
+    "png/128/zombie3_v3.png": "4814b17ddb1be162391e9118f533a790a72b8e58ed990c27697c33be7e522ac0",
+    "png/128/zombie3_v4.png": "4fd3e193351b72a3ced885d49c7e572b0b46ebfa76a18dd671fa456588a1ead5",
+    "preview.png": "08a078b1988488042c722cd39fe80bfe33d43b2ecc06e4dd74b60b07ad47dc15",
     "source/emoji_u1f46e.svg": "1664f640a800e54ad011d912f1fd4efee9b80c8b8890b4fcb1b63a51b13095bf",
     "source/emoji_u1f477.svg": "5b92fbc4fe0beb14304448b1de0442a8941ab250b0c49ef515568b24dac0b4f3",
     "source/emoji_u1f9d1_200d_1f373.svg": "061c8c196e05b63a34bfdd01babbbddfd9a5c3fdd5e265f29fd519c6c36f1945",
@@ -275,13 +276,13 @@
     "source/emoji_u1f9df_200d_2642.svg": "e1e216909a8044ad2f125f7f458bc53d70eda276476b95e38e101b9a7052c05c",
     "svg/zombie2_v0.svg": "b13b9be24ede5fe1288e9331fa7b01a630b15b82b297314133d9c48dab2860ed",
     "svg/zombie2_v1.svg": "035133a11b69b47173d209963ce384dfea4d36fb160dd811f2b4e950ad420945",
-    "svg/zombie2_v2.svg": "dfe2a493e759572089772858fc5c8057200448221363b532ec344ebe7519b708",
+    "svg/zombie2_v2.svg": "6a60ff6d3c0400978dde9d7c150f2eb097f9b338bf49b0cf29ddea7fe1182561",
     "svg/zombie2_v3.svg": "fa387a3235e4968e81ec7401963d5a8fa61f910c5fe439c1c9c7f5843cb4fbd8",
-    "svg/zombie2_v4.svg": "cb96c6b85c7c8e463033ff8dc878ae9ffefae81fc43ee99746347641f8202972",
-    "svg/zombie3_v0.svg": "0a4c96bedf036efbc0ead12056d874140ef38cfa6bc8ac5b8491e3d381e124aa",
-    "svg/zombie3_v1.svg": "9d7bc4fb83db53301fd55b55e986a11ef4042ae77f10198b2f8dc19813f022fe",
-    "svg/zombie3_v2.svg": "58e2ff178e6e8f75c42856fffe798c53ae5d35907e12828ade2121ba16ac5bab",
-    "svg/zombie3_v3.svg": "6204e0c87913675fbf5c8c3b38a7aa19cb7bd05a3f00b0cd3fc631056338c410",
-    "svg/zombie3_v4.svg": "34bb41bdf374fb5e1e159cf706bdcfddc950ce4f5b8811b0f433cea19e08f299"
+    "svg/zombie2_v4.svg": "3052d7628f4651f8b942a4e47b01e61ead65239f6dad014bdb7f98170433cc61",
+    "svg/zombie3_v0.svg": "692cba6371507be0ea3669f5c5c0e80705a6a085cc67267c9facde34c2dfffe8",
+    "svg/zombie3_v1.svg": "a3a075b16b569a4360f4f6f4c27de183ba6d573dfceb7651059852a3a61d60f4",
+    "svg/zombie3_v2.svg": "6e3dc6d71010cff9af16bb1fa6d9b54e41e2fdd7a60b80af2c1c1d6213e8972b",
+    "svg/zombie3_v3.svg": "4b6a2b6eb153c86bc1f2a1c45ce3d2eb5675668aaddfc292d9a2d8616f63e371",
+    "svg/zombie3_v4.svg": "cd178f2388844f2c1841ba3ecec841ec4fc9608e75afe629abbeba599274ae83"
   }
 }

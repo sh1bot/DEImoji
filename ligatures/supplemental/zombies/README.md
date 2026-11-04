@@ -5,7 +5,10 @@ pinned at commit `30649a050403b9f4d05f8502d761ecb55c6838b9` in this fork.
 The `source/` directory retains the zombie, hairstyle and occupation originals.
 No image generation or bitmap tracing is used.
 
-The ten compositions contain 25 distinct deterministic character recipes:
+The ten compositions contain 25 distinct deterministic character recipes.
+Exactly five characters wear hats: two of the ten pair members and three of
+the fifteen trio members, so headwear stays at 20% for either group size.
+The recipes mix:
 neutral/woman/man zombie bases; original, ginger, white and curly hair; police,
 construction, chef, graduation and firefighter headwear; five muted green/grey
 skin palettes suggesting different decay; and varied shirt colours. Recipes

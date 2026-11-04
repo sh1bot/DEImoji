@@ -96,8 +96,12 @@ def recipes():
     rng = random.Random(0xDE1)
     genders = list(range(3)) * 9
     hairs = ['original', 'ginger', 'white', 'curly'] * 7
-    hats = ['none', 'hardhat', 'none', 'chef', 'none', 'police', 'none', 'graduate', 'none', 'firefighter'] * 3
-    rng.shuffle(genders); rng.shuffle(hairs); rng.shuffle(hats)
+    # Two of ten pair members and three of fifteen trio members wear hats.
+    # Retain one of each decoration, spread across five compositions.
+    hats = ['none'] * 25
+    for i, hat in {2:'police', 7:'chef', 10:'hardhat', 14:'graduate', 17:'firefighter'}.items():
+        hats[i] = hat
+    rng.shuffle(genders); rng.shuffle(hairs)
     specs = []
     for i in range(25):
         shirt = (i*3) % 5
@@ -107,6 +111,8 @@ def recipes():
             spec = (genders[i], hairs[i], hats[i], i % 5, shirt)
         specs.append(spec)
     assert len(set(specs)) == 25
+    assert sum(spec[2] != 'none' for spec in specs[:10]) == 2
+    assert sum(spec[2] != 'none' for spec in specs[10:]) == 3
     return specs
 
 
