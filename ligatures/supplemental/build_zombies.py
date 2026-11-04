@@ -60,8 +60,28 @@ def renamed(element, prefix, colors=None):
     return element
 
 
+def beard(prefix):
+    # Noto's bearded-person silhouette minus its face, scaled to zombie heads.
+    # Keep the zombie mouth visible through a second hole in the clipping path.
+    donor = source('1f9d4')
+    outer = donor[2][0].get('d')
+    face = donor[3].get('d')
+    hole = 'M48.6154 105.1282 a15.3846 10.2564 0 1 0 30.7692 0 a15.3846 10.2564 0 1 0 -30.7692 0 Z'
+    group = ET.Element(TAG('g'), transform='translate(14.08 -1) scale(.78)')
+    defs = ET.SubElement(group,TAG('defs'))
+    region = ET.SubElement(defs,TAG('clipPath'),id=prefix+'region')
+    ET.SubElement(region,TAG('path'),d=outer+' '+face+' '+hole,
+                  attrib={'clip-rule':'evenodd','fill-rule':'evenodd'})
+    lower = ET.SubElement(defs,TAG('clipPath'),id=prefix+'lower')
+    ET.SubElement(lower,TAG('rect'),x='0',y='65',width='128',height='63')
+    clip = ET.SubElement(group,TAG('g'),attrib={'clip-path':f'url(#{prefix}lower)'})
+    clip = ET.SubElement(clip,TAG('g'),attrib={'clip-path':f'url(#{prefix}region)'})
+    clip.append(renamed(donor[2],prefix+'art_'))
+    return group
+
+
 def character(spec, prefix):
-    gender, hair, hat, palette, shirt = spec
+    gender, hair, hat, palette, shirt, has_beard = spec
     root = source(BASES[gender])
     discard = ({0, 1, 12, 13}, {0, 12, 13, 14}, {5})[gender] if hair != 'original' else set()
     skin, shade, dark = PALETTES[palette]
@@ -71,15 +91,24 @@ def character(spec, prefix):
     for old in ('#530EEB', '#009E89', '#ED6D23'):
         colors[old] = SHIRTS[shirt][1]
     group = ET.Element(TAG('g'))
-    if hair != 'original':
+    if hair in HAIR:
         stem, back, front = HAIR[hair]
         donor = source(stem)
         for i in back:
             group.append(renamed(donor[i], prefix + 'hair_'))
     for i, node in enumerate(root):
         if i not in discard:
+            node = deepcopy(node)
+            if hair == 'bald' and i == (5,4,4)[gender]:
+                # Use Noto's complete bald skull, retaining zombie features.
+                for path in node.iter():
+                    if '#82CC2B' in path.get('style',''):
+                        path.set('d',source('1f9d1_200d_1f9b2')[3][0].get('d'))
+                        break
             group.append(renamed(node, prefix + 'body_', colors))
-    if hair != 'original':
+    if has_beard:
+        group.append(beard(prefix+'beard_'))
+    if hair in HAIR:
         for i in front:
             group.append(renamed(donor[i], prefix + 'hair_'))
     if hat != 'none':
@@ -102,15 +131,18 @@ def recipes():
     for i, hat in {2:'police', 7:'chef', 10:'hardhat', 14:'graduate', 17:'firefighter'}.items():
         hats[i] = hat
     rng.shuffle(genders); rng.shuffle(hairs)
+    hairs[9] = 'bald'
     specs = []
     for i in range(25):
         shirt = (i*3) % 5
-        spec = (genders[i], hairs[i], hats[i], i % 5, shirt)
+        spec = (genders[i], hairs[i], hats[i], i % 5, shirt, i == 4)
         while spec in specs:
             shirt = (shirt+1) % 5
-            spec = (genders[i], hairs[i], hats[i], i % 5, shirt)
+            spec = (genders[i], hairs[i], hats[i], i % 5, shirt, i == 4)
         specs.append(spec)
     assert len(set(specs)) == 25
+    assert sum(spec[5] for spec in specs) == 1
+    assert sum(spec[1] == 'bald' for spec in specs) == 1
     assert sum(spec[2] != 'none' for spec in specs[:10]) == 2
     assert sum(spec[2] != 'none' for spec in specs[10:]) == 3
     return specs

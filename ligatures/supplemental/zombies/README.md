@@ -9,10 +9,13 @@ The ten compositions contain 25 distinct deterministic character recipes.
 Exactly five characters wear hats: two of the ten pair members and three of
 the fifteen trio members, so headwear stays at 20% for either group size.
 The recipes mix:
-neutral/woman/man zombie bases; original, ginger, white and curly hair; police,
+neutral/woman/man zombie bases; original, ginger, white and curly hair; one
+bearded character and one bald character; police,
 construction, chef, graduation and firefighter headwear; five muted green/grey
 skin palettes suggesting different decay; and varied shirt colours. Recipes
-are stored in `manifest.json`. These are decorative custom variants, not new
+are stored in `manifest.json` as gender, hairstyle, headwear, decay palette,
+shirt palette, and beard flag. The bald skull and beard also come from the
+retained Noto source SVGs. These are decorative custom variants, not new
 Unicode modifier support. The single zombie and native explicit gender forms
 remain unchanged.
 

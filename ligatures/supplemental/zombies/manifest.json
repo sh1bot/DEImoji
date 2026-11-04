@@ -13,14 +13,16 @@
           "ginger",
           "none",
           0,
-          0
+          0,
+          false
         ],
         [
           2,
           "ginger",
           "none",
           1,
-          3
+          3,
+          false
         ]
       ]
     },
@@ -34,14 +36,16 @@
           "ginger",
           "police",
           2,
-          1
+          1,
+          false
         ],
         [
           0,
           "original",
           "none",
           3,
-          4
+          4,
+          false
         ]
       ]
     },
@@ -55,14 +59,16 @@
           "curly",
           "none",
           4,
-          2
+          2,
+          true
         ],
         [
           2,
           "original",
           "none",
           0,
-          0
+          0,
+          false
         ]
       ]
     },
@@ -76,14 +82,16 @@
           "curly",
           "none",
           1,
-          3
+          3,
+          false
         ],
         [
           2,
           "white",
           "chef",
           2,
-          1
+          1,
+          false
         ]
       ]
     },
@@ -97,14 +105,16 @@
           "curly",
           "none",
           3,
-          4
+          4,
+          false
         ],
         [
           2,
-          "white",
+          "bald",
           "none",
           4,
-          2
+          2,
+          false
         ]
       ]
     },
@@ -118,21 +128,24 @@
           "white",
           "hardhat",
           0,
-          0
+          0,
+          false
         ],
         [
           1,
           "original",
           "none",
           1,
-          3
+          3,
+          false
         ],
         [
           1,
           "curly",
           "none",
           2,
-          1
+          1,
+          false
         ]
       ]
     },
@@ -146,21 +159,24 @@
           "original",
           "none",
           3,
-          4
+          4,
+          false
         ],
         [
           0,
           "ginger",
           "graduate",
           4,
-          2
+          2,
+          false
         ],
         [
           1,
           "curly",
           "none",
           0,
-          0
+          0,
+          false
         ]
       ]
     },
@@ -174,21 +190,24 @@
           "original",
           "none",
           1,
-          4
+          4,
+          false
         ],
         [
           0,
           "curly",
           "firefighter",
           2,
-          1
+          1,
+          false
         ],
         [
           0,
           "original",
           "none",
           3,
-          0
+          0,
+          false
         ]
       ]
     },
@@ -202,21 +221,24 @@
           "original",
           "none",
           4,
-          2
+          2,
+          false
         ],
         [
           2,
           "ginger",
           "none",
           0,
-          0
+          0,
+          false
         ],
         [
           1,
           "white",
           "none",
           1,
-          3
+          3,
+          false
         ]
       ]
     },
@@ -230,39 +252,42 @@
           "curly",
           "none",
           2,
-          2
+          2,
+          false
         ],
         [
           1,
           "ginger",
           "none",
           3,
-          4
+          4,
+          false
         ],
         [
           2,
           "white",
           "none",
           4,
-          3
+          2,
+          false
         ]
       ]
     }
   ],
   "files": {
-    "README.md": "6e28f2ff32d1081bbc131ec9418984cbfbc3de73ffe947818b9d4eaee554b1df",
-    "Zombies-COLRv1.ttf": "b7be9dd01b1175043000d15b8e58a0290741a0253727474f4bf5628ac69d19b9",
+    "README.md": "52454969607789e9c69999c3944e44c38a1dc91b4f1a912cfe1364a38162e42a",
+    "Zombies-COLRv1.ttf": "562f1bbf36bb005e8cfcd3f182e564aed97a340e12b7b623810c59684810c9dc",
     "png/128/zombie2_v0.png": "fd8b7faaf6e5f3d2de7166140a1e0f80fe0824da8eebbbbf4f7d74276f95c76b",
     "png/128/zombie2_v1.png": "dcce969d885cf552ffd717c521c5d86185c7af300b8c649cce17fad220d8b60e",
-    "png/128/zombie2_v2.png": "68f2ffe714b145e30e40234b9c7dc0f775ad5f0d023c1a0b826e6288ec3737d4",
+    "png/128/zombie2_v2.png": "0c2fce030c8406ed8b29f3c874c8fd109a34d48bff7a35ddcd846d250b45353f",
     "png/128/zombie2_v3.png": "06d3c0a8f1004cd8c6978df509927cf02b2357de1e9206a851cd4af6eb4b661e",
-    "png/128/zombie2_v4.png": "95b1bfa2a1c095fec0e2433e758c2bde3401fcf4601221f1079bf5d86622fafa",
+    "png/128/zombie2_v4.png": "f8f0444f3191e6b541cc10dc12ae33f12534224cabde8c92692257aa3f45e20f",
     "png/128/zombie3_v0.png": "8f9f3448b26b83f777f44876d2ca37a90b1a3c8ff948a3c47b08a3526a3d0345",
     "png/128/zombie3_v1.png": "d0c387121e85c6932eaecb33c9952d0f587ed2037f39cc4f0f36eadfeb42b6cc",
     "png/128/zombie3_v2.png": "e3c695972017e6fe902ee2bba556f876ff222a175ace0c547d8f907a81ce84a7",
     "png/128/zombie3_v3.png": "4814b17ddb1be162391e9118f533a790a72b8e58ed990c27697c33be7e522ac0",
-    "png/128/zombie3_v4.png": "4fd3e193351b72a3ced885d49c7e572b0b46ebfa76a18dd671fa456588a1ead5",
-    "preview.png": "08a078b1988488042c722cd39fe80bfe33d43b2ecc06e4dd74b60b07ad47dc15",
+    "png/128/zombie3_v4.png": "df569da1ddb8513ab44ac82b2132f3f2fa9032a602bb7c8b3ef72cd1c50246b9",
+    "preview.png": "82b8eb3693b4be8353ebe626ed62d8734747c34095eae71e9778834880e41f6f",
     "source/emoji_u1f46e.svg": "1664f640a800e54ad011d912f1fd4efee9b80c8b8890b4fcb1b63a51b13095bf",
     "source/emoji_u1f477.svg": "5b92fbc4fe0beb14304448b1de0442a8941ab250b0c49ef515568b24dac0b4f3",
     "source/emoji_u1f9d1_200d_1f373.svg": "061c8c196e05b63a34bfdd01babbbddfd9a5c3fdd5e265f29fd519c6c36f1945",
@@ -270,19 +295,21 @@
     "source/emoji_u1f9d1_200d_1f692.svg": "2a2c5f4cdb65b62ecb563a8a4c9d4c3f3ec0d37e08401debdc407e89687a7e1b",
     "source/emoji_u1f9d1_200d_1f9b0.svg": "58c38a82a9e7fc511b292df28a298e4a3356ef01695af9cef21b1f3d7c5ac458",
     "source/emoji_u1f9d1_200d_1f9b1.svg": "25a93698efe590785e9c427993cce5111f720513a7102bc57192091de4941208",
+    "source/emoji_u1f9d1_200d_1f9b2.svg": "ce7c7b147b30caf6600520882dd2b96630d465be46fe9ea352484ab894e7ef42",
     "source/emoji_u1f9d1_200d_1f9b3.svg": "8cc5bc4287835a00c25162c7a1bf5ebd597ba7bb8f94f40f435305c917b28fcc",
+    "source/emoji_u1f9d4.svg": "824a80b521e2de9cf627c486783f21b937276ea4582f5078a24ae446d036f54c",
     "source/emoji_u1f9df.svg": "59e574d0c44140560c6c046aadf06877a52daf1f14f2028598c10256c120c21c",
     "source/emoji_u1f9df_200d_2640.svg": "59a1510586127307217f55eec5af1864ebffcdda5353e5cd294bfaab92dd3678",
     "source/emoji_u1f9df_200d_2642.svg": "e1e216909a8044ad2f125f7f458bc53d70eda276476b95e38e101b9a7052c05c",
     "svg/zombie2_v0.svg": "b13b9be24ede5fe1288e9331fa7b01a630b15b82b297314133d9c48dab2860ed",
     "svg/zombie2_v1.svg": "035133a11b69b47173d209963ce384dfea4d36fb160dd811f2b4e950ad420945",
-    "svg/zombie2_v2.svg": "6a60ff6d3c0400978dde9d7c150f2eb097f9b338bf49b0cf29ddea7fe1182561",
+    "svg/zombie2_v2.svg": "58618e5682e71416f5bda805e692d9f776184feb21716dbc006f8aa17aa98bc3",
     "svg/zombie2_v3.svg": "fa387a3235e4968e81ec7401963d5a8fa61f910c5fe439c1c9c7f5843cb4fbd8",
-    "svg/zombie2_v4.svg": "3052d7628f4651f8b942a4e47b01e61ead65239f6dad014bdb7f98170433cc61",
+    "svg/zombie2_v4.svg": "bcb6cfaa803e224b94a7630e506d32c5f0c7f7d439c43fa0d3567f667a0a9dc9",
     "svg/zombie3_v0.svg": "692cba6371507be0ea3669f5c5c0e80705a6a085cc67267c9facde34c2dfffe8",
     "svg/zombie3_v1.svg": "a3a075b16b569a4360f4f6f4c27de183ba6d573dfceb7651059852a3a61d60f4",
     "svg/zombie3_v2.svg": "6e3dc6d71010cff9af16bb1fa6d9b54e41e2fdd7a60b80af2c1c1d6213e8972b",
     "svg/zombie3_v3.svg": "4b6a2b6eb153c86bc1f2a1c45ce3d2eb5675668aaddfc292d9a2d8616f63e371",
-    "svg/zombie3_v4.svg": "cd178f2388844f2c1841ba3ecec841ec4fc9608e75afe629abbeba599274ae83"
+    "svg/zombie3_v4.svg": "594fd54857be4fd0eb5f9873b6f74c0b89667f78664e12643eedd425d35337e4"
   }
 }
