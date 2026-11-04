@@ -109,10 +109,13 @@ def _feedback(name, markers, coefficients, seed, stride, startup_step,
     # history above take priority over any future glyph's seed bucket.
     for current_class, current_value in current_buckets:
         for glyph_class, future_value in lookahead:
-            result = (current_value + future_value) % base
+            result = ((current_value + future_value) % 5 if base == 5 else
+                      (current_value + future_value + 2) % 3)
             lines.append('sub ' + ' '.join([current_class] + current[1:]) +
                          f" {markers[0]}' lookup {name}{result} {glyph_class};")
     for current_class, result in current_buckets:
+        if base == 3:
+            result = result if result in (1, 2) else 0
         lines.append('sub ' + ' '.join([current_class] + current[1:]) +
                      f" {markers[0]}' lookup {name}{result};")
     first = stream(base, coefficients, seed, 1)[0]
@@ -161,7 +164,10 @@ def feature_source(font, tone_bases, gender_bases, assembly):
         lines += [f'sub {t} by {t} {GENDERS[0]};' for t in TONES]
         lines += ['} genderAppend;', 'lookup genderExpand {',
                   "sub @genderbase @tone' lookup genderAppend;", '} genderExpand;']
-        lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS, GENDER_SEED, 3, GENDER_STARTUP_STEP)
+        # Reuse the existing tone intersections. A gender marker is appended
+        # only to eligible bases, so it supplies the remaining restriction.
+        lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS, GENDER_SEED, 3,
+                           GENDER_STARTUP_STEP, lookahead, current_buckets)
     lines.append('lookup resolveTone {')
     lines += [f'sub {t} by {a};' for t, a in zip(TONES, actual_tones)]
     lines.append('} resolveTone;')

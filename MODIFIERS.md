@@ -38,8 +38,13 @@ current and following mapped glyphs with `glyphID % 5`. The initial tone is
 current glyph's bucket alone chooses its tone, so isolated bases can differ.
 The current-glyph classes are intersections of the broad seed classes with
 the tone-compatible base class. The middle (medium) tone remains the final
-defensive default after those rules. Gender starts
-at zero. Startup visits four distinct tones and all three genders before their
+defensive default after those rules. Gender reuses exactly the same five broad
+seed classes and tone intersections: its internal marker already restricts the
+current base to gender-compatible glyphs. For a single glyph, buckets 1 and 2
+select woman and man respectively; buckets 0, 3 and 4 select neutral. For pairs,
+`(currentBucket + followingBucket + 2) % 3` gives nine neutral, eight woman and
+eight man combinations. Neutral remains the defensive gender default.
+Startup visits four distinct tones and all three genders before their
 respective full feedback rules can match.
 Full feedback has priority and takes over after four tone outputs or seven
 gender outputs. Unsupported glyphs restart these fallbacks.
@@ -47,7 +52,7 @@ gender outputs. Unsupported glyphs restart these fallbacks.
 With default initial tone 2, outputs start `2,0,3,1,2,4,4,3,2,0,3,3,2,1,1,4`
 (zero means U+1F3FB). Other initial tones rotate the first four fallback
 outputs; the same full feedback then applies to the resulting register.
-Gender outputs start `0,1,2,0,1,2,0,2,2,2,2,2,0,2,0,0`. These deterministic
+With neutral initial gender, outputs start `0,1,2,0,1,2,0,2,2,2,2,2,0,2,0,0`. These deterministic
 streams provide pseudorandom visual variation. Tests iterate each register until
 its first return to the seed to verify the full maximal periods.
 
@@ -64,8 +69,9 @@ Lookahead only sees glyphs in the same shaping run, and identical glyphs give
 identical seeds. Glyph ordering can give the two font formats different seeds.
 Gender expansion then creates
 `BASE TONE_INTERNAL GENDER_INTERNAL` units at stride three. Gender feedback uses
-nine tap combinations, three previous-state fallbacks, and a first-output
-default. Only after feedback finishes
+nine tap combinations, three previous-state fallbacks, 25 current/lookahead seed
+rules, five current-glyph seed rules, and a first-output default. No extra
+membership class or marker glyph is added for gender seeding. Only after feedback finishes
 are the eight unencoded, zero-advance marker glyphs resolved into real Unicode
 modifier glyphs and ZWJ gender sequences. A restricted clone of canonical native
 ligatures assembles those sequences into existing artwork. No artwork is rebuilt.
@@ -92,9 +98,9 @@ with `calt` enabled/disabled in each font format and checks that explicit
 sequences render identically. HarfBuzz tests check glyph identities and neutral
 marker removal rather than relying on equal-advance artwork widths.
 
-Measured on the full native font pair, the installed GSUB is 130,920 bytes for
-CBDT (+76,998 bytes including both custom bundles), and 112,434 bytes for COLRv1
-(+81,008 bytes including both custom bundles). The modifier installer appends
+Measured on the full native font pair, the installed GSUB is 149,290 bytes for
+CBDT (+95,368 bytes including both custom bundles), and 130,784 bytes for COLRv1
+(+99,358 bytes including both custom bundles). The modifier installer appends
 17 lookups and eight glyphs. Full-font validation also checks 120-run glyph
 identities, all explicit runner tone/gender variants with and without VS16,
 `calt` disabled, mixed explicit/plain boundaries, and serialized cache recovery.

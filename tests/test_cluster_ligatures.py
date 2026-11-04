@@ -326,9 +326,12 @@ class NativeCacheTests(unittest.TestCase):
 
 def make_modifier_font():
     font = make_font()
-    names = ['runner', 'woman', 'man', 'person', 'thumb', 'male'] + ['skin' + str(i) for i in range(5)]
-    names += [b + str(t) + str(g) for b in ('runner', 'woman', 'man', 'person', 'thumb') for t in range(5)
-              for g in (range(3) if b == 'runner' else range(1))]
+    gendered = ('runner', 'swimmer', 'cyclist', 'climber')
+    bases = ('runner', 'woman', 'man', 'person', 'thumb', 'swimmer', 'cyclist', 'climber')
+    names = ['runner', 'woman', 'man', 'person', 'thumb', 'male', 'swimmer', 'cyclist',
+             'unused', 'climber'] + ['skin' + str(i) for i in range(5)]
+    names += [b + str(t) + str(g) for b in bases for t in range(5)
+              for g in (range(3) if b in gendered else range(1))]
     font.setGlyphOrder(font.getGlyphOrder() + names)
     for name in names:
         font['glyf'].glyphs[name] = TTGlyphPen(None).glyph()
@@ -338,12 +341,13 @@ def make_modifier_font():
         if table.isUnicode() and table.format == 12:
             table.cmap.update({0x1F3C3: 'runner', 0x1F469: 'woman', 0x1F468: 'man',
                                0x1F9D1: 'person', 0x1F44D: 'thumb', 0x2642: 'male',
+                               0x1F3CA: 'swimmer', 0x1F6B4: 'cyclist', 0x1F9D7: 'climber',
                                **{0x1F3FB + t: 'skin' + str(t) for t in range(5)}})
     rules = []
     for t in range(5):
         for g, gender in ((1, 'female'), (2, 'male')):
-            rules.append(f'sub runner skin{t} zwj {gender} by runner{t}{g};')
-        rules += [f'sub {b} skin{t} by {b}{t}0;' for b in ('runner', 'woman', 'man', 'person', 'thumb')]
+            rules += [f'sub {b} skin{t} zwj {gender} by {b}{t}{g};' for b in gendered]
+        rules += [f'sub {b} skin{t} by {b}{t}0;' for b in bases]
     rules += ['sub runner zwj female by woman;', 'sub z z z by z3;', 'sub z z by z2;',
               'sub f f f by f3;', 'sub f f by f2;']
     addOpenTypeFeaturesFromString(font, 'languagesystem DFLT dflt; feature ccmp {\n' +
@@ -362,13 +366,25 @@ def reference_tones(font, following, count, current='🏃'):
     return values
 
 
+def reference_genders(font, following, count, current='🏃'):
+    from modifier_ligatures import GENDER_COEFFICIENTS
+    cmap = font.getBestCmap()
+    bucket = font.getGlyphID(cmap[ord(current)]) % 5
+    first = ((bucket + font.getGlyphID(cmap[ord(following)]) % 5 + 2) % 3
+             if following else {1: 1, 2: 2}.get(bucket, 0))
+    values = [(first + i) % 3 for i in range(min(count, len(GENDER_COEFFICIENTS)))]
+    while len(values) < count:
+        values.append(sum(c * values[-1-i] for i, c in enumerate(GENDER_COEFFICIENTS)) % 3)
+    return values
+
+
 class ModifierTests(unittest.TestCase):
     def setUp(self):
         from modifier_ligatures import stream, TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
         self.font = make_modifier_font()
         self.info = add_cluster_ligatures(self.font)
         self.tones = reference_tones(self.font, '🏃', 1252)
-        self.genders = stream(3, GENDER_COEFFICIENTS, GENDER_SEED, 1252)
+        self.genders = reference_genders(self.font, '🏃', 1252)
 
     def test_independent_feedback_and_neutral_deletion(self):
         for n in (1, 3, 4, 5, 7, 8, 9, 40, 1252):
@@ -391,7 +407,7 @@ class ModifierTests(unittest.TestCase):
         # Bootstrap follows the previous output: tone +3 mod 5, gender +1 mod 3.
         # At 4/7 outputs respectively, full feedback overrides those fallbacks.
         tones = [3, 1, 4, 2, 1, 3, 1, 3, 1, 0]
-        genders = [0, 1, 2, 0, 1, 2, 0, 2, 2, 2]
+        genders = [1, 2, 0, 1, 2, 0, 1, 2, 2, 2]
         expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
         self.assertEqual(shape(self.font, '🏃'), ['runner40'])
         for n in range(2, 11):
@@ -406,29 +422,37 @@ class ModifierTests(unittest.TestCase):
             for ch, _ in bases:
                 tone = (self.font.getGlyphID(cmap[ord(text)]) +
                         self.font.getGlyphID(cmap[ord(ch)])) % 5
-                self.assertEqual(shape(self.font, text + ch)[0], f'{base}{tone}0')
-        self.assertEqual(shape(self.font, '🏃🏃👩')[1], 'runner11')
+                gender = reference_genders(self.font, ch, 1, current=text)[0]
+                if base == 'person':
+                    target = ('person', 'woman', 'man')[gender] + f'{tone}0'
+                else:
+                    target = f'{base}{tone}{gender if base == "runner" else 0}'
+                self.assertEqual(shape(self.font, text + ch)[0], target)
+        self.assertEqual(shape(self.font, '🏃🏃👩')[1], 'runner12')
         self.assertEqual(shape(self.font, '🏃a🏃'), ['runner20', 'a', 'runner40'])
 
     def test_current_glyph_intersections_seed_all_five_single_tones(self):
-        for text, base, tone in (('🏃', 'runner', 4), ('🧑', 'person', 2),
-                                 ('👩', 'woman', 0), ('👨', 'man', 1), ('👍', 'thumb', 3)):
-            self.assertEqual(shape(self.font, text), [f'{base}{tone}0'])
+        for text, base, target in (('🏃', 'runner', 'runner40'), ('🧑', 'person', 'man20'),
+                                   ('👩', 'woman', 'woman00'), ('👨', 'man', 'man10'),
+                                   ('👍', 'thumb', 'thumb30')):
+            self.assertEqual(shape(self.font, text), [target])
             self.assertEqual(shape(self.font, text, calt=False), [base])
         # An already assembled following emoji has no encoded seed membership.
         self.assertEqual(shape(self.font, '🏃🏃🏻'), ['runner40', 'runner00'])
 
     def test_person_uses_separate_gender_bases_and_shared_history(self):
         tones = reference_tones(self.font, '🧑', 40, current='🧑')
+        genders = reference_genders(self.font, '🧑', 40, current='🧑')
         expected = [f'{("person", "woman", "man")[g]}{t}0'
-                    for t, g in zip(tones, self.genders[:40])]
+                    for t, g in zip(tones, genders)]
         self.assertEqual(shape(self.font, '🧑' * 40), expected)
         self.assertEqual(shape(self.font, '🧑' * 40, calt=False), ['person'] * 40)
         mixed = ''.join('🧑' if i % 2 == 0 else '🏃' for i in range(40))
         tones = reference_tones(self.font, '🏃', 40, current='🧑')
+        genders = reference_genders(self.font, '🏃', 40, current='🧑')
         expected = [f'{("person", "woman", "man")[g]}{t}0'
-                    for t, g in zip(tones, self.genders[:40])]
-        expected[1::2] = [f'runner{tones[i]}{self.genders[i]}' for i in range(1, 40, 2)]
+                    for t, g in zip(tones, genders)]
+        expected[1::2] = [f'runner{tones[i]}{genders[i]}' for i in range(1, 40, 2)]
         self.assertEqual(shape(self.font, mixed), expected)
 
     def test_person_explicit_gender_aliases_preserve_tone(self):
@@ -437,6 +461,35 @@ class ModifierTests(unittest.TestCase):
             for t in range(5):
                 text = '🧑' + chr(0x1F3FB + t) + '\u200d' + sign
                 self.assertEqual(shape(self.font, text), [f'{base}{t}0'])
+
+    def test_gender_seed_distribution_and_non_neutral_feedback(self):
+        cases = [('🏊', 'swimmer'), ('🚴', 'cyclist'), ('🧑', 'person'),
+                 ('🧗', 'climber'), ('🏃', 'runner')]
+        def target(base, tone, gender):
+            if base == 'person':
+                return ('person', 'woman', 'man')[gender] + f'{tone}0'
+            return f'{base}{tone}{gender}'
+        for bucket, (text, base) in enumerate(cases):
+            gender = (0, 1, 2, 0, 0)[bucket]
+            self.assertEqual(shape(self.font, text), [target(base, bucket, gender)])
+        observed = []
+        for current, (text, base) in enumerate(cases):
+            for following, (ch, _) in enumerate(cases):
+                gender = (current + following + 2) % 3
+                first = shape(self.font, text + ch)[0]
+                self.assertEqual(first, target(base, (current + following) % 5, gender))
+                observed.append((2 if first.startswith('man') else
+                                 1 if first.startswith('woman') else 0)
+                                if base == 'person' else int(first[-1]))
+        self.assertEqual([observed.count(g) for g in range(3)], [9, 8, 8])
+        # Exercise the full recurrence after neutral, woman and man startup.
+        for following, (ch, next_base) in enumerate(cases[:3]):
+            text = '🏊' + ch + '🏊' * 30
+            tones = reference_tones(self.font, ch, len(text), current='🏊')
+            genders = reference_genders(self.font, ch, len(text), current='🏊')
+            bases = ['swimmer', next_base] + ['swimmer'] * 30
+            self.assertEqual(shape(self.font, text),
+                             [target(b, t, g) for b, t, g in zip(bases, tones, genders)])
 
     def test_explicit_sequences_and_calt_off(self):
         for t in range(5):
