@@ -326,8 +326,8 @@ class NativeCacheTests(unittest.TestCase):
 
 def make_modifier_font():
     font = make_font()
-    names = ['runner', 'woman', 'man', 'person', 'male'] + ['skin' + str(i) for i in range(5)]
-    names += [b + str(t) + str(g) for b in ('runner', 'woman', 'man', 'person') for t in range(5)
+    names = ['runner', 'woman', 'man', 'person', 'thumb', 'male'] + ['skin' + str(i) for i in range(5)]
+    names += [b + str(t) + str(g) for b in ('runner', 'woman', 'man', 'person', 'thumb') for t in range(5)
               for g in (range(3) if b == 'runner' else range(1))]
     font.setGlyphOrder(font.getGlyphOrder() + names)
     for name in names:
@@ -337,13 +337,13 @@ def make_modifier_font():
     for table in font['cmap'].tables:
         if table.isUnicode() and table.format == 12:
             table.cmap.update({0x1F3C3: 'runner', 0x1F469: 'woman', 0x1F468: 'man',
-                               0x1F9D1: 'person', 0x2642: 'male',
+                               0x1F9D1: 'person', 0x1F44D: 'thumb', 0x2642: 'male',
                                **{0x1F3FB + t: 'skin' + str(t) for t in range(5)}})
     rules = []
     for t in range(5):
         for g, gender in ((1, 'female'), (2, 'male')):
             rules.append(f'sub runner skin{t} zwj {gender} by runner{t}{g};')
-        rules += [f'sub {b} skin{t} by {b}{t}0;' for b in ('runner', 'woman', 'man', 'person')]
+        rules += [f'sub {b} skin{t} by {b}{t}0;' for b in ('runner', 'woman', 'man', 'person', 'thumb')]
     rules += ['sub runner zwj female by woman;', 'sub z z z by z3;', 'sub z z by z2;',
               'sub f f f by f3;', 'sub f f by f2;']
     addOpenTypeFeaturesFromString(font, 'languagesystem DFLT dflt; feature ccmp {\n' +
@@ -351,9 +351,11 @@ def make_modifier_font():
     return font
 
 
-def reference_tones(font, following, count):
+def reference_tones(font, following, count, current='🏃'):
     from modifier_ligatures import TONE_COEFFICIENTS
-    first = font.getGlyphID(font.getBestCmap()[ord(following)]) % 5
+    cmap = font.getBestCmap()
+    first = (font.getGlyphID(cmap[ord(current)]) +
+             (font.getGlyphID(cmap[ord(following)]) if following else 0)) % 5
     values = [(first + 3 * i) % 5 for i in range(min(count, 8))]
     while len(values) < count:
         values.append(sum(c * values[-1-i] for i, c in enumerate(TONE_COEFFICIENTS)) % 5)
@@ -371,7 +373,7 @@ class ModifierTests(unittest.TestCase):
     def test_independent_feedback_and_neutral_deletion(self):
         for n in (1, 7, 8, 9, 40, 500):
             if n == 1:
-                self.assertEqual(shape(self.font, '🏃'), ['runner20'])
+                self.assertEqual(shape(self.font, '🏃'), ['runner40'])
                 continue
             tones = reference_tones(self.font, '🏃', n)
             self.assertEqual(shape(self.font, '🏃' * n),
@@ -382,39 +384,45 @@ class ModifierTests(unittest.TestCase):
     def test_varied_startup_and_full_feedback_priority(self):
         # Bootstrap follows the previous output: tone +3 mod 5, gender +1 mod 3.
         # At 8/7 outputs respectively, full feedback overrides those fallbacks.
-        tones = [4, 2, 0, 3, 1, 4, 2, 0, 0, 2]
+        tones = [3, 1, 4, 2, 0, 3, 1, 4, 1, 3]
         genders = [0, 1, 2, 0, 1, 2, 0, 2, 2, 2]
         expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
-        self.assertEqual(shape(self.font, '🏃'), ['runner20'])
+        self.assertEqual(shape(self.font, '🏃'), ['runner40'])
         for n in range(2, 11):
             self.assertEqual(shape(self.font, '🏃' * n), expected[:n])
 
     def test_lookahead_seed_buckets_and_history_priority(self):
         # All five buckets seed a new run. Later lookahead cannot override the
         # preceding-output fallback or full feedback. Text glyphs are sufficient.
-        for ch in '👩👨🧟a🏃':
-            tone = self.font.getGlyphID(self.font.getBestCmap()[ord(ch)]) % 5
-            self.assertEqual(shape(self.font, '🏃' + ch)[0], f'runner{tone}0')
-        self.assertEqual(shape(self.font, '🏃🏃👩')[1], 'runner21')
-        self.assertEqual(shape(self.font, '🏃a🏃'), ['runner30', 'a', 'runner20'])
+        bases = [('👩', 'woman'), ('👨', 'man'), ('🧑', 'person'), ('👍', 'thumb'), ('🏃', 'runner')]
+        cmap = self.font.getBestCmap()
+        for text, base in bases:
+            for ch, _ in bases:
+                tone = (self.font.getGlyphID(cmap[ord(text)]) +
+                        self.font.getGlyphID(cmap[ord(ch)])) % 5
+                self.assertEqual(shape(self.font, text + ch)[0], f'{base}{tone}0')
+        self.assertEqual(shape(self.font, '🏃🏃👩')[1], 'runner11')
+        self.assertEqual(shape(self.font, '🏃a🏃'), ['runner20', 'a', 'runner40'])
 
-    def test_missing_seed_context_defaults_to_middle_tone(self):
-        for text, base in (('🏃', 'runner'), ('🧑', 'person'), ('👩', 'woman'), ('👨', 'man')):
-            self.assertEqual(shape(self.font, text), [base + '20'])
+    def test_current_glyph_intersections_seed_all_five_single_tones(self):
+        for text, base, tone in (('🏃', 'runner', 4), ('🧑', 'person', 2),
+                                 ('👩', 'woman', 0), ('👨', 'man', 1), ('👍', 'thumb', 3)):
+            self.assertEqual(shape(self.font, text), [f'{base}{tone}0'])
             self.assertEqual(shape(self.font, text, calt=False), [base])
         # An already assembled following emoji has no encoded seed membership.
-        self.assertEqual(shape(self.font, '🏃🏃🏻'), ['runner20', 'runner00'])
+        self.assertEqual(shape(self.font, '🏃🏃🏻'), ['runner40', 'runner00'])
 
     def test_person_uses_separate_gender_bases_and_shared_history(self):
-        tones = reference_tones(self.font, '🧑', 40)
+        tones = reference_tones(self.font, '🧑', 40, current='🧑')
         expected = [f'{("person", "woman", "man")[g]}{t}0'
                     for t, g in zip(tones, self.genders[:40])]
         self.assertEqual(shape(self.font, '🧑' * 40), expected)
         self.assertEqual(shape(self.font, '🧑' * 40, calt=False), ['person'] * 40)
         mixed = ''.join('🧑' if i % 2 == 0 else '🏃' for i in range(40))
+        tones = reference_tones(self.font, '🏃', 40, current='🧑')
         expected = [f'{("person", "woman", "man")[g]}{t}0'
-                    for t, g in zip(self.tones[:40], self.genders[:40])]
-        expected[1::2] = [f'runner{self.tones[i]}{self.genders[i]}' for i in range(1, 40, 2)]
+                    for t, g in zip(tones, self.genders[:40])]
+        expected[1::2] = [f'runner{tones[i]}{self.genders[i]}' for i in range(1, 40, 2)]
         self.assertEqual(shape(self.font, mixed), expected)
 
     def test_person_explicit_gender_aliases_preserve_tone(self):

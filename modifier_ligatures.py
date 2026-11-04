@@ -79,7 +79,8 @@ def discover(font):
     return tone_bases, gender_bases, assembly
 
 
-def _feedback(name, markers, coefficients, seed, stride, startup_step, lookahead=()):
+def _feedback(name, markers, coefficients, seed, stride, startup_step,
+              lookahead=(), current_buckets=()):
     base, degree = len(markers), len(coefficients)
     marker_class = '@tone' if base == 5 else '@gender'
     unit = ['@tonebase', '@tone'] if stride == 2 else ['@genderbase', '@tone', '@gender']
@@ -106,9 +107,14 @@ def _feedback(name, markers, coefficients, seed, stride, startup_step, lookahead
                      f" {markers[0]}' lookup {name}{result};")
     # Only a new run reaches these rules: established feedback and startup
     # history above take priority over any future glyph's seed bucket.
-    for glyph_class, result in lookahead:
-        lines.append('sub ' + ' '.join(current) +
-                     f" {markers[0]}' lookup {name}{result} {glyph_class};")
+    for current_class, current_value in current_buckets:
+        for glyph_class, future_value in lookahead:
+            result = (current_value + future_value) % base
+            lines.append('sub ' + ' '.join([current_class] + current[1:]) +
+                         f" {markers[0]}' lookup {name}{result} {glyph_class};")
+    for current_class, result in current_buckets:
+        lines.append('sub ' + ' '.join([current_class] + current[1:]) +
+                     f" {markers[0]}' lookup {name}{result};")
     first = stream(base, coefficients, seed, 1)[0]
     lines.append('sub ' + ' '.join(current) +
                  f" {markers[0]}' lookup {name}{first};")
@@ -127,6 +133,7 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     # excluded, so the lookahead samples the next character's mapped glyph.
     encoded = set(cmap.values())
     lookahead = []
+    current_buckets = []
     for bucket in range(5):
         members = [name for gid, name in enumerate(font.getGlyphOrder())
                    if name in encoded and gid % 5 == bucket]
@@ -134,6 +141,11 @@ def feature_source(font, tone_bases, gender_bases, assembly):
             glyph_class = f'@seed{bucket}'
             lines.append(glyph_class + ' = [' + ' '.join(members) + '];')
             lookahead.append((glyph_class, bucket))
+            intersection = [name for name in members if name in tone_bases]
+            if intersection:
+                current_class = f'@toneSeed{bucket}'
+                lines.append(current_class + ' = [' + ' '.join(intersection) + '];')
+                current_buckets.append((current_class, bucket))
     if gender_bases:
         lines += ['@genderbase = [' + ' '.join(sorted(gender_bases)) + '];',
                   '@gender = [' + ' '.join(GENDERS) + '];']
@@ -142,7 +154,8 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     for b in sorted(tone_bases):
         lines.append(f"sub {b}' by {b} {TONES[0]};")
     lines.append('} toneExpand;')
-    lines += _feedback('tone', TONES, TONE_COEFFICIENTS, TONE_SEED, 2, TONE_STARTUP_STEP, lookahead)
+    lines += _feedback('tone', TONES, TONE_COEFFICIENTS, TONE_SEED, 2,
+                       TONE_STARTUP_STEP, lookahead, current_buckets)
     if gender_bases:
         lines.append('lookup genderAppend {')
         lines += [f'sub {t} by {t} {GENDERS[0]};' for t in TONES]

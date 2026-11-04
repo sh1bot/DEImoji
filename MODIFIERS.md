@@ -33,9 +33,12 @@ sequence with the default initial outputs: middle tone (2) and neutral gender (0
 
 When full feedback cannot match, fallback rules use the preceding output:
 tone advances by 3 modulo 5, and gender by 1 modulo 3. A new tone run hashes the
-following mapped glyph with `glyphID % 5`: buckets 0 through 4 select all five
-initial tones. With neither classified lookahead nor preceding generated tone,
-the initial tone is 2: U+1F3FD, the middle (medium) skin tone. Gender starts
+current and following mapped glyphs with `glyphID % 5`. The initial tone is
+`(currentBucket + followingBucket) % 5`. Without classified lookahead, the
+current glyph's bucket alone chooses its tone, so isolated bases can differ.
+The current-glyph classes are intersections of the broad seed classes with
+the tone-compatible base class. The middle (medium) tone remains the final
+defensive default after those rules. Gender starts
 at zero. A seeded run gives all five tones in the first five positions and
 all three genders in the first three, instead of a repeated startup default.
 Full feedback has priority and takes over after eight tone outputs or seven
@@ -52,7 +55,8 @@ its first return to the seed to verify the full maximal periods.
 
 Tone expansion creates `BASE TONE_INTERNAL` units at stride two. Tone feedback
 matches 125 sparse tap combinations, followed by five previous-state fallbacks,
-five lookahead seed rules, and an internal first-output default. The five seed classes
+25 current/lookahead seed rules, five current-glyph seed rules, and an internal
+first-output default. The five broad seed classes
 are generated at build time from encoded glyph IDs, excluding internal markers.
 GSUB stores their membership as coverage lists/ranges; it performs no bitwise
 operation during shaping. No extra lookup or state glyph is needed.
@@ -88,9 +92,9 @@ with `calt` enabled/disabled in each font format and checks that explicit
 sequences render identically. HarfBuzz tests check glyph identities and neutral
 marker removal rather than relying on equal-advance artwork widths.
 
-Measured on the full native font pair, the installed GSUB is 119,350 bytes for
-CBDT (+65,428 bytes including both custom bundles), and 101,030 bytes for COLRv1
-(+69,604 bytes including both custom bundles). The modifier installer appends
+Measured on the full native font pair, the installed GSUB is 132,920 bytes for
+CBDT (+78,998 bytes including both custom bundles), and 114,434 bytes for COLRv1
+(+83,008 bytes including both custom bundles). The modifier installer appends
 17 lookups and eight glyphs. Full-font validation also checks 120-run glyph
 identities, all explicit runner tone/gender variants with and without VS16,
 `calt` disabled, mixed explicit/plain boundaries, and serialized cache recovery.
