@@ -7,6 +7,7 @@ No generated Unicode tone, ZWJ, or gender-sign glyphs are emitted.
 """
 from copy import deepcopy
 from itertools import product
+import unicodedata
 
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 from fontTools.pens.ttGlyphPen import TTGlyphPen
@@ -15,12 +16,10 @@ from fontTools.ttLib import TTFont
 
 TONE_COEFFICIENTS = (0, 1, 1, 2)
 GENDER_COEFFICIENTS = (0, 0, 1, 1)
-# Virtual initial registers chosen to reproduce the fallback cycles below.
-# They keep the reference stream continuous when full feedback takes over.
+# Example starting registers for cycle verification; actual startup is
+# collected by the right-to-left suffix hashes.
 TONE_SEED = (2, 2, 3, 1)
 GENDER_SEED = (0, 2, 2, 1)
-TONE_STARTUP_STEP = 3
-GENDER_STARTUP_STEP = 1
 TONES = tuple('DEImojiTone' + str(i) for i in range(5))
 GENDERS = tuple('DEImojiGender' + str(i) for i in range(3))
 MARKERS = TONES + GENDERS
@@ -89,57 +88,97 @@ def discover(font):
     return tone_bases, gender_bases, assembly
 
 
-def _feedback(name, markers, coefficients, seed, stride, startup_step,
-              lookahead=(), current_buckets=()):
+def source_glyphs(font):
+    """All mapped glyphs and GSUB outputs that can carry input-buffer noise.
+
+    COLRv1 outline components are not buffer glyphs. Excluding those avoids
+    thousands of pointless expansion rules without excluding shaped text.
+    """
+    from fontTools.ttLib.tables.otBase import BaseTable
+    names = set(font.getBestCmap().values())
+
+    def visit(table):
+        if isinstance(table, list):
+            for item in table:
+                visit(item)
+        elif isinstance(table, BaseTable):
+            for attr in ('mapping', 'alternates'):
+                mapping = getattr(table, attr, {})
+                for output in mapping.values():
+                    names.update([output] if isinstance(output, str) else output)
+            for ligatures in getattr(table, 'ligatures', {}).values():
+                names.update(lig.LigGlyph for lig in ligatures)
+            for value in vars(table).values():
+                if isinstance(value, (list, BaseTable)):
+                    visit(value)
+    visit(font['GSUB'].table.LookupList.Lookup)
+    # Touching .notdef would mark an unsupported variation selector as
+    # substituted, preventing HarfBuzz from hiding that default-ignorable.
+    protected = {font.getGlyphOrder()[0]}
+    # Preserve shaper treatment of default-ignorables: GSUB substitution can
+    # otherwise turn their normally hidden glyphs into visible output.
+    invisible_ranges = ((0x115F, 0x1160), (0x17B4, 0x17B5), (0x180B, 0x180F),
+                        (0xFE00, 0xFE0F), (0xFFF0, 0xFFF8),
+                        (0x1BCA0, 0x1BCAF), (0x1D173, 0x1D17A), (0xE0000, 0xE0FFF))
+    for cp, glyph in font.getBestCmap().items():
+        if (unicodedata.category(chr(cp)) == 'Cf' or cp in (0x034F, 0x3164, 0xFFA0)
+                or any(lo <= cp <= hi for lo, hi in invisible_ranges)):
+            protected.add(glyph)
+    return [name for name in font.getGlyphOrder()
+            if name in names and name not in MARKERS and name not in protected]
+
+
+def _reverse_hash(name, markers, buckets):
+    """One compact reverse lookup accumulates the entire visible suffix."""
+    base = len(markers)
+    target = '@tone' if base == 5 else '@gender'
+    lines = [f'lookup {name} useExtension {{']
+    for glyph_class, bucket in buckets:
+        for future in range(base):
+            value = (2 * future + bucket + 1) % base
+            if base == 5:
+                context = f"{glyph_class} {target}' @gender @source {markers[future]}"
+            else:
+                context = f"{glyph_class} @tone {target}' @source @tone {markers[future]}"
+            lines.append(f'rsub {context} by {markers[value]};')
+    # Seed the last source with its negated bucket. This covers all five
+    # singleton tones and is never the fixed point -(bucket+1) of the
+    # repeated-source recurrence, so repeated runs retain length variation.
+    for glyph_class, bucket in buckets:
+        prefix = glyph_class if base == 5 else glyph_class + ' @tone'
+        lines.append(f"rsub {prefix} {target}' by {markers[(-bucket) % base]};")
+    lines.append(f'}} {name};')
+    return lines
+
+
+def _feedback(name, markers, coefficients):
     base, degree = len(markers), len(coefficients)
     marker_class = '@tone' if base == 5 else '@gender'
-    unit = ['@tonebase', '@tone'] if stride == 2 else ['@tonebase', '@tone', '@gender']
-    current = unit[:-1]
+    current = ['@tonebase'] if base == 5 else ['@tonebase', '@tone']
+    suffix = ['@gender'] if base == 5 else []
     lines = []
     for i, marker in enumerate(markers):
-        lines.append(f'lookup {name}{i} {{ sub {markers[0]} by {marker}; }} {name}{i};')
+        lines.append(f'lookup {name}{i} {{ sub {marker_class} by {marker}; }} {name}{i};')
     lines.append(f'lookup {name}Feedback useExtension {{')
-    # Exact full-register exceptions precede the shorter tap-only rules.
-    # Chronological 1,0,0,0 -> 0,0,0,0 -> 0,0,0,c[-1].
-    for register, result in (((1,) + (0,) * (degree - 1), 0),
-                             ((0,) * degree, coefficients[-1] % base)):
+
+    def rule(register, result):
         context = []
         for value in register:
-            context.extend(unit[:-1] + [markers[value]])
+            state = marker_class if value is None else markers[value]
+            context.extend(['@tonebase', state, '@gender'] if base == 5 else
+                           ['@tonebase', '@tone', state])
         lines.append('sub ' + ' '.join(context + current) +
-                     f" {markers[0]}' lookup {name}{result};")
+                     f" {marker_class}' lookup {name}{result} " + ' '.join(suffix) + ';')
+
+    # Exact zero-state splice first; chronological register order.
+    rule((1,) + (0,) * (degree - 1), 0)
+    rule((0,) * degree, coefficients[-1] % base)
     taps = [i for i, coefficient in enumerate(coefficients) if coefficient]
     for values in product(range(base), repeat=len(taps)):
-        history = {degree - 1 - i: markers[v] for i, v in zip(taps, values)}
-        context = []
-        for n in range(degree):
-            context.extend(unit[:-1] + [history.get(n, marker_class)])
+        history = {degree - 1 - i: v for i, v in zip(taps, values)}
         result = sum(coefficients[i] * v for i, v in zip(taps, values)) % base
-        lines.append('sub ' + ' '.join(context + current) +
-                     f" {markers[0]}' lookup {name}{result};")
-    # Full feedback has priority. With insufficient history, advance from the
-    # preceding output instead of repeatedly using the same default state.
-    for previous in range(base):
-        context = unit[:-1] + [markers[previous]] + current
-        result = (previous + startup_step) % base
-        lines.append('sub ' + ' '.join(context) +
-                     f" {markers[0]}' lookup {name}{result};")
-    # Only a new run reaches these rules: established feedback and startup
-    # history above take priority over any future glyph's seed bucket.
-    for current_class, current_value in current_buckets:
-        for glyph_class, future_value in lookahead:
-            result = ((current_value + future_value) % 5 if base == 5 else
-                      (current_value + future_value + 2) % 3)
-            lines.append('sub ' + ' '.join([current_class] + current[1:]) +
-                         f" {markers[0]}' lookup {name}{result} {glyph_class};")
-    for current_class, result in current_buckets:
-        if base == 3:
-            result = result if result in (1, 2) else 0
-        lines.append('sub ' + ' '.join([current_class] + current[1:]) +
-                     f" {markers[0]}' lookup {name}{result};")
-    first = stream(base, coefficients, seed, 1)[0]
-    lines.append('sub ' + ' '.join(current) +
-                 f" {markers[0]}' lookup {name}{first};")
+        rule([history.get(n) for n in range(degree)], result)
+    # No short-history fallback: retain this position's reverse-sweep hash.
     lines.append(f'}} {name}Feedback;')
     return lines
 
@@ -147,57 +186,47 @@ def _feedback(name, markers, coefficients, seed, stride, startup_step,
 def feature_source(font, tone_bases, gender_bases, assembly):
     cmap = font.getBestCmap()
     actual_tones = [cmap[cp] for cp in range(0x1F3FB, 0x1F400)]
+    sources = source_glyphs(font)
     lines = ['languagesystem DFLT dflt;',
              '@tonebase = [' + ' '.join(sorted(tone_bases)) + '];',
              '@tone = [' + ' '.join(TONES) + '];',
+             '@gender = [' + ' '.join(GENDERS) + '];',
+             '@source = [' + ' '.join(sources) + '];',
              '@explicit = [' + ' '.join(actual_tones + [cmap[0x200D]]) + '];']
-    # Hash glyph identity at build time. Internal markers are unencoded and
-    # excluded, so the lookahead samples the next character's mapped glyph.
-    encoded = set(cmap.values())
-    lookahead = []
-    current_buckets = []
+    source_set = set(sources)
+    buckets = []
     for bucket in range(5):
         members = [name for gid, name in enumerate(font.getGlyphOrder())
-                   if name in encoded and gid % 5 == bucket]
+                   if name in source_set and gid % 5 == bucket]
         if members:
             glyph_class = f'@seed{bucket}'
             lines.append(glyph_class + ' = [' + ' '.join(members) + '];')
-            lookahead.append((glyph_class, bucket))
-            intersection = [name for name in members if name in tone_bases]
-            if intersection:
-                current_class = f'@toneSeed{bucket}'
-                lines.append(current_class + ' = [' + ' '.join(intersection) + '];')
-                current_buckets.append((current_class, bucket))
-    lines.append('@gender = [' + ' '.join(GENDERS) + '];')
-    lines.append('lookup toneExpand useExtension {')
-    lines.append("ignore sub @tonebase' @explicit;")
-    for b in sorted(tone_bases):
-        lines.append(f"sub {b}' by {b} {TONES[0]};")
-    lines.append('} toneExpand;')
-    lines += _feedback('tone', TONES, TONE_COEFFICIENTS, TONE_SEED, 2,
-                       TONE_STARTUP_STEP, lookahead, current_buckets)
-    # Both states advance across every eligible base, including bases whose
-    # artwork ignores gender. This keeps the register layout and clock stable.
-    lines.append('lookup genderAppend {')
-    lines += [f'sub {t} by {t} {GENDERS[0]};' for t in TONES]
-    lines += ['} genderAppend;', 'lookup genderExpand {',
-              "sub @tonebase @tone' lookup genderAppend;", '} genderExpand;']
-    lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS, GENDER_SEED, 3,
-                       GENDER_STARTUP_STEP, lookahead, current_buckets)
-    lines.append('lookup foldStates useExtension {')
+            buckets.append((glyph_class, bucket))
+    # Noise-only glyphs carry hash state too; only eligible bases will fold.
+    lines.append('lookup seedExpand useExtension {')
+    lines += [f'sub {name} by {name} {TONES[0]} {GENDERS[0]};' for name in sources]
+    lines.append('} seedExpand;')
+    lines += _reverse_hash('seedToneRTL', TONES, buckets)
+    lines += _reverse_hash('seedGenderRTL', GENDERS, buckets)
+    lines += _feedback('tone', TONES, TONE_COEFFICIENTS)
+    lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS)
+    lines.append('lookup foldStatePairs useExtension {')
     for b, variants in sorted(tone_bases.items()):
         for t, neutral in enumerate(variants):
             targets = [neutral] + (gender_bases[b][t] if b in gender_bases else [neutral, neutral])
             for g, target in enumerate(targets):
                 lines.append(f'sub {b} {TONES[t]} {GENDERS[g]} by {target};')
-    lines += ['} foldStates;', 'lookup sweepStates {',
-              'sub @tone by NULL;', 'sub @gender by NULL;', '} sweepStates;']
+    lines += ['} foldStatePairs;', 'lookup foldStates {',
+              "ignore sub @tonebase' @tone @gender @explicit;",
+              "sub @tonebase' lookup foldStatePairs;", '} foldStates;',
+              'lookup sweepStates {', 'sub @tone by NULL;',
+              'sub @gender by NULL;', '} sweepStates;']
     lines.append('lookup modifierAssembly useExtension {')
     for sequence, target in sorted(assembly.items(), key=lambda item: (-len(item[0]), item[0])):
         lines.append('sub ' + ' '.join(sequence) + f' by {target};')
     lines += ['} modifierAssembly;', 'feature calt {',
-              'lookup toneExpand;', 'lookup toneFeedback;',
-              'lookup genderExpand;', 'lookup genderFeedback;',
+              'lookup seedExpand;', 'lookup seedToneRTL;', 'lookup seedGenderRTL;',
+              'lookup toneFeedback;', 'lookup genderFeedback;',
               'lookup foldStates;', 'lookup sweepStates;',
               'lookup modifierAssembly;', '} calt;']
     return '\n'.join(lines)
@@ -268,7 +297,8 @@ def add_modifier_ligatures(font):
         record.Feature.LookupCount = len(record.Feature.LookupListIndex)
     gsub.LookupList.Lookup.extend(new_lookups)
     gsub.LookupList.LookupCount = len(gsub.LookupList.Lookup)
-    info = dict(version=2, created_calt=created_calt, original_lookup_count=offset, lookup_count=len(new_lookups),
+    info = dict(version=3, seeding="reverse-suffix-all-source-glyphs",
+                seed_source_glyphs=len(source_glyphs(font)), created_calt=created_calt, original_lookup_count=offset, lookup_count=len(new_lookups),
                 original_glyph_count=len(original_order), marker_count=len(MARKERS),
                 calt_roots=roots, state_periods=[625, 81], combined_period=50625, tone_bases=len(tone_bases), gender_bases=len(gender_bases))
     if 'OS/2' in font:
@@ -285,7 +315,7 @@ def remove_modifier_ligatures(font, info):
     gsub = font['GSUB'].table
     start, glyph_start = info['original_lookup_count'], info['original_glyph_count']
     order = font.getGlyphOrder()
-    if (info['version'] not in (1, 2) or len(gsub.LookupList.Lookup) != start + info['lookup_count']
+    if (info['version'] not in (1, 2, 3) or len(gsub.LookupList.Lookup) != start + info['lookup_count']
             or len(order) != glyph_start + info['marker_count'] or info['marker_count'] != 8):
         raise ValueError('Unrecognized modifier bundle metadata')
     marker_names = set(order[glyph_start:])

@@ -435,182 +435,169 @@ def make_modifier_font():
     return font
 
 
+def reference_private_states(font, glyphs):
+    """Independent suffix hash and forward-feedback model on shaped glyphs."""
+    from modifier_ligatures import discover, TONE_COEFFICIENTS, GENDER_COEFFICIENTS
+    eligible, _, _ = discover(font)
+    buckets = [font.getGlyphID(glyph) % 5 for glyph in glyphs]
+    streams = []
+    for base, coefficients in ((5, TONE_COEFFICIENTS), (3, GENDER_COEFFICIENTS)):
+        hashes = [0] * len(glyphs)
+        for i in range(len(glyphs)-1, -1, -1):
+            if i == len(glyphs)-1:
+                hashes[i] = (-buckets[i]) % base
+            else:
+                hashes[i] = (2 * hashes[i+1] + buckets[i] + 1) % base
+        history = []
+        values = []
+        for glyph, seed in zip(glyphs, hashes):
+            value = seed
+            if glyph in eligible:
+                if len(history) >= 4:
+                    register = history[-4:]
+                    if register == [1, 0, 0, 0]:
+                        value = 0
+                    elif register == [0, 0, 0, 0]:
+                        value = coefficients[-1] % base
+                    else:
+                        value = sum(c * register[-1-i] for i, c in enumerate(coefficients)) % base
+                history.append(value)
+            else:
+                history = []
+            values.append(value)
+        streams.append(values)
+    return streams
+
+
 def reference_tones(font, following, count, current='🏃'):
-    from modifier_ligatures import TONE_COEFFICIENTS
-    cmap = font.getBestCmap()
-    first = (font.getGlyphID(cmap[ord(current)]) +
-             (font.getGlyphID(cmap[ord(following)]) if following else 0)) % 5
-    values = [(first + 3 * i) % 5 for i in range(min(count, len(TONE_COEFFICIENTS)))]
-    while len(values) < count:
-        history = values[-4:]
-        value = (0 if history == [1, 0, 0, 0] else 2 if history == [0, 0, 0, 0] else
-                 sum(c * values[-1-i] for i, c in enumerate(TONE_COEFFICIENTS)) % 5)
-        values.append(value)
-    return values
+    # Kept as a small harness API for the full-font package verifier.
+    text = current * count
+    if following and following != current and count >= 2:
+        text = current + following + current * (count - 2)
+    return reference_private_states(font, shape(font, text, calt=False))[0]
 
 
 def reference_genders(font, following, count, current='🏃'):
-    from modifier_ligatures import GENDER_COEFFICIENTS
+    text = current * count
+    if following and following != current and count >= 2:
+        text = current + following + current * (count - 2)
+    return reference_private_states(font, shape(font, text, calt=False))[1]
+
+
+def reference_variations(font, text):
+    from modifier_ligatures import discover
+    tone_bases, gender_bases, _ = discover(font)
+    raw = shape(font, text, calt=False)
+    tones, genders = reference_private_states(font, raw)
+    result = []
     cmap = font.getBestCmap()
-    bucket = font.getGlyphID(cmap[ord(current)]) % 5
-    first = ((bucket + font.getGlyphID(cmap[ord(following)]) % 5 + 2) % 3
-             if following else {1: 1, 2: 2}.get(bucket, 0))
-    values = [(first + i) % 3 for i in range(min(count, len(GENDER_COEFFICIENTS)))]
-    while len(values) < count:
-        history = values[-4:]
-        value = (0 if history == [1, 0, 0, 0] else 1 if history == [0, 0, 0, 0] else
-                 sum(c * values[-1-i] for i, c in enumerate(GENDER_COEFFICIENTS)) % 3)
-        values.append(value)
-    return values
+    explicit = {cmap[cp] for cp in (*range(0x1F3FB, 0x1F400), 0x200D)}
+    for i, (glyph, tone, gender) in enumerate(zip(raw, tones, genders)):
+        if glyph not in tone_bases or (i+1 < len(raw) and raw[i+1] in explicit):
+            result.append(glyph)
+        elif gender and glyph in gender_bases:
+            result.append(gender_bases[glyph][tone][gender-1])
+        else:
+            result.append(tone_bases[glyph][tone])
+    return result
 
 
 class ModifierTests(unittest.TestCase):
     def setUp(self):
-        from modifier_ligatures import stream, TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
         self.font = make_modifier_font()
         self.info = add_cluster_ligatures(self.font)
-        self.tones = reference_tones(self.font, '🏃', 1252)
-        self.genders = reference_genders(self.font, '🏃', 1252)
 
-    def test_independent_feedback_and_neutral_deletion(self):
-        for n in (1, 3, 4, 5, 7, 8, 9, 40, 1252):
-            if n == 1:
-                self.assertEqual(shape(self.font, '🏃'), ['runner40'])
-                continue
-            tones = reference_tones(self.font, '🏃', n)
-            actual = shape(self.font, '🏃' * n)
-            self.assertEqual(actual,
-                             [f'runner{t}{g}' for t, g in zip(tones, self.genders[:n])])
+    def test_suffix_seeds_and_full_feedback(self):
+        for n in (1, 2, 3, 4, 5, 7, 8, 9, 40, 1252):
+            text = '🏃' * n
+            actual = shape(self.font, text)
+            self.assertEqual(actual, reference_variations(self.font, text))
             if n == 1252:
-                actual_tones = [int(name[-2]) for name in actual]
-                self.assertEqual(actual_tones[:625], actual_tones[625:1250])
-                self.assertEqual([actual_tones[:625].count(t) for t in range(5)],
-                                 [125] * 5)
-                actual_genders = [int(name[-1]) for name in actual]
-                self.assertEqual(actual_genders[:81], actual_genders[81:162])
-                self.assertEqual([actual_genders[:81].count(g) for g in range(3)],
-                                 [27] * 3)
-        self.assertEqual(set(self.tones), set(range(5)))
-        self.assertEqual(set(self.genders), set(range(3)))
+                tones = [int(name[-2]) for name in actual]
+                genders = [int(name[-1]) for name in actual]
+                self.assertEqual(tones[:625], tones[625:1250])
+                self.assertEqual([tones[:625].count(t) for t in range(5)], [125] * 5)
+                self.assertEqual(genders[:81], genders[81:162])
+                self.assertEqual([genders[:81].count(g) for g in range(3)], [27] * 3)
+        self.assertEqual(self.info['seeding'], 'reverse-suffix-all-source-glyphs')
 
-    def test_varied_startup_and_full_feedback_priority(self):
-        # Bootstrap follows the previous output: tone +3 mod 5, gender +1 mod 3.
-        # After four outputs, full feedback overrides both startup fallbacks.
-        tones = [3, 1, 4, 2, 1, 3, 1, 3, 1, 0]
-        genders = [1, 2, 0, 1, 0, 2, 1, 1, 2, 0]
-        expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
-        self.assertEqual(shape(self.font, '🏃'), ['runner40'])
-        for n in range(2, 11):
-            self.assertEqual(shape(self.font, '🏃' * n), expected[:n])
+    def test_first_four_states_use_suffix_then_full_feedback_wins(self):
+        from modifier_ligatures import TONE_COEFFICIENTS, GENDER_COEFFICIENTS
+        text = '🏃' * 12
+        raw = shape(self.font, text, calt=False)
+        tones, genders = reference_private_states(self.font, raw)
+        actual = shape(self.font, text)
+        self.assertEqual([int(g[-2]) for g in actual[:4]], tones[:4])
+        self.assertEqual([int(g[-1]) for g in actual[:4]], genders[:4])
+        self.assertGreater(len(set(tones[:4])), 1)
+        self.assertGreater(len(set(genders[:4])), 1)
+        self.assertEqual(int(actual[4][-2]), sum(c*tones[3-i] for i,c in enumerate(TONE_COEFFICIENTS)) % 5)
+        self.assertEqual(int(actual[4][-1]), sum(c*genders[3-i] for i,c in enumerate(GENDER_COEFFICIENTS)) % 3)
 
-    def test_lookahead_seed_buckets_and_history_priority(self):
-        # All five buckets seed a new run. Later lookahead cannot override the
-        # preceding-output fallback or full feedback. Text glyphs are sufficient.
-        bases = [('👩', 'woman'), ('👨', 'man'), ('🧑', 'person'), ('👍', 'thumb'), ('🏃', 'runner')]
-        cmap = self.font.getBestCmap()
-        for text, base in bases:
-            for ch, _ in bases:
-                tone = (self.font.getGlyphID(cmap[ord(text)]) +
-                        self.font.getGlyphID(cmap[ord(ch)])) % 5
-                gender = reference_genders(self.font, ch, 1, current=text)[0]
-                if base == 'person':
-                    target = ('person', 'woman', 'man')[gender] + f'{tone}0'
-                else:
-                    target = f'{base}{tone}{gender if base == "runner" else 0}'
-                self.assertEqual(shape(self.font, text + ch)[0], target)
-        self.assertEqual(shape(self.font, '🏃🏃👩')[1], 'runner12')
-        self.assertEqual(shape(self.font, '🏃a🏃'), ['runner20', 'a', 'runner40'])
+    def test_distant_noise_and_assembled_emoji_contribute(self):
+        # The changed glyph is beyond a bounded lookahead and is not eligible.
+        a = '🏃' + 'a' * 40 + 'a'
+        b = '🏃' + 'a' * 40 + 'b'
+        for text in (a, b, '🏃 a', '🏃 ab', '🏃🏃🏻', '🏃🏃🏿'):
+            self.assertEqual(shape(self.font, text), reference_variations(self.font, text))
+        self.assertNotEqual(shape(self.font, a)[0], shape(self.font, b)[0])
+        self.assertNotEqual(shape(self.font, '🏃 a')[0], shape(self.font, '🏃 b')[0])
+        self.assertNotEqual(shape(self.font, '🏃🏃🏻')[0], shape(self.font, '🏃🏃🏿')[0])
+        self.assertEqual(shape(self.font, a)[1:], ['a'] * 41)
 
-    def test_current_glyph_intersections_seed_all_five_single_tones(self):
-        for text, base, target in (('🏃', 'runner', 'runner40'), ('🧑', 'person', 'man20'),
-                                   ('👩', 'woman', 'woman00'), ('👨', 'man', 'man10'),
-                                   ('👍', 'thumb', 'thumb30')):
-            self.assertEqual(shape(self.font, text), [target])
-            self.assertEqual(shape(self.font, text, calt=False), [base])
-        # An already assembled following emoji has no encoded seed membership.
-        self.assertEqual(shape(self.font, '🏃🏃🏻'), ['runner40', 'runner00'])
+    def test_sources_include_noneligible_glyphs_and_native_outputs(self):
+        from modifier_ligatures import source_glyphs, MARKERS
+        sources = set(source_glyphs(self.font))
+        self.assertTrue({'a', 'b', 'space', 'runner00', 'runner42', 'thumb30'} <= sources)
+        self.assertFalse(sources & set(MARKERS))
+        self.assertNotIn('zwj', sources)
+        self.assertNotIn('.notdef', sources)
+        self.assertNotIn('unused', sources)  # Unreachable outline, not input noise.
+
+    def test_mixed_bases_share_both_clocks_and_singletons_vary(self):
+        for text in ('🏃👩👍🧑'*30, '🏊🚴🧗🏃🧑'*20, '🏃'*12+'👩'+'🏃'*20):
+            self.assertEqual(shape(self.font, text), reference_variations(self.font, text))
+        outputs = []
+        for base in ('🏃', '👩', '👨', '🧑', '👍', '🏊', '🚴', '🧗'):
+            self.assertEqual(shape(self.font, base), reference_variations(self.font, base))
+            outputs.extend(shape(self.font, base))
+        self.assertEqual(set(g[-2] for g in outputs), set('01234'))
 
     def test_person_uses_separate_gender_bases_and_shared_history(self):
-        tones = reference_tones(self.font, '🧑', 40, current='🧑')
-        genders = reference_genders(self.font, '🧑', 40, current='🧑')
-        expected = [f'{("person", "woman", "man")[g]}{t}0'
-                    for t, g in zip(tones, genders)]
-        self.assertEqual(shape(self.font, '🧑' * 40), expected)
-        self.assertEqual(shape(self.font, '🧑' * 40, calt=False), ['person'] * 40)
-        mixed = ''.join('🧑' if i % 2 == 0 else '🏃' for i in range(40))
-        tones = reference_tones(self.font, '🏃', 40, current='🧑')
-        genders = reference_genders(self.font, '🏃', 40, current='🧑')
-        expected = [f'{("person", "woman", "man")[g]}{t}0'
-                    for t, g in zip(tones, genders)]
-        expected[1::2] = [f'runner{tones[i]}{genders[i]}' for i in range(1, 40, 2)]
-        self.assertEqual(shape(self.font, mixed), expected)
+        for text in ('🧑'*40, '🧑🏃'*20):
+            self.assertEqual(shape(self.font, text), reference_variations(self.font, text))
+        self.assertEqual(shape(self.font, '🧑'*40, calt=False), ['person'] * 40)
 
     def test_person_explicit_gender_aliases_preserve_tone(self):
         for sign, base in (('♀', 'woman'), ('♂', 'man')):
             self.assertEqual(shape(self.font, '🧑\u200d' + sign), [base])
             for t in range(5):
-                text = '🧑' + chr(0x1F3FB + t) + '\u200d' + sign
+                text = '🧑' + chr(0x1F3FB+t) + '\u200d' + sign
                 self.assertEqual(shape(self.font, text), [f'{base}{t}0'])
-
-    def test_gender_seed_distribution_and_non_neutral_feedback(self):
-        cases = [('🏊', 'swimmer'), ('🚴', 'cyclist'), ('🧑', 'person'),
-                 ('🧗', 'climber'), ('🏃', 'runner')]
-        def target(base, tone, gender):
-            if base == 'person':
-                return ('person', 'woman', 'man')[gender] + f'{tone}0'
-            return f'{base}{tone}{gender}'
-        for bucket, (text, base) in enumerate(cases):
-            gender = (0, 1, 2, 0, 0)[bucket]
-            self.assertEqual(shape(self.font, text), [target(base, bucket, gender)])
-        observed = []
-        for current, (text, base) in enumerate(cases):
-            for following, (ch, _) in enumerate(cases):
-                gender = (current + following + 2) % 3
-                first = shape(self.font, text + ch)[0]
-                self.assertEqual(first, target(base, (current + following) % 5, gender))
-                observed.append((2 if first.startswith('man') else
-                                 1 if first.startswith('woman') else 0)
-                                if base == 'person' else int(first[-1]))
-        self.assertEqual([observed.count(g) for g in range(3)], [9, 8, 8])
-        # Exercise the full recurrence after neutral, woman and man startup.
-        for following, (ch, next_base) in enumerate(cases[:3]):
-            text = '🏊' + ch + '🏊' * 30
-            tones = reference_tones(self.font, ch, len(text), current='🏊')
-            genders = reference_genders(self.font, ch, len(text), current='🏊')
-            bases = ['swimmer', next_base] + ['swimmer'] * 30
-            self.assertEqual(shape(self.font, text),
-                             [target(b, t, g) for b, t, g in zip(bases, tones, genders)])
 
     def test_explicit_sequences_and_calt_off(self):
         for t in range(5):
-            tone = chr(0x1F3FB + t)
-            for gender, g in (('', 0), ('\u200d♀', 1), ('\u200d♂', 2)):
-                text = ('🏃' + tone + gender) * 3
-                self.assertEqual(shape(self.font, text), [f'runner{t}{g}'] * 3)
-                self.assertEqual(shape(self.font, text), shape(self.font, text, calt=False))
-        self.assertEqual(shape(self.font, '🏃' * 40, calt=False), ['runner'] * 40)
-        # An incomplete explicit sequence must not acquire our modifiers.
+            for suffix, gender in (('', 0), ('\u200d♀', 1), ('\u200d♂', 2)):
+                for variation_selector in ('', '\ufe0f'):
+                    text = ('🏃' + chr(0x1F3FB+t) + suffix + variation_selector) * 3
+                    self.assertEqual(shape(self.font, text), shape(self.font, text, calt=False))
+                    if not variation_selector:
+                        self.assertEqual(shape(self.font, text), [f'runner{t}{gender}'] * 3)
+        self.assertEqual(shape(self.font, '🏃'*40, calt=False), ['runner'] * 40)
         self.assertEqual(shape(self.font, '🏃\u200d'), shape(self.font, '🏃\u200d', calt=False))
 
-    def test_boundaries_and_gendered_bases(self):
-        run = shape(self.font, '🏃' * 20)
-        self.assertEqual(shape(self.font, '🏃' * 20 + ' ' + '🏃' * 20), run + ['space'] + run)
-        # Both private generators continue through intrinsically gendered bases.
-        text = '🏃' * 12 + '👩' + '🏃' * 20
-        expected = [f'runner{t}{g}' for t, g in zip(self.tones[:12], self.genders[:12])]
-        expected += [f'woman{self.tones[12]}0']
-        expected += [f'runner{t}{g}' for t, g in zip(self.tones[13:33], self.genders[13:33])]
-        self.assertEqual(shape(self.font, text), expected)
-        # A fully assembled explicit emoji breaks both histories.
-        self.assertEqual(shape(self.font, '🏃' * 20 + '🏃🏻' + '🏃' * 20), run + ['runner00'] + run)
+    def test_noise_resets_feedback_but_suffix_hash_crosses_it(self):
+        for text in ('🏃'*20+' '+'🏃'*20, '🏃'*20+'🏃🏻'+'🏃'*20):
+            self.assertEqual(shape(self.font, text), reference_variations(self.font, text))
+            self.assertEqual(shape(self.font, text)[-20:], shape(self.font, '🏃'*20))
+        self.assertNotEqual(shape(self.font, '🏃 a')[0], shape(self.font, '🏃 b')[0])
 
     def test_roundtrip_uninstall_and_reinstall(self):
         from modifier_ligatures import remove_modifier_ligatures
-        before = shape(self.font, '🏃' * 50)
-        out = BytesIO()
-        self.font.save(out)
+        before = shape(self.font, '🏃'*50)
+        out = BytesIO(); self.font.save(out)
         font = TTFont(BytesIO(out.getvalue()))
-        self.assertEqual(shape(font, '🏃' * 50), before)
+        self.assertEqual(shape(font, '🏃'*50), before)
         remove_modifier_ligatures(font, self.info)
         remove_cluster_ligatures(font)
         original = make_modifier_font()
@@ -619,7 +606,7 @@ class ModifierTests(unittest.TestCase):
         self.assertEqual(font['OS/2'].usMaxContext, original['OS/2'].usMaxContext)
         self.assertEqual(font['GSUB'].compile(font), original['GSUB'].compile(original))
         add_cluster_ligatures(font)
-        self.assertEqual(shape(font, '🏃' * 50), before)
+        self.assertEqual(shape(font, '🏃'*50), before)
 
     def test_install_idempotent(self):
         before = self.font['GSUB'].compile(self.font)
@@ -632,12 +619,11 @@ class ModifierTests(unittest.TestCase):
         for lookup in font['GSUB'].table.LookupList.Lookup:
             for table in getattr(lookup, 'SubTable', []):
                 if hasattr(table, 'ligatures'):
-                    table.ligatures.pop('z', None)
-                    table.ligatures.pop('f', None)
+                    table.ligatures.pop('z', None); table.ligatures.pop('f', None)
         original = font['GSUB'].compile(font)
         info = add_cluster_ligatures(font)
         self.assertTrue(info['created_calt'])
-        self.assertEqual(shape(font, '🏃' * 30), shape(self.font, '🏃' * 30))
+        self.assertEqual(shape(font, '🏃'*30), shape(self.font, '🏃'*30))
         remove_modifier_ligatures(font, info)
         self.assertEqual(font['GSUB'].compile(font), original)
 
@@ -651,42 +637,40 @@ class ModifierTests(unittest.TestCase):
         registers = []
         for base, coefficients, seed, period in ((5, TONE_COEFFICIENTS, TONE_SEED, 625),
                                                  (3, GENDER_COEFFICIENTS, GENDER_SEED, 81)):
-            values = stream(base, coefficients, seed, period + 4)
+            values = stream(base, coefficients, seed, period+4)
             states = [tuple(values[i:i+4]) for i in range(period)]
             self.assertEqual(len(set(states)), period)
-            self.assertIn((0, 0, 0, 0), states)
+            self.assertIn((0,0,0,0), states)
             self.assertEqual(values[:4], values[period:period+4])
-            self.assertEqual([values[:period].count(v) for v in range(base)], [base**3] * base)
+            self.assertEqual([values[:period].count(v) for v in range(base)], [base**3]*base)
             registers.append(states)
-        combined = {(registers[0][i % 625], registers[1][i % 81]) for i in range(50625)}
-        self.assertEqual(len(combined), 50625)
+        self.assertEqual(len({(registers[0][i%625], registers[1][i%81]) for i in range(50625)}), 50625)
 
-    def test_private_states_fold_and_leftovers_are_swept(self):
+    def test_private_states_fold_and_noise_leftovers_are_swept(self):
         from copy import deepcopy
         from modifier_ligatures import MARKERS
         from cluster_ligatures import _ligature_tables
-        # Stop just before folding: both complete passes have produced stable
-        # BASE STATE5 STATE3 units without emitting any Unicode modifiers.
         raw = deepcopy(self.font)
         for record in raw['GSUB'].table.FeatureList.FeatureRecord:
             if record.FeatureTag == 'calt':
                 record.Feature.LookupListIndex = record.Feature.LookupListIndex[:-3]
                 record.Feature.LookupCount = len(record.Feature.LookupListIndex)
-        glyphs = shape(raw, '🏃' * 1252)
-        self.assertEqual(len(glyphs), 1252 * 3)
-        self.assertEqual(glyphs[::3], ['runner'] * 1252)
-        self.assertEqual(glyphs[1::3], ['DEImojiTone' + str(t) for t in self.tones])
-        self.assertEqual(glyphs[2::3], ['DEImojiGender' + str(g) for g in self.genders])
+        text = '🏃'*1252
+        tones, genders = reference_private_states(self.font, ['runner']*1252)
+        glyphs = shape(raw, text)
+        self.assertEqual(glyphs[::3], ['runner']*1252)
+        self.assertEqual(glyphs[1::3], ['DEImojiTone'+str(t) for t in tones])
+        self.assertEqual(glyphs[2::3], ['DEImojiGender'+str(g) for g in genders])
         self.assertFalse(set(MARKERS) & set(self.font.getBestCmap().values()))
-        # Simulate a base with no artwork fold mapping. Its private states must
-        # disappear, leaving the original base and explicit user text untouched.
         incomplete = deepcopy(self.font)
         for lookup in incomplete['GSUB'].table.LookupList.Lookup[self.info['original_lookup_count']:]:
             for table in _ligature_tables(lookup):
                 for base, rules in list(table.ligatures.items()):
                     table.ligatures[base] = [r for r in rules if not any(n in MARKERS for n in r.Component)]
-        self.assertEqual(shape(incomplete, '🏃' * 40 + '🏃🏻'), ['runner'] * 40 + ['runner00'])
-        self.assertFalse(set(MARKERS) & set(shape(self.font, '🏃' * 1252)))
+        self.assertEqual(shape(incomplete, '🏃'*40+' a '+'🏃🏻'),
+                         ['runner']*40+['space','a','space','runner00'])
+        self.assertEqual(shape(self.font, 'ab a'), ['a','b','space','a'])
+        self.assertFalse(set(MARKERS) & set(shape(self.font, text)))
 
 
 if __name__ == '__main__':

@@ -41,6 +41,8 @@ def main():
             page.goto(f'http://127.0.0.1:{server.server_port}/', wait_until='networkidle')
             loaded = "document.getElementById('status').textContent.startsWith('Built font loaded')"
             page.wait_for_function(loaded)
+            assert 'white-smile artwork' in page.locator('#build-details').inner_text()
+            assert 'reverse sweep' in page.locator('#build-details').inner_text()
             for family in ('🧟', '🌻', '💩'):
                 page.locator('#text').fill(family * 4)
                 for fmt in ('colr', 'cbdt'):

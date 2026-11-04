@@ -12,7 +12,7 @@ from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests'))
-from test_cluster_ligatures import shape, reference_tones, reference_genders
+from test_cluster_ligatures import shape, reference_tones, reference_genders, reference_variations
 from modifier_ligatures import discover
 from cluster_ligatures import _ligature_tables
 from supplemental_artwork import ART, NAMES, _verify_bundle
@@ -21,6 +21,8 @@ from supplemental_artwork import ART, NAMES, _verify_bundle
 def check_font_package(site):
     metadata = json.loads((site / 'build.json').read_text())
     bundle = _verify_bundle()
+    for name, expected in metadata['page_hashes'].items():
+        assert hashlib.sha256((site / name).read_bytes()).hexdigest() == expected, ('page checksum', name)
     for name, expected in metadata['font_hashes'].items():
         actual = hashlib.sha256((site / 'fonts' / name).read_bytes()).hexdigest()
         assert actual == expected, ('font checksum', name, actual, expected)
@@ -30,7 +32,8 @@ def check_font_package(site):
         # WOFF2 is the same logical COLRv1 font and must pass shaping too.
         published = name.replace('.woff2', '.ttf')
         info = metadata['modifiers'][published]
-        assert info['version'] >= 2, ('stale modifier bundle', name)
+        assert info['version'] >= 3, ('stale modifier bundle', name)
+        assert info['seeding'] == 'reverse-suffix-all-source-glyphs'
         assert info['state_periods'] == [625, 81]
         assert info['combined_period'] == 50625
         assert metadata['artwork'][published]['bundle'] == bundle, ('stale artwork bundle', name)
@@ -53,6 +56,13 @@ def check_font_package(site):
                             for suffix in ('', '\u200d♀', '\u200d♂',
                                            '\u200d♀\ufe0f', '\u200d♂\ufe0f'))
         assert shape(font, explicit) == shape(font, explicit, calt=False), ('explicit modifiers', name)
+        noise_results = []
+        for tail in ('🌻', '💩', '🏃🏻', '🏃🏿'):
+            text = '🏃' + ' ' * 40 + tail
+            actual_noise = shape(font, text)
+            assert actual_noise == reference_variations(font, text), ('distant seed noise', name, tail)
+            noise_results.append(actual_noise[0])
+        assert len(set(noise_results)) > 1, ('suffix noise ignored', name)
         if 'CBDT' in font:
             # Compare embedded PNG bytes, not just a claimed manifest label.
             poop = font.getBestCmap()[0x1F4A9]
@@ -68,8 +78,11 @@ def check_font_package(site):
                     ART / 'png/128' / (asset + '.png')).read_bytes(), ('embedded poop PNG', count)
         checked.append(name)
     return dict(commit=metadata['commit'], font_hashes=metadata['font_hashes'],
+                page_hashes=metadata['page_hashes'],
                 artwork_bundle=bundle, artwork_style='noto-white-smile-v2',
                 shaped_fonts=checked, state_periods=[625, 81], combined_period=50625,
                 feedback_outputs_checked_per_font=1252,
                 explicit_runner_sequences_checked_per_font=25,
+                seeding='reverse-suffix-all-source-glyphs',
+                distant_noneligible_noise_checked=True,
                 private_state_cleanup=True, bitmap_artwork_bytes_verified=True)

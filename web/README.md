@@ -102,3 +102,8 @@ modifier sequences. It compares embedded CBDT poop PNG bytes with the checked-in
 assets, then rejects the old pink-tongue design in both browser formats. On
 success it writes `checks.json`, linked from the page only when its commit
 matches `build.json`. The page also displays artwork style and state periods.
+
+Page scripts and styles also receive commit-specific URLs, and the verification
+report records their checksums. The page shows whether startup uses the old
+current/next hash or the right-to-left source-glyph sweep. Packaged-font checks
+change noneligible noise more than 40 glyphs away to verify the latter.

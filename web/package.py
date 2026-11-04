@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+from urllib.parse import quote
 
 from fontTools.ttLib import TTFont
 
@@ -41,6 +42,14 @@ def package(output, source):
         'font_hashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                         for p in fonts.glob('*') if p.suffix in ('.ttf', '.woff2')},
     }
+    # Bind page assets to this deployment as well as the font URLs.
+    page = output / 'index.html'
+    version = quote(metadata['commit'], safe='')
+    html = page.read_text().replace('href="style.css"', f'href="style.css?build={version}"')
+    html = html.replace('src="app.js"', f'src="app.js?build={version}"')
+    page.write_text(html)
+    metadata['page_hashes'] = {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
+                               for name in ('index.html', 'app.js', 'style.css')}
     (output / 'build.json').write_text(json.dumps(metadata, indent=2) + '\n')
     (output / '.nojekyll').touch()
 
