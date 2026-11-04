@@ -85,7 +85,8 @@ rules. Marker names are not persistent metadata (post format 3 may rename them).
 `web/cache_fonts.py apply` writes per-font bundle descriptions to
 `build/modifiers.json`; packaging embeds them in the public `build.json`.
 Bootstrap recovery first validates and removes the modifier lookups and marker
-glyphs, restores the prior maximum context, and then removes the cluster bundle.
+glyphs, restores the prior maximum context, and then removes the cluster bundle
+and any supplemental artwork using the public `artwork` manifest.
 The native artwork cache is never modified by rule application. No custom font
 table or workflow/Makefile cache-key change is needed.
 If the compiler fingerprint changes, recovery verifies that all native artwork
@@ -98,9 +99,9 @@ with `calt` enabled/disabled in each font format and checks that explicit
 sequences render identically. HarfBuzz tests check glyph identities and neutral
 marker removal rather than relying on equal-advance artwork widths.
 
-Measured on the full native font pair, the installed GSUB is 149,128 bytes for
-CBDT (+95,206 bytes including both custom bundles), and 130,622 bytes for COLRv1
-(+99,196 bytes including both custom bundles). The modifier installer appends
+Measured with the three cluster families and supplemental artwork, installed
+GSUB is 149,456 bytes for CBDT (+95,534 bytes including custom bundles), and
+130,950 bytes for COLRv1 (+99,524 bytes including custom bundles). The modifier installer appends
 17 lookups and eight glyphs. Full-font validation also checks 120-run glyph
 identities, all explicit runner tone/gender variants with and without VS16,
 `calt` disabled, mixed explicit/plain boundaries, and serialized cache recovery.

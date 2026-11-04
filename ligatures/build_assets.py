@@ -11,7 +11,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from cluster_ligatures import CLUSTER_NAMES
+from cluster_ligatures import NATIVE_CLUSTER_NAMES
 
 
 def main():
@@ -19,7 +19,7 @@ def main():
     png_dir = ROOT / 'ligatures/png/128'
     svg_dir.mkdir(parents=True, exist_ok=True)
     png_dir.mkdir(parents=True, exist_ok=True)
-    for name in CLUSTER_NAMES:
+    for name in NATIVE_CLUSTER_NAMES:
         svg = svg_dir / (name + '.svg')
         png = png_dir / (name + '.png')
         shutil.copyfile(ROOT / 'experiments/emoji-lfsr/artwork' / svg.name, svg)

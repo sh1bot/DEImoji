@@ -63,7 +63,7 @@ function updateText() {
 }
 
 function updatePreset() {
-  const emoji = { flowers: '🌻', zombies: '🧟', runners: '🏃' }[$('preset').value];
+  const emoji = { flowers: '🌻', zombies: '🧟', runners: '🏃', poop: '💩' }[$('preset').value];
   $('text').value = emoji.repeat(Number($('count').value));
   $('count-value').textContent = $('count').value;
   updateText();

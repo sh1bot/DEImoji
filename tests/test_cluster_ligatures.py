@@ -14,7 +14,7 @@ import json
 import xml.etree.ElementTree as ET
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from cluster_ligatures import add_cluster_ligatures, remove_cluster_ligatures, CLUSTER_NAMES
+from cluster_ligatures import add_cluster_ligatures, remove_cluster_ligatures, CLUSTER_NAMES, NATIVE_CLUSTER_NAMES
 from fontTools.fontBuilder import FontBuilder
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 from fontTools.pens.ttGlyphPen import TTGlyphPen
@@ -27,20 +27,22 @@ GLYPHS = ['.notdef', 'space', 'z', 'f', 'z2', 'z3', 'f2', 'f3',
           'a', 'b', 'ab', 'zwj', 'female', 'zwoman']
 
 
-def make_font():
+def make_font(with_poop=False):
+    glyphs = GLYPHS + (['p', 'p2', 'p3'] if with_poop else [])
     fb = FontBuilder(1000, isTTF=True)
-    fb.setupGlyphOrder(GLYPHS)
+    fb.setupGlyphOrder(glyphs)
     fb.setupCharacterMap({32: 'space', 0x1F9DF: 'z', 0x1F33B: 'f',
-                          97: 'a', 98: 'b', 0x200D: 'zwj', 0x2640: 'female'})
-    fb.setupGlyf({name: TTGlyphPen(None).glyph() for name in GLYPHS})
-    fb.setupHorizontalMetrics({name: (1000, 0) for name in GLYPHS})
+                          97: 'a', 98: 'b', 0x200D: 'zwj', 0x2640: 'female',
+                          **({0x1F4A9: 'p'} if with_poop else {})})
+    fb.setupGlyf({name: TTGlyphPen(None).glyph() for name in glyphs})
+    fb.setupHorizontalMetrics({name: (1000, 0) for name in glyphs})
     fb.setupHorizontalHeader(ascent=800, descent=-200)
     fb.setupNameTable({'familyName': 'Cluster Test', 'styleName': 'Regular'})
     fb.setupOS2(sTypoAscender=800, sTypoDescender=-200,
                 usWinAscent=800, usWinDescent=200)
     fb.setupPost()
     fb.setupMaxp()
-    addOpenTypeFeaturesFromString(fb.font, '''
+    features = '''
         languagesystem DFLT dflt;
         feature ccmp {
             sub z zwj female by zwoman;
@@ -51,7 +53,11 @@ def make_font():
         } ccmp;
         feature liga { sub a b by ab; } liga;
         feature kern { pos a b -10; } kern;
-    ''')
+    '''
+    if with_poop:
+        features = features.replace('sub z zwj female',
+                                    'sub p p p by p3; sub p p by p2; sub z zwj female')
+    addOpenTypeFeaturesFromString(fb.font, features)
     return fb.font
 
 
@@ -103,10 +109,10 @@ def reference(count):
             take = 2
         elif count <= 3:
             take = count
-        elif len(groups) < 3:
+        elif len(groups) < 4:
             take = 3
         else:
-            take = 2 + ((groups[-3] - 2) ^ (groups[-1] - 2))
+            take = 2 + ((groups[-4] - 2) ^ (groups[-3] - 2))
         groups.append(take)
         count -= take
     if count:
@@ -141,11 +147,12 @@ class ClusterTests(unittest.TestCase):
                     self.assertEqual(shape(self.font, emoji * n),
                                      [base + str(k) if k > 1 else base for k in reference(n)])
 
-    def test_period_seven_per_cluster(self):
+    def test_period_fifteen_per_cluster(self):
         groups = shape(self.font, '🧟' * 200)
-        self.assertEqual(groups[:7], ['z3', 'z3', 'z3', 'z2', 'z3', 'z2', 'z2'])
-        self.assertEqual(groups[:7], groups[7:14])
-        self.assertEqual(groups[7:14], groups[14:21])
+        self.assertEqual(groups[:15], ['z' + str(n) for n in
+                         (3, 3, 3, 3, 2, 2, 2, 3, 2, 2, 3, 3, 2, 3, 2)])
+        self.assertEqual(groups[:15], groups[15:30])
+        self.assertEqual(groups[15:30], groups[30:45])
 
     def test_boundaries_and_modified_input(self):
         z = shape(self.font, '🧟' * 19)
@@ -168,7 +175,7 @@ class ClusterTests(unittest.TestCase):
         self.assertEqual(original, self.font['GSUB'].compile(self.font))
         add_cluster_ligatures(self.font)
         self.assertEqual(shape(self.font, '🧟' * 18),
-                         ['z3', 'z3', 'z3', 'z2', 'z3', 'z2', 'z2'])
+                         ['z' + str(n) for n in reference(18)])
 
     def test_cache_recovery_rejects_unrecognized_font(self):
         with self.assertRaises(ValueError):
@@ -194,7 +201,7 @@ class ClusterTests(unittest.TestCase):
         remove_cluster_ligatures(font)
         add_cluster_ligatures(font)
         self.assertEqual(shape(font, '🧟' * 18),
-                         ['z3', 'z3', 'z3', 'z2', 'z3', 'z2', 'z2'])
+                         ['z' + str(n) for n in reference(18)])
 
     def test_missing_artwork_is_noop(self):
         font = make_font()
@@ -208,9 +215,10 @@ class ClusterTests(unittest.TestCase):
     def test_wide_artwork(self):
         root = Path(__file__).resolve().parents[1] / 'ligatures'
         for name in CLUSTER_NAMES:
-            svg = ET.parse(root / 'svg' / (name + '.svg')).getroot()
+            asset_root = root / 'supplemental/poop' if '1f4a9' in name else root
+            svg = ET.parse(asset_root / 'svg' / (name + '.svg')).getroot()
             box = tuple(map(float, svg.attrib['viewBox'].split()))
-            data = (root / 'png/128' / (name + '.png')).read_bytes()
+            data = (asset_root / 'png/128' / (name + '.png')).read_bytes()
             self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
             width, height = struct.unpack('>II', data[16:24])
             self.assertEqual(box, (0, 0, width, height))
@@ -223,9 +231,65 @@ class ClusterTests(unittest.TestCase):
         for name in ('all', 'noflags'):
             config = tomllib.loads((root / 'colrv1' / (name + '.toml')).read_text())
             sources = config['master']['regular']['srcs']
-            for asset in CLUSTER_NAMES:
+            for asset in NATIVE_CLUSTER_NAMES:
                 self.assertEqual(sources.count('../ligatures/svg/' + asset + '.svg'), 1)
             self.assertFalse(any(s.startswith('../svg/') for s in sources))
+
+
+class PoopClusterTests(unittest.TestCase):
+    def setUp(self):
+        self.native = make_font(with_poop=True)
+        self.font = make_font(with_poop=True)
+        add_cluster_ligatures(self.font)
+
+    def test_all_lengths_and_mixed_families(self):
+        for n in list(range(101)) + [1000]:
+            with self.subTest(n=n):
+                expected = ['p' + str(k) if k > 1 else 'p' for k in reference(n)]
+                self.assertEqual(shape(self.font, '💩' * n), expected)
+        text = '💩' * 40 + '🧟' * 40 + '🌻' * 40
+        self.assertEqual(shape(self.font, text), sum([
+            [base + str(k) for k in reference(40)] for base in ('p', 'z', 'f')], []))
+        self.assertEqual(shape(self.font, '💩' * 8, calt=False), ['p'] * 8)
+
+    def test_period_fifteen_and_cache_roundtrip(self):
+        groups = shape(self.font, '💩' * 200)
+        self.assertEqual(groups[:15], groups[15:30])
+        self.assertEqual(groups[15:30], groups[30:45])
+        self.assertEqual(groups[:15].count('p3'), 8)
+        self.assertEqual(groups[:15].count('p2'), 7)
+        data = BytesIO()
+        self.font.save(data)
+        restored = TTFont(BytesIO(data.getvalue()))
+        remove_cluster_ligatures(restored)
+        self.assertEqual(restored['GSUB'].compile(restored), self.native['GSUB'].compile(self.native))
+
+    def test_supplemental_artwork_checksum_and_recovery(self):
+        from supplemental_artwork import _verify_bundle, add_supplemental_artwork, remove_supplemental_artwork
+        self.assertEqual(len(_verify_bundle()), 64)
+        # The compiled supplement provides a small, real COLRv1 fixture.
+        from supplemental_artwork import ART
+        font = TTFont(ART / 'Poop-COLRv1.ttf', recalcBBoxes=False)
+        source_gsub = font['GSUB'].compile(font)
+        for lookup in font['GSUB'].table.LookupList.Lookup:
+            from cluster_ligatures import _ligature_tables
+            for table in _ligature_tables(lookup):
+                table.ligatures.clear()
+        native_gsub = font['GSUB'].compile(font)
+        original_order = font.getGlyphOrder()[:]
+        original_palette = font['CPAL'].compile(font)
+        info = add_supplemental_artwork(font)
+        self.assertIsNotNone(info)
+        order = font.getGlyphOrder()[:]
+        self.assertEqual(add_supplemental_artwork(font), info)
+        self.assertEqual(font.getGlyphOrder(), order)
+        data = BytesIO()
+        font.save(data)
+        restored = TTFont(BytesIO(data.getvalue()), recalcBBoxes=False)
+        remove_supplemental_artwork(restored, info)
+        self.assertEqual(len(restored.getGlyphOrder()), len(original_order))
+        self.assertEqual(restored['CPAL'].compile(restored), original_palette)
+        self.assertEqual(restored['GSUB'].compile(restored), native_gsub)
 
 
 class NativeCacheTests(unittest.TestCase):
@@ -317,7 +381,7 @@ class NativeCacheTests(unittest.TestCase):
                 self.assertTrue((root / 'build/modifiers.json').exists())
                 font = TTFont(root / '2D/fonts/NotoColorEmoji.ttf')
                 self.assertEqual(shape(font, '🧟' * 18),
-                                 ['z3', 'z3', 'z3', 'z2', 'z3', 'z2', 'z2'])
+                                 ['z' + str(n) for n in reference(18)])
                 self.assertTrue(cache_fonts.verify('test'))
                 (cache / 'NotoColorEmoji.ttf').write_bytes(b'corrupt')
                 self.assertFalse(cache_fonts.verify('test'))

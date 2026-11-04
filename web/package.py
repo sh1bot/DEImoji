@@ -23,7 +23,7 @@ def package(output, source):
         shutil.copyfile(source / src, fonts / dest)
     shutil.copyfile(ROOT / '2D/fonts/LICENSE', fonts / 'LICENSE.txt')
     # Webfont and TTF contain the same glyphs and OpenType lookups.
-    font = TTFont(source / 'Noto-COLRv1.ttf')
+    font = TTFont(source / 'Noto-COLRv1.ttf', recalcBBoxes=False)
     font.flavor = 'woff2'
     font.save(fonts / 'DEImoji-COLRv1.woff2')
     cache_manifest = ROOT / 'build/native-fonts/cache.json'
@@ -36,6 +36,8 @@ def package(output, source):
         'native_origin_key': cache_metadata.get('origin_key', cache_metadata.get('key')),
         'modifiers': json.loads((ROOT / 'build/modifiers.json').read_text())
                      if (ROOT / 'build/modifiers.json').exists() else {},
+        'artwork': json.loads((ROOT / 'build/artwork.json').read_text())
+                   if (ROOT / 'build/artwork.json').exists() else {},
         'font_hashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                         for p in fonts.glob('*') if p.suffix in ('.ttf', '.woff2')},
     }

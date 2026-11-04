@@ -4,12 +4,14 @@ Run: python web/check_browser.py build/site [--chromium /usr/bin/chromium]
 Requires playwright and its Chromium browser (playwright install chromium).
 """
 import argparse
+from io import BytesIO
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from threading import Thread
 
 from playwright.sync_api import sync_playwright
+from PIL import Image
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -34,7 +36,7 @@ def main():
             page.goto(f'http://127.0.0.1:{server.server_port}/', wait_until='networkidle')
             loaded = "document.getElementById('status').textContent.startsWith('Built font loaded')"
             page.wait_for_function(loaded)
-            for family in ('🧟', '🌻'):
+            for family in ('🧟', '🌻', '💩'):
                 page.locator('#text').fill(family * 4)
                 for fmt in ('colr', 'cbdt'):
                     page.select_option('#format', fmt)
@@ -45,6 +47,19 @@ def main():
                         return range.getBoundingClientRect().width;
                     })''')
                     assert on < off, (family, fmt, on, off)
+                    if family == '💩':
+                        for n in (2, 3):
+                            page.locator('#text').fill('💩' * n)
+                            assert page.locator('#clustered .emoji-run').count() == 1
+                            pixels = Image.open(BytesIO(page.locator(
+                                '#clustered .emoji-run').screenshot())).convert('RGB')
+                            brown = sum(40 < r < 220 and 15 < g < 180 and b < 150
+                                        and r > g * 1.25 and g > b * 1.15
+                                        for r, g, b in pixels.getdata())
+                            assert brown > 100, ('missing poop artwork', fmt, n, brown)
+                        page.locator('#text').fill(family * 4)
+            page.select_option('#preset', 'poop')
+            assert page.locator('#text').input_value() == '💩' * 36
             page.select_option('#preset', 'runners')
             assert page.locator('#text').input_value() == '🏃' * 36
             for fmt in ('colr', 'cbdt'):

@@ -23,12 +23,19 @@ patch. The cache key covers artwork, native build scripts/options, and compiler
 versions. Changes to `cluster_ligatures.py` or the web UI reuse those compiled
 fonts; the current GSUB rules are reapplied, then packaging and browser tests
 run normally. Changes to native artwork/build inputs trigger compilation.
+The small poop artwork pack in `ligatures/supplemental/poop/` is installed after
+the native cache is loaded. Its checked-in SVGs, bitmaps and small compiled
+COLRv1 bundle can change without recompiling unrelated Noto artwork.
 
 GitHub Actions caches persist between runs but can be evicted. If a matching
 build is still published on Pages, the workflow downloads its font pair and
 recovers the native lookups to reseed the cache. Published font checksums and
 the native input key prevent mixing builds. The first pre-cache preview has a
 strict one-time migration path tied to its known source commit.
+If only compiler/runtime versions differ, recovery compares native sources
+against the published commit and retains its `native_origin_key`. Recovery
+removes modifier rules, cluster rules, and supplemental artwork in that order;
+the required descriptions are exported in `build.json` outside the fonts.
 
 On a first run with no cache or published font pair, recovery can wait up to
 ten minutes for an in-flight build to publish before falling back to compilation.
@@ -80,9 +87,11 @@ GSUB cannot inspect glyphs in another shaping run, including runs split by fallb
 or by a browser's own emoji itemization.
 
 The build also runs `web/check_browser.py` with Chromium against the packaged
-fonts: both families and formats must render differently with `calt` enabled,
+fonts: all three cluster families and both formats must render differently with `calt` enabled,
 controls must update the input, mobile layout must stay within the viewport,
 and failed font loads must be reported. To run locally, install Playwright and
 Chromium and run `python web/check_browser.py build/site`.
+The poop pair and trio also require visible brown artwork, so valid glyph
+advances alone cannot conceal a broken bitmap or color-paint graph.
 
 The packaged font license is at `fonts/LICENSE.txt`.

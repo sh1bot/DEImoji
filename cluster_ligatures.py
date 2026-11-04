@@ -1,7 +1,7 @@
-"""Optional contextual pair/triple ligatures for plain zombies and sunflowers.
+"""Optional contextual pair/triple ligatures for plain zombies, sunflowers and poop.
 
-The previous three output clusters are a degree-three LFSR register. Pair=0,
-triple=1, with next = oldest XOR newest and seed 111 (period seven).
+The previous four output clusters are a degree-four LFSR register. Pair=0,
+triple=1, with next = oldest XOR next-oldest and seed 1111 (period fifteen).
 """
 from copy import deepcopy
 
@@ -11,7 +11,8 @@ from fontTools.ttLib.tables import otTables as ot
 from fontTools.ttLib.tables.otBase import BaseTable
 
 
-CLUSTER_CODEPOINTS = (0x1F9DF, 0x1F33B)
+NATIVE_CLUSTER_CODEPOINTS = (0x1F9DF, 0x1F33B)
+CLUSTER_CODEPOINTS = (*NATIVE_CLUSTER_CODEPOINTS, 0x1F4A9)
 CLUSTER_SEQUENCES = frozenset(
     (cp,) * count for cp in CLUSTER_CODEPOINTS for count in (2, 3)
 )
@@ -19,6 +20,7 @@ CLUSTER_NAMES = tuple(
     'emoji_u' + '_'.join(f'{cp:x}' for cp in sequence)
     for sequence in sorted(CLUSTER_SEQUENCES)
 )
+NATIVE_CLUSTER_NAMES = tuple(name for name in CLUSTER_NAMES if '1f4a9' not in name)
 
 
 def feature_source(families):
@@ -36,11 +38,11 @@ def feature_source(families):
         # The four-item tail forces 2+2; three and two finish exactly.
         tail = ' '.join([base] * 4)
         for oldest in (0, 1):
-            for newest in (0, 1):
-                a, c = (pair, triple)[oldest], (pair, triple)[newest]
-                choice = ('pair', 'triple')[oldest ^ newest]
+            for next_oldest in (0, 1):
+                a, b = (pair, triple)[oldest], (pair, triple)[next_oldest]
+                choice = ('pair', 'triple')[oldest ^ next_oldest]
                 lines.append(
-                    f"sub {a} @history{i} {c} {base}' lookup {choice}{i} {tail};"
+                    f"sub {a} {b} @history{i} @history{i} {base}' lookup {choice}{i} {tail};"
                 )
         lines += [
             f"sub {base}' lookup triple{i} {tail};",  # seed 1
@@ -74,7 +76,7 @@ def _offset_references(table, offset):
 
 
 def _add_cluster_ligatures(font):
-    """Keep native GSUB; move just our four repeated sequences to default calt.
+    """Keep native GSUB; move our repeated sequences to default calt.
 
     Discover output names from native ligatures, so both add_glyphs and
     nanoemoji naming conventions work. Missing families are skipped, allowing
@@ -170,6 +172,8 @@ def _add_cluster_ligatures(font):
 
 def add_cluster_ligatures(font):
     """Install the contextual clusters and independent modifier generators."""
+    from supplemental_artwork import add_supplemental_artwork
+    add_supplemental_artwork(font)
     _add_cluster_ligatures(font)
     from modifier_ligatures import add_modifier_ligatures
     return add_modifier_ligatures(font)
@@ -179,19 +183,32 @@ def remove_cluster_ligatures(font):
     """Recover the native GSUB for a build cache from our known full-font format.
 
     This deliberately refuses unknown/pre-existing calt features rather than
-    removing arbitrary font behavior. It supports the two-family bundle emitted
-    above, so an earlier published build can bootstrap a clean native-font cache.
+    removing arbitrary font behavior. Both the original two-family bundle and
+    the three-family supplemental-artwork bundle can recover a native cache.
     """
     gsub = font['GSUB'].table
     records = gsub.FeatureList.FeatureRecord
-    if len(CLUSTER_CODEPOINTS) != 2:
-        raise ValueError('Cache recovery only recognizes the original two-family bundle')
     calts = [(i, record) for i, record in enumerate(records) if record.FeatureTag == 'calt']
     lookups = gsub.LookupList.Lookup
-    start = len(lookups) - 5
+    references = set()
+    def collect(value):
+        if isinstance(value, list):
+            for item in value:
+                collect(item)
+        elif isinstance(value, BaseTable):
+            for key, item in vars(value).items():
+                if key == 'LookupListIndex':
+                    references.add(item)
+                else:
+                    collect(item)
+    if lookups:
+        collect(lookups[-1].SubTable)
+    start = min(references) if references else -1
     root_types = [s.ExtensionLookupType if lookups[-1].LookupType == 7 else lookups[-1].LookupType
                   for s in lookups[-1].SubTable] if lookups else []
     if (len(calts) != 1 or start < 1 or not root_types or set(root_types) != {6}
+            or references != set(range(start, len(lookups) - 1))
+            or len(references) not in (4, 6)
             or calts[0][1].Feature.LookupListIndex != [len(lookups) - 1]):
         raise ValueError('Not a recognized DEImoji cluster feature bundle')
     if getattr(gsub, 'FeatureVariations', None):
@@ -200,17 +217,26 @@ def remove_cluster_ligatures(font):
         if record is not calts[0][1] and any(i >= start for i in record.Feature.LookupListIndex):
             raise ValueError('Cluster lookup bundle is shared with another feature')
     restore = []
-    for family, cp in enumerate(CLUSTER_CODEPOINTS):
-        base = font.getBestCmap()[cp]
+    known_bases = {font.getBestCmap()[cp] for cp in CLUSTER_CODEPOINTS if cp in font.getBestCmap()}
+    seen_bases = set()
+    for family in range(len(references) // 2):
+        base = None
         for choice, count in enumerate((2, 3)):
             lookup = lookups[start + family * 2 + choice]
             tables = list(_ligature_tables(lookup))
-            if len(tables) != 1 or set(tables[0].ligatures) != {base}:
+            if len(tables) != 1 or len(tables[0].ligatures) != 1:
                 raise ValueError('Unexpected cluster ligature lookup')
+            candidate = next(iter(tables[0].ligatures))
+            if candidate not in known_bases or (base is not None and base != candidate):
+                raise ValueError('Unexpected cluster family')
+            base = candidate
             ligatures = tables[0].ligatures[base]
             if len(ligatures) != 1 or tuple(ligatures[0].Component) != (base,) * (count - 1):
                 raise ValueError('Unexpected cluster ligature components')
             restore.append((base, deepcopy(ligatures[0])))
+        if base in seen_bases:
+            raise ValueError('Duplicate cluster family')
+        seen_bases.add(base)
     ccmps = [r for r in records if r.FeatureTag == 'ccmp']
     if len(ccmps) != 1:
         raise ValueError('Expected a single native ccmp feature')

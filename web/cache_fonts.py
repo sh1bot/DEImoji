@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from cluster_ligatures import add_cluster_ligatures, remove_cluster_ligatures
 from modifier_ligatures import remove_modifier_ligatures
+from supplemental_artwork import remove_supplemental_artwork
 from fontTools.ttLib import TTFont, TTLibError
 
 CACHE = ROOT / 'build/native-fonts'
@@ -129,6 +130,7 @@ def bootstrap(key):
             font = TTFont(target)
             remove_modifier_ligatures(font, metadata.get('modifiers', {}).get(published))
             remove_cluster_ligatures(font)
+            remove_supplemental_artwork(font, metadata.get('artwork', {}).get(published))
             font.save(target)
         origin_key = metadata.get('native_origin_key') or metadata.get('native_key') or 'legacy-' + commit
         stamp(key, origin_key=origin_key)
@@ -163,13 +165,16 @@ def apply(key):
     output = ROOT / '2D/fonts'
     output.mkdir(parents=True, exist_ok=True)
     modifiers = {}
+    artwork = {}
     for name, published in FONTS.items():
         font = TTFont(CACHE / name)
         modifiers[published] = add_cluster_ligatures(font)
+        artwork[published] = getattr(font, '_deimoji_artwork', None)
         font.save(output / name)
     manifest = ROOT / 'build/modifiers.json'
     manifest.parent.mkdir(parents=True, exist_ok=True)
     manifest.write_text(json.dumps(modifiers, indent=2) + '\n')
+    (ROOT / 'build/artwork.json').write_text(json.dumps(artwork, indent=2) + '\n')
 
 
 if __name__ == '__main__':
