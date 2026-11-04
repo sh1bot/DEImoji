@@ -1,8 +1,9 @@
 """Deterministic, independent prime-base LFSRs for unmodified emoji.
 
 Internal unencoded markers keep feedback separate from explicitly typed modifiers.
-The native ccmp has already assembled user sequences; a restricted final assembly
-lookup reuses native artwork after our markers have been resolved.
+The native ccmp assembles explicit user sequences before private states exist.
+Both generators finish before direct artwork folding and a separate cleanup sweep.
+No generated Unicode tone, ZWJ, or gender-sign glyphs are emitted.
 """
 from copy import deepcopy
 from itertools import product
@@ -25,12 +26,21 @@ GENDERS = tuple('DEImojiGender' + str(i) for i in range(3))
 MARKERS = TONES + GENDERS
 
 
+def feedback(base, coefficients, state):
+    """Splice the missing zero register into one chosen maximal-cycle edge."""
+    if tuple(state) == (0,) * len(coefficients):
+        return coefficients[-1] % base
+    if tuple(state) == (0,) * (len(coefficients) - 1) + (1,):
+        return 0
+    return sum(a * b for a, b in zip(coefficients, state)) % base
+
+
 def stream(base, coefficients, seed, count):
     """Coefficients and seed are newest first; return the next count outputs."""
     state = list(seed)
     result = []
     for _ in range(count):
-        value = sum(a * b for a, b in zip(coefficients, state)) % base
+        value = feedback(base, coefficients, state)
         result.append(value)
         state = [value] + state[:-1]
     return result
@@ -83,12 +93,21 @@ def _feedback(name, markers, coefficients, seed, stride, startup_step,
               lookahead=(), current_buckets=()):
     base, degree = len(markers), len(coefficients)
     marker_class = '@tone' if base == 5 else '@gender'
-    unit = ['@tonebase', '@tone'] if stride == 2 else ['@genderbase', '@tone', '@gender']
+    unit = ['@tonebase', '@tone'] if stride == 2 else ['@tonebase', '@tone', '@gender']
     current = unit[:-1]
     lines = []
     for i, marker in enumerate(markers):
         lines.append(f'lookup {name}{i} {{ sub {markers[0]} by {marker}; }} {name}{i};')
     lines.append(f'lookup {name}Feedback useExtension {{')
+    # Exact full-register exceptions precede the shorter tap-only rules.
+    # Chronological 1,0,0,0 -> 0,0,0,0 -> 0,0,0,c[-1].
+    for register, result in (((1,) + (0,) * (degree - 1), 0),
+                             ((0,) * degree, coefficients[-1] % base)):
+        context = []
+        for value in register:
+            context.extend(unit[:-1] + [markers[value]])
+        lines.append('sub ' + ' '.join(context + current) +
+                     f" {markers[0]}' lookup {name}{result};")
     taps = [i for i, coefficient in enumerate(coefficients) if coefficient]
     for values in product(range(base), repeat=len(taps)):
         history = {degree - 1 - i: markers[v] for i, v in zip(taps, values)}
@@ -149,9 +168,7 @@ def feature_source(font, tone_bases, gender_bases, assembly):
                 current_class = f'@toneSeed{bucket}'
                 lines.append(current_class + ' = [' + ' '.join(intersection) + '];')
                 current_buckets.append((current_class, bucket))
-    if gender_bases:
-        lines += ['@genderbase = [' + ' '.join(sorted(gender_bases)) + '];',
-                  '@gender = [' + ' '.join(GENDERS) + '];']
+    lines.append('@gender = [' + ' '.join(GENDERS) + '];')
     lines.append('lookup toneExpand useExtension {')
     lines.append("ignore sub @tonebase' @explicit;")
     for b in sorted(tone_bases):
@@ -159,33 +176,30 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     lines.append('} toneExpand;')
     lines += _feedback('tone', TONES, TONE_COEFFICIENTS, TONE_SEED, 2,
                        TONE_STARTUP_STEP, lookahead, current_buckets)
-    if gender_bases:
-        lines.append('lookup genderAppend {')
-        lines += [f'sub {t} by {t} {GENDERS[0]};' for t in TONES]
-        lines += ['} genderAppend;', 'lookup genderExpand {',
-                  "sub @genderbase @tone' lookup genderAppend;", '} genderExpand;']
-        # Reuse the existing tone intersections. A gender marker is appended
-        # only to eligible bases, so it supplies the remaining restriction.
-        lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS, GENDER_SEED, 3,
-                           GENDER_STARTUP_STEP, lookahead, current_buckets)
-    lines.append('lookup resolveTone {')
-    lines += [f'sub {t} by {a};' for t, a in zip(TONES, actual_tones)]
-    lines.append('} resolveTone;')
-    if gender_bases:
-        lines += ['lookup resolveGender {', f'sub {GENDERS[0]} by NULL;']
-        lines += [f'sub {g} by {cmap[0x200D]} {cmap[cp]};'
-                  for g, cp in zip(GENDERS[1:], (0x2640, 0x2642))]
-        lines.append('} resolveGender;')
+    # Both states advance across every eligible base, including bases whose
+    # artwork ignores gender. This keeps the register layout and clock stable.
+    lines.append('lookup genderAppend {')
+    lines += [f'sub {t} by {t} {GENDERS[0]};' for t in TONES]
+    lines += ['} genderAppend;', 'lookup genderExpand {',
+              "sub @tonebase @tone' lookup genderAppend;", '} genderExpand;']
+    lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS, GENDER_SEED, 3,
+                       GENDER_STARTUP_STEP, lookahead, current_buckets)
+    lines.append('lookup foldStates useExtension {')
+    for b, variants in sorted(tone_bases.items()):
+        for t, neutral in enumerate(variants):
+            targets = [neutral] + (gender_bases[b][t] if b in gender_bases else [neutral, neutral])
+            for g, target in enumerate(targets):
+                lines.append(f'sub {b} {TONES[t]} {GENDERS[g]} by {target};')
+    lines += ['} foldStates;', 'lookup sweepStates {',
+              'sub @tone by NULL;', 'sub @gender by NULL;', '} sweepStates;']
     lines.append('lookup modifierAssembly useExtension {')
     for sequence, target in sorted(assembly.items(), key=lambda item: (-len(item[0]), item[0])):
         lines.append('sub ' + ' '.join(sequence) + f' by {target};')
-    lines += ['} modifierAssembly;', 'feature calt {', 'lookup toneExpand;', 'lookup toneFeedback;']
-    if gender_bases:
-        lines += ['lookup genderExpand;', 'lookup genderFeedback;']
-    lines.append('lookup resolveTone;')
-    if gender_bases:
-        lines.append('lookup resolveGender;')
-    lines += ['lookup modifierAssembly;', '} calt;']
+    lines += ['} modifierAssembly;', 'feature calt {',
+              'lookup toneExpand;', 'lookup toneFeedback;',
+              'lookup genderExpand;', 'lookup genderFeedback;',
+              'lookup foldStates;', 'lookup sweepStates;',
+              'lookup modifierAssembly;', '} calt;']
     return '\n'.join(lines)
 
 
@@ -254,9 +268,9 @@ def add_modifier_ligatures(font):
         record.Feature.LookupCount = len(record.Feature.LookupListIndex)
     gsub.LookupList.Lookup.extend(new_lookups)
     gsub.LookupList.LookupCount = len(gsub.LookupList.Lookup)
-    info = dict(version=1, created_calt=created_calt, original_lookup_count=offset, lookup_count=len(new_lookups),
+    info = dict(version=2, created_calt=created_calt, original_lookup_count=offset, lookup_count=len(new_lookups),
                 original_glyph_count=len(original_order), marker_count=len(MARKERS),
-                calt_roots=roots, tone_bases=len(tone_bases), gender_bases=len(gender_bases))
+                calt_roots=roots, state_periods=[625, 81], combined_period=50625, tone_bases=len(tone_bases), gender_bases=len(gender_bases))
     if 'OS/2' in font:
         info['original_max_context'] = font['OS/2'].usMaxContext
         font['OS/2'].usMaxContext = maxCtxFont(font)
@@ -271,7 +285,7 @@ def remove_modifier_ligatures(font, info):
     gsub = font['GSUB'].table
     start, glyph_start = info['original_lookup_count'], info['original_glyph_count']
     order = font.getGlyphOrder()
-    if (info['version'] != 1 or len(gsub.LookupList.Lookup) != start + info['lookup_count']
+    if (info['version'] not in (1, 2) or len(gsub.LookupList.Lookup) != start + info['lookup_count']
             or len(order) != glyph_start + info['marker_count'] or info['marker_count'] != 8):
         raise ValueError('Unrecognized modifier bundle metadata')
     marker_names = set(order[glyph_start:])

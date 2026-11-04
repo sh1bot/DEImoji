@@ -442,7 +442,10 @@ def reference_tones(font, following, count, current='🏃'):
              (font.getGlyphID(cmap[ord(following)]) if following else 0)) % 5
     values = [(first + 3 * i) % 5 for i in range(min(count, len(TONE_COEFFICIENTS)))]
     while len(values) < count:
-        values.append(sum(c * values[-1-i] for i, c in enumerate(TONE_COEFFICIENTS)) % 5)
+        history = values[-4:]
+        value = (0 if history == [1, 0, 0, 0] else 2 if history == [0, 0, 0, 0] else
+                 sum(c * values[-1-i] for i, c in enumerate(TONE_COEFFICIENTS)) % 5)
+        values.append(value)
     return values
 
 
@@ -454,7 +457,10 @@ def reference_genders(font, following, count, current='🏃'):
              if following else {1: 1, 2: 2}.get(bucket, 0))
     values = [(first + i) % 3 for i in range(min(count, len(GENDER_COEFFICIENTS)))]
     while len(values) < count:
-        values.append(sum(c * values[-1-i] for i, c in enumerate(GENDER_COEFFICIENTS)) % 3)
+        history = values[-4:]
+        value = (0 if history == [1, 0, 0, 0] else 1 if history == [0, 0, 0, 0] else
+                 sum(c * values[-1-i] for i, c in enumerate(GENDER_COEFFICIENTS)) % 3)
+        values.append(value)
     return values
 
 
@@ -477,13 +483,13 @@ class ModifierTests(unittest.TestCase):
                              [f'runner{t}{g}' for t, g in zip(tones, self.genders[:n])])
             if n == 1252:
                 actual_tones = [int(name[-2]) for name in actual]
-                self.assertEqual(actual_tones[:624], actual_tones[624:1248])
-                self.assertEqual([actual_tones[:624].count(t) for t in range(5)],
-                                 [124, 125, 125, 125, 125])
+                self.assertEqual(actual_tones[:625], actual_tones[625:1250])
+                self.assertEqual([actual_tones[:625].count(t) for t in range(5)],
+                                 [125] * 5)
                 actual_genders = [int(name[-1]) for name in actual]
-                self.assertEqual(actual_genders[:80], actual_genders[80:160])
-                self.assertEqual([actual_genders[:80].count(g) for g in range(3)],
-                                 [26, 27, 27])
+                self.assertEqual(actual_genders[:81], actual_genders[81:162])
+                self.assertEqual([actual_genders[:81].count(g) for g in range(3)],
+                                 [27] * 3)
         self.assertEqual(set(self.tones), set(range(5)))
         self.assertEqual(set(self.genders), set(range(3)))
 
@@ -589,11 +595,11 @@ class ModifierTests(unittest.TestCase):
     def test_boundaries_and_gendered_bases(self):
         run = shape(self.font, '🏃' * 20)
         self.assertEqual(shape(self.font, '🏃' * 20 + ' ' + '🏃' * 20), run + ['space'] + run)
-        # Gendered bases participate in tone history but restart gender history.
+        # Both private generators continue through intrinsically gendered bases.
         text = '🏃' * 12 + '👩' + '🏃' * 20
         expected = [f'runner{t}{g}' for t, g in zip(self.tones[:12], self.genders[:12])]
         expected += [f'woman{self.tones[12]}0']
-        expected += [f'runner{t}{g}' for t, g in zip(self.tones[13:33], self.genders[:20])]
+        expected += [f'runner{t}{g}' for t, g in zip(self.tones[13:33], self.genders[13:33])]
         self.assertEqual(shape(self.font, text), expected)
         # A fully assembled explicit emoji breaks both histories.
         self.assertEqual(shape(self.font, '🏃' * 20 + '🏃🏻' + '🏃' * 20), run + ['runner00'] + run)
@@ -640,18 +646,47 @@ class ModifierTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'native baseline'):
             add_cluster_ligatures(self.font)
 
-    def test_maximal_periods(self):
-        from modifier_ligatures import TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
-        for base, coefficients, seed, period in ((5, TONE_COEFFICIENTS, TONE_SEED, 624),
-                                                 (3, GENDER_COEFFICIENTS, GENDER_SEED, 80)):
-            state = tuple(seed)
-            for n in range(1, period + 1):
-                value = sum(a * b for a, b in zip(coefficients, state)) % base
-                state = (value,) + state[:-1]
-                if state == seed:
-                    break
-            self.assertEqual(n, period)
-            self.assertEqual(state, seed)
+    def test_full_periods_include_zero_and_combined_period(self):
+        from modifier_ligatures import stream, TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
+        registers = []
+        for base, coefficients, seed, period in ((5, TONE_COEFFICIENTS, TONE_SEED, 625),
+                                                 (3, GENDER_COEFFICIENTS, GENDER_SEED, 81)):
+            values = stream(base, coefficients, seed, period + 4)
+            states = [tuple(values[i:i+4]) for i in range(period)]
+            self.assertEqual(len(set(states)), period)
+            self.assertIn((0, 0, 0, 0), states)
+            self.assertEqual(values[:4], values[period:period+4])
+            self.assertEqual([values[:period].count(v) for v in range(base)], [base**3] * base)
+            registers.append(states)
+        combined = {(registers[0][i % 625], registers[1][i % 81]) for i in range(50625)}
+        self.assertEqual(len(combined), 50625)
+
+    def test_private_states_fold_and_leftovers_are_swept(self):
+        from copy import deepcopy
+        from modifier_ligatures import MARKERS
+        from cluster_ligatures import _ligature_tables
+        # Stop just before folding: both complete passes have produced stable
+        # BASE STATE5 STATE3 units without emitting any Unicode modifiers.
+        raw = deepcopy(self.font)
+        for record in raw['GSUB'].table.FeatureList.FeatureRecord:
+            if record.FeatureTag == 'calt':
+                record.Feature.LookupListIndex = record.Feature.LookupListIndex[:-3]
+                record.Feature.LookupCount = len(record.Feature.LookupListIndex)
+        glyphs = shape(raw, '🏃' * 1252)
+        self.assertEqual(len(glyphs), 1252 * 3)
+        self.assertEqual(glyphs[::3], ['runner'] * 1252)
+        self.assertEqual(glyphs[1::3], ['DEImojiTone' + str(t) for t in self.tones])
+        self.assertEqual(glyphs[2::3], ['DEImojiGender' + str(g) for g in self.genders])
+        self.assertFalse(set(MARKERS) & set(self.font.getBestCmap().values()))
+        # Simulate a base with no artwork fold mapping. Its private states must
+        # disappear, leaving the original base and explicit user text untouched.
+        incomplete = deepcopy(self.font)
+        for lookup in incomplete['GSUB'].table.LookupList.Lookup[self.info['original_lookup_count']:]:
+            for table in _ligature_tables(lookup):
+                for base, rules in list(table.ligatures.items()):
+                    table.ligatures[base] = [r for r in rules if not any(n in MARKERS for n in r.Component)]
+        self.assertEqual(shape(incomplete, '🏃' * 40 + '🏃🏻'), ['runner'] * 40 + ['runner00'])
+        self.assertFalse(set(MARKERS) & set(shape(self.font, '🏃' * 1252)))
 
 
 if __name__ == '__main__':
