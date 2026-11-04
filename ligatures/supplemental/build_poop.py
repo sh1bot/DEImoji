@@ -88,7 +88,7 @@ wght = 400
                     str(work / 'colr'), str(config)], check=True)
     shutil.copyfile(work / 'colr/Poop-COLRv1.ttf', ART / 'Poop-COLRv1.ttf')
     files = [p for p in ART.rglob('*') if p.is_file() and p.name != 'manifest.json']
-    manifest = {'version': 1, 'files': {str(p.relative_to(ART)):
+    manifest = {'version': 1, 'style': 'noto-white-smile-v2', 'files': {str(p.relative_to(ART)):
                 hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(files)}}
     (ART / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
 

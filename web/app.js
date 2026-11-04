@@ -112,6 +112,20 @@ async function initialize() {
     link.href = `https://github.com/${metadata.repository}/commit/${metadata.commit}`;
     link.textContent = metadata.commit.slice(0, 7);
     $('build').replaceChildren('Build ', link, ` · ${new Date(metadata.built_at).toLocaleString()}`);
+    const rules = metadata.modifiers?.['DEImoji-COLRv1.ttf'];
+    const art = metadata.artwork?.['DEImoji-COLRv1.ttf'];
+    $('build-details').textContent = [
+      art?.style === 'noto-white-smile-v2' ? 'Poop heaps: white-smile artwork' : 'Poop heaps: original artwork',
+      rules?.state_periods ? `Variation periods: ${rules.state_periods.join(' × ')} = ${rules.combined_period.toLocaleString()}` : '',
+    ].filter(Boolean).join(' · ');
+    try {
+      const checks = await fetch('checks.json', { cache: 'no-store' });
+      const report = checks.ok ? await checks.json() : null;
+      if (report?.commit === metadata.commit && report.browser_checks === 'passed') {
+        $('checks').hidden = false;
+        $('checks').href = `checks.json?build=${encodeURIComponent(metadata.commit)}`;
+      }
+    } catch (_) { /* Local previews may not have run verification yet. */ }
     document.querySelectorAll('nav a').forEach((a) => {
       a.href += `?build=${encodeURIComponent(metadata.commit)}`;
     });

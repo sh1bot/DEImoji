@@ -106,9 +106,11 @@ to text or other emoji. It is installed as a separate `kern` GPOS feature on
 the native Noto fonts (which have no existing GPOS), and removed during cache
 recovery. Existing positioning tables in other input fonts are retained.
 
-The poop heaps were generated from the approved concepts, then vectorised;
-they are not direct arrangements of the Noto singleton SVG. Their softer shading
-and facial proportions therefore differ from the unchanged Noto singleton.
+The current poop heaps use the revised white-smile, brown-pupil concept in
+`approved-transparent.png`, vectorised into the font assets. The initial
+pink-tongue concept is retained as `approved-concept.png` for provenance, but
+is not rendered by the font. The singleton remains the unmodified Noto SVG.
+The manifest style is `noto-white-smile-v2`.
 
 Singleton-to-singleton spacing is always preserved. Custom kerning applies only
 when at least one glyph in the adjacent same-family pair is a cluster.

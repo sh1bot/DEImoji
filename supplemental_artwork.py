@@ -193,7 +193,9 @@ def add_supplemental_artwork(font):
     tables = _tables(font)
     if not tables:
         raise ValueError('Missing native emoji assembly table')
-    info = dict(version=1, bundle=_verify_bundle(), original_glyph_count=len(font.getGlyphOrder()),
+    info = dict(version=1, bundle=_verify_bundle(),
+                style=json.loads((ART / 'manifest.json').read_text()).get('style', 'original'),
+                original_glyph_count=len(font.getGlyphOrder()),
                 advance_max=font['hhea'].advanceWidthMax,
                 bounds={key: getattr(font['head'], key) for key in ('xMin', 'yMin', 'xMax', 'yMax')},
                 horizontal={key: getattr(font['hhea'], key) for key in

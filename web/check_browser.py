@@ -4,6 +4,10 @@ Run: python web/check_browser.py build/site [--chromium /usr/bin/chromium]
 Requires playwright and its Chromium browser (playwright install chromium).
 """
 import argparse
+import json
+from datetime import datetime, timezone
+
+from check_font_package import check_font_package
 from io import BytesIO
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -24,6 +28,7 @@ def main():
     parser.add_argument('site', type=Path)
     parser.add_argument('--chromium', default=None)
     args = parser.parse_args()
+    report = check_font_package(args.site)
     server = ThreadingHTTPServer(('127.0.0.1', 0),
                                 partial(QuietHandler, directory=str(args.site.resolve())))
     Thread(target=server.serve_forever, daemon=True).start()
@@ -76,6 +81,9 @@ def main():
                                         and r > g * 1.25 and g > b * 1.15
                                         for r, g, b in pixels.getdata())
                             assert brown > 100, ('missing poop artwork', fmt, n, brown)
+                            pink = sum(r > 120 and r > g * 1.25 and b > g * 1.05 and b > 60
+                                       for r, g, b in pixels.getdata())
+                            assert pink < 2, ('old pink-tongue poop artwork', fmt, n, pink)
                         page.locator('#text').fill(family * 4)
             page.select_option('#preset', 'poop')
             assert page.locator('#text').input_value() == '💩' * 36
@@ -125,6 +133,10 @@ def main():
                 "node => getComputedStyle(node).visibility") == 'hidden'
             assert not errors, errors
             browser.close()
+        report.update(browser='Chromium', browser_checks='passed',
+                      poop_white_smile_artwork='passed',
+                      checked_at=datetime.now(timezone.utc).isoformat())
+        (args.site / 'checks.json').write_text(json.dumps(report, indent=2) + '\n')
         print('PASS: clusters and runner pixels in both formats, calt on/off, controls, mobile, font errors')
     finally:
         server.shutdown()

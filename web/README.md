@@ -95,3 +95,10 @@ The poop pair and trio also require visible brown artwork, so valid glyph
 advances alone cannot conceal a broken bitmap or color-paint graph.
 
 The packaged font license is at `fonts/LICENSE.txt`.
+
+The browser check first verifies checksums and shapes the actual packaged TTF
+and WOFF2 binaries with HarfBuzz, including 1,252 feedback outputs and explicit
+modifier sequences. It compares embedded CBDT poop PNG bytes with the checked-in
+assets, then rejects the old pink-tongue design in both browser formats. On
+success it writes `checks.json`, linked from the page only when its commit
+matches `build.json`. The page also displays artwork style and state periods.
