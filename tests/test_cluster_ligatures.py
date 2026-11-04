@@ -356,7 +356,7 @@ def reference_tones(font, following, count, current='🏃'):
     cmap = font.getBestCmap()
     first = (font.getGlyphID(cmap[ord(current)]) +
              (font.getGlyphID(cmap[ord(following)]) if following else 0)) % 5
-    values = [(first + 3 * i) % 5 for i in range(min(count, 8))]
+    values = [(first + 3 * i) % 5 for i in range(min(count, len(TONE_COEFFICIENTS)))]
     while len(values) < count:
         values.append(sum(c * values[-1-i] for i, c in enumerate(TONE_COEFFICIENTS)) % 5)
     return values
@@ -367,24 +367,30 @@ class ModifierTests(unittest.TestCase):
         from modifier_ligatures import stream, TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
         self.font = make_modifier_font()
         self.info = add_cluster_ligatures(self.font)
-        self.tones = reference_tones(self.font, '🏃', 500)
-        self.genders = stream(3, GENDER_COEFFICIENTS, GENDER_SEED, 500)
+        self.tones = reference_tones(self.font, '🏃', 1252)
+        self.genders = stream(3, GENDER_COEFFICIENTS, GENDER_SEED, 1252)
 
     def test_independent_feedback_and_neutral_deletion(self):
-        for n in (1, 7, 8, 9, 40, 500):
+        for n in (1, 3, 4, 5, 7, 8, 9, 40, 1252):
             if n == 1:
                 self.assertEqual(shape(self.font, '🏃'), ['runner40'])
                 continue
             tones = reference_tones(self.font, '🏃', n)
-            self.assertEqual(shape(self.font, '🏃' * n),
+            actual = shape(self.font, '🏃' * n)
+            self.assertEqual(actual,
                              [f'runner{t}{g}' for t, g in zip(tones, self.genders[:n])])
+            if n == 1252:
+                actual_tones = [int(name[-2]) for name in actual]
+                self.assertEqual(actual_tones[:624], actual_tones[624:1248])
+                self.assertEqual([actual_tones[:624].count(t) for t in range(5)],
+                                 [124, 125, 125, 125, 125])
         self.assertEqual(set(self.tones), set(range(5)))
         self.assertEqual(set(self.genders), set(range(3)))
 
     def test_varied_startup_and_full_feedback_priority(self):
         # Bootstrap follows the previous output: tone +3 mod 5, gender +1 mod 3.
-        # At 8/7 outputs respectively, full feedback overrides those fallbacks.
-        tones = [3, 1, 4, 2, 0, 3, 1, 4, 1, 3]
+        # At 4/7 outputs respectively, full feedback overrides those fallbacks.
+        tones = [3, 1, 4, 2, 1, 3, 1, 3, 1, 0]
         genders = [0, 1, 2, 0, 1, 2, 0, 2, 2, 2]
         expected = [f'runner{t}{g}' for t, g in zip(tones, genders)]
         self.assertEqual(shape(self.font, '🏃'), ['runner40'])
@@ -499,7 +505,7 @@ class ModifierTests(unittest.TestCase):
 
     def test_maximal_periods(self):
         from modifier_ligatures import TONE_COEFFICIENTS, GENDER_COEFFICIENTS, TONE_SEED, GENDER_SEED
-        for base, coefficients, seed, period in ((5, TONE_COEFFICIENTS, TONE_SEED, 390624),
+        for base, coefficients, seed, period in ((5, TONE_COEFFICIENTS, TONE_SEED, 624),
                                                  (3, GENDER_COEFFICIENTS, GENDER_SEED, 2186)):
             state = tuple(seed)
             for n in range(1, period + 1):
