@@ -55,7 +55,8 @@ def main():
                         node.style.fontFeatureSettings = original;
                         return [after - before, parseFloat(getComputedStyle(node).fontSize)];
                     }""")
-                    assert abs(overlap[0] - overlap[1] * .04) < .15, (family, fmt, overlap)
+                    # Chromium versions differ in fractional glyph-advance rounding.
+                    assert abs(overlap[0] - overlap[1] * .04) < .6, (family, fmt, overlap)
                     if family == '💩':
                         for n in (2, 3):
                             page.locator('#text').fill('💩' * n)
