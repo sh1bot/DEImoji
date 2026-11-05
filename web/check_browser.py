@@ -149,8 +149,8 @@ def main():
             page.locator('#text').fill('abc 🧟\u200d♀\ufe0f xyz')
             debug = page.locator('#codepoints').inner_text()
             assert '"abc "' in debug and '" xyz"' in debug
-            assert 'U+200D (ZWJ)' in debug and 'U+FE0F (VS16 (emoji))' in debug
-            assert 'U+0061' not in debug
+            assert '200D(ZWJ)' in debug and 'FE0F(VS16 (emoji))' in debug
+            assert '0061(' not in debug
             page.set_viewport_size({'width': 390, 'height': 844})
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
             # Force an uncached font load failure and ensure it is visible.
