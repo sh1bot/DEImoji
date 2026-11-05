@@ -440,14 +440,15 @@ def reference_private_states(font, glyphs):
     from modifier_ligatures import discover, TONE_COEFFICIENTS, GENDER_COEFFICIENTS
     eligible, _, _ = discover(font)
     buckets = [font.getGlyphID(glyph) % 5 for glyph in glyphs]
+    # One suffix hash, followed by a local remapping for the ternary seeds.
+    hashes5 = [0] * len(glyphs)
+    for i in range(len(glyphs)-1, -1, -1):
+        hashes5[i] = ((-buckets[i]) % 5 if i == len(glyphs)-1 else
+                      (2 * hashes5[i+1] + buckets[i] + 1) % 5)
+    hashes3 = [(((h+b+1) % 5) + b+2) % 3 for h,b in zip(hashes5,buckets)]
     streams = []
-    for base, coefficients in ((5, TONE_COEFFICIENTS), (3, GENDER_COEFFICIENTS)):
-        hashes = [0] * len(glyphs)
-        for i in range(len(glyphs)-1, -1, -1):
-            if i == len(glyphs)-1:
-                hashes[i] = (-buckets[i]) % base
-            else:
-                hashes[i] = (2 * hashes[i+1] + buckets[i] + 1) % base
+    for base, coefficients, hashes in ((5, TONE_COEFFICIENTS, hashes5),
+                                       (3, GENDER_COEFFICIENTS, hashes3)):
         history = []
         values = []
         for glyph, seed in zip(glyphs, hashes):
@@ -530,9 +531,28 @@ class ModifierTests(unittest.TestCase):
         self.assertEqual([int(g[-2]) for g in actual[:4]], tones[:4])
         self.assertEqual([int(g[-1]) for g in actual[:4]], genders[:4])
         self.assertGreater(len(set(tones[:4])), 1)
-        self.assertGreater(len(set(genders[:4])), 1)
+        self.assertEqual(set(genders[:4]), {0,1,2})
         self.assertEqual(int(actual[4][-2]), sum(c*tones[3-i] for i,c in enumerate(TONE_COEFFICIENTS)) % 5)
         self.assertEqual(int(actual[4][-1]), sum(c*genders[3-i] for i,c in enumerate(GENDER_COEFFICIENTS)) % 3)
+
+    def test_gender_startup_covers_three_states_in_every_bucket(self):
+        from copy import deepcopy
+        from modifier_ligatures import GENDERS, TONES
+        raw = deepcopy(self.font)
+        for record in raw['GSUB'].table.FeatureList.FeatureRecord:
+            if record.FeatureTag == 'calt':
+                record.Feature.LookupListIndex = [i for i in record.Feature.LookupListIndex
+                                                 if i not in self.info['calt_roots'][3:]]
+                record.Feature.LookupCount = len(record.Feature.LookupListIndex)
+        buckets = set()
+        for ch in ('🏊','🚴','🧑','🧗','🏃'):
+            buckets.add(self.font.getGlyphID(self.font.getBestCmap()[ord(ch)]) % 5)
+            out = shape(raw, ch*4)
+            self.assertEqual({GENDERS.index(g) for g in out if g in GENDERS}, {0,1,2})
+        self.assertEqual(buckets, set(range(5)))
+        # The former ternary sweep ignored insertion of two identical sources.
+        self.assertNotEqual(shape(self.font,'🏃a')[0][-1], shape(self.font,'🏃aaa')[0][-1])
+        self.assertEqual(self.info['gender_seeding'], 'base5-hash-and-source-bucket')
 
     def test_distant_noise_and_assembled_emoji_contribute(self):
         # The changed glyph is beyond a bounded lookahead and is not eligible.

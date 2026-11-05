@@ -33,8 +33,9 @@ def check_font_package(site):
         # WOFF2 is the same logical COLRv1 font and must pass shaping too.
         published = name.replace('.woff2', '.ttf')
         info = metadata['modifiers'][published]
-        assert info['version'] >= 3, ('stale modifier bundle', name)
+        assert info['version'] >= 4, ('stale modifier bundle', name)
         assert info['seeding'] == 'reverse-suffix-all-source-glyphs'
+        assert info['gender_seeding'] == 'base5-hash-and-source-bucket'
         assert info['state_periods'] == [625, 81]
         assert info['combined_period'] == 50625
         assert metadata['artwork'][published]['bundle'] == bundle, ('stale artwork bundle', name)
@@ -49,6 +50,31 @@ def check_font_package(site):
                     for t, g in zip(ts, gs)]
         actual = shape(font, '🏃' * 1252)
         assert actual == expected, ('full-font feedback', name)
+        # Inspect actual private gender seeds before either feedback pass.
+        # Cover every source bucket, rather than checking only one runner ID.
+        cmap = font.getBestCmap()
+        characters = {glyph:chr(cp) for cp,glyph in cmap.items()}
+        bucket_examples = {}
+        for glyph in genders:
+            bucket_examples.setdefault(font.getGlyphID(glyph) % 5, characters[glyph])
+        assert set(bucket_examples) == set(range(5)), ('missing gender seed buckets', name)
+        originals = []
+        for record in font['GSUB'].table.FeatureList.FeatureRecord:
+            if record.FeatureTag == 'calt':
+                originals.append((record,record.Feature.LookupListIndex[:]))
+                record.Feature.LookupListIndex = [i for i in record.Feature.LookupListIndex
+                                                 if i not in info['calt_roots'][3:]]
+                record.Feature.LookupCount = len(record.Feature.LookupListIndex)
+        private_genders = font.getGlyphOrder()[info['original_glyph_count']+5:][:3]
+        try:
+            for bucket,ch in bucket_examples.items():
+                seed_glyphs = shape(font,ch*4)
+                seeds = [private_genders.index(g) for g in seed_glyphs if g in private_genders]
+                assert len(seeds) == 4 and set(seeds) == {0,1,2}, ('poor gender startup',name,bucket,seeds)
+        finally:
+            for record,indices in originals:
+                record.Feature.LookupListIndex = indices
+                record.Feature.LookupCount = len(indices)
         markers = set(font.getGlyphOrder()[-info['marker_count']:])
         assert not markers.intersection(font.getBestCmap().values())
         assert not markers.intersection(actual), ('leaked private states', name)
@@ -106,6 +132,9 @@ def check_font_package(site):
                 feedback_outputs_checked_per_font=1252,
                 explicit_runner_sequences_checked_per_font=25,
                 seeding='reverse-suffix-all-source-glyphs',
+                gender_seeding='base5-hash-and-source-bucket',
+                gender_seed_buckets_checked=[0,1,2,3,4],
+                gender_states_in_first_four_repeats=3,
                 distant_noneligible_noise_checked=True,
                 zombie_compositions_checked=10, zombie_grouping_input_length=4000,
                 zombie_artwork_bundle=verify_zombies(),

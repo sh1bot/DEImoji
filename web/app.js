@@ -120,6 +120,7 @@ async function initialize() {
       art?.style === 'noto-white-smile-v2' ? 'Poop heaps: white-smile artwork' : 'Poop heaps: original artwork',
       rules?.state_periods ? `Variation periods: ${rules.state_periods.join(' × ')} = ${rules.combined_period.toLocaleString()}` : '',
       rules?.seeding === 'reverse-suffix-all-source-glyphs' ? 'Seeding: reverse sweep across source glyphs' : 'Seeding: current/next glyph',
+      rules?.gender_seeding === 'base5-hash-and-source-bucket' ? 'Gender startup: shared base-5 hash' : '',
     ].filter(Boolean).join(' · ');
     try {
       const checks = await fetch('checks.json', { cache: 'no-store' });

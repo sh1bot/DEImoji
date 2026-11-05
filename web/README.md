@@ -114,3 +114,9 @@ font download, verifies all bitmap assets and COLRv1 paint records, and paints
 all ten private glyphs in each browser format. The resulting actual-font PNG
 galleries are linked from the playground; the in-memory probe fonts are not
 published or used for the interactive samples.
+
+Base-3 startup now remaps the completed base-5 suffix hash with the current
+source bucket. Verification inspects the private seed glyphs before either
+forward generator runs and requires all three gender states in the first four
+repeats for each of the five source buckets, in every downloadable font.
+The page and verification report identify this seeding strategy.

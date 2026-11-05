@@ -42,20 +42,37 @@ Every source glyph receives two zero-advance private slots:
 SOURCE STATE5 STATE3  SOURCE STATE5 STATE3 ...
 ```
 
-Two reverse-chaining single-substitution lookups (GSUB type 8, with extension
-wrappers) accumulate the suffix right to left. For each base `q`, the hash is:
+A reverse-chaining single-substitution lookup (GSUB type 8, with an extension
+wrapper) accumulates the suffix right to left in base five:
 
 ```
-here = (2 * hash_to_the_right + source_bucket + 1) % q
+here5 = (2 * hash5_to_the_right + source_bucket + 1) % 5
 ```
 
-The terminal value is `(-source_bucket) % q`. It covers all five singleton
-tones and differs from the repeated-source recurrence’s fixed point
-`(-source_bucket - 1) % q`, so repeated runs retain length variation. Each hash has one rule per
-bucket/future-state combination (25 for base 5, 15 for base 3), plus five
-terminal rules. There is no ladder of progressively longer lookaheads.
-Insertion requires one multiple-substitution entry per reachable source glyph;
-this is representation overhead, not a separate hash case per string pattern.
+The terminal value is `(-source_bucket) % 5`. It covers all five singleton
+tones and differs from the repeated-source recurrence's fixed point
+`(-source_bucket - 1) % 5`, so repeated runs retain length variation. This uses
+25 bucket/future-state rules plus five terminal rules, with no ladder of longer
+lookaheads. Insertion has one entry per reachable source glyph.
+
+The base-3 startup then borrows the **completed base-5 hash**, before forward
+feedback changes either stream:
+
+```
+seed3 = (((here5 + source_bucket + 1) % 5) + source_bucket + 2) % 3
+```
+
+This is a local 25-entry remapping, compiled into 15 grouped rules using the
+existing five source classes and no extra glyphs. It does not recursively read the next base-3 state. Across all
+25 bucket/hash combinations it gives nine neutral, eight female and eight male
+seeds. Four identical eligible bases expose all three gender seed states in
+every source bucket. At a singleton, `here5 = -bucket`, so `seed3 = bucket % 3`.
+
+The previous separate ternary hash used multiplier 2, which is -1 modulo 3.
+It worked mechanically but reduced repeated input to an alternating sum: pairs
+of identical sources cancelled, and homogeneous startup used only two states.
+A direct `here5 % 3` mapping would also omit one gender for one of the five
+repeated-source cycles. Rebasing around that cycle's fixed point avoids this.
 
 Each of the first four eligible positions keeps its own suffix hash. There is
 no previous-output startup cycle and no current/next-only seed fallback.
@@ -93,7 +110,7 @@ Root lookups run in this order; each finishes its scan before the next starts:
 
 1. Insert both private slots after source glyphs.
 2. Complete the base-5 reverse suffix hash.
-3. Complete the base-3 reverse suffix hash.
+3. Remap the stored base-5 hash and source bucket into base-3 startup state.
 4. Run base-5 feedback left to right, using the collected short-history seeds.
 5. Run base-3 feedback left to right.
 6. Fold `BASE STATE5 STATE3` directly into existing artwork. Ignore bases with
@@ -114,9 +131,9 @@ before installing fresh rules. State names are not persistent metadata: post
 format 3 may rename them. All original glyph IDs and cmap entries are preserved.
 `OS/2.usMaxContext` is recalculated.
 
-Metadata version 3 records `seeding: reverse-suffix-all-source-glyphs`, carrier
-count, periods and lookup roots. Recovery still accepts version 1 and version 2
-published bundles. `web/cache_fonts.py apply` writes descriptions to
+Metadata version 4 records `seeding: reverse-suffix-all-source-glyphs`,
+`gender_seeding: base5-hash-and-source-bucket`, carrier count, periods and lookup
+roots. Recovery still accepts published bundles of versions 1, 2 and 3. `web/cache_fonts.py apply` writes descriptions to
 `build/modifiers.json`; packaging embeds them in `build.json`. Recovery removes
 modifier rules/states, cluster rules, and supplemental artwork in that order.
 Native artwork is cached separately and never modified by rule application.
@@ -131,8 +148,7 @@ then runs Chromium checks. Successful builds publish a commit-matched
 
 For the current complete fonts, the modifier bundle still uses 17 lookups and
 8 private glyphs. It has 4,013 source carriers in CBDT and 4,019 in COLRv1.
-Total GSUB sizes are 259,152 and 241,046 bytes respectively; most added storage
-is the one-entry-per-source insertion map.
+Most added storage is the one-entry-per-source insertion map.
 
 ## Custom zombie compositions
 
@@ -149,3 +165,7 @@ The zombie pack is nested in the public artwork manifest. Recovery removes
 modifier rules and cluster rules first, then the zombie registry and glyph tail,
 then the earlier poop pack. Native cache inputs and original glyph IDs stay
 unchanged. Kerning covers the ten new outputs while preserving singleton pairs.
+
+Packaged-font verification pauses the actual GSUB pipeline after seed mapping
+and inspects the private gender slots for four repeated eligible glyphs in
+all five source buckets, in both TTFs and WOFF2. The report records this coverage.

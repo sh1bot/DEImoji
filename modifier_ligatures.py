@@ -132,25 +132,37 @@ def source_glyphs(font):
 
 
 def _reverse_hash(name, markers, buckets):
-    """One compact reverse lookup accumulates the entire visible suffix."""
+    """Collect suffix noise in base five before either forward generator runs."""
     base = len(markers)
-    target = '@tone' if base == 5 else '@gender'
     lines = [f'lookup {name} useExtension {{']
     for glyph_class, bucket in buckets:
         for future in range(base):
             value = (2 * future + bucket + 1) % base
-            if base == 5:
-                context = f"{glyph_class} {target}' @gender @source {markers[future]}"
-            else:
-                context = f"{glyph_class} @tone {target}' @source @tone {markers[future]}"
+            context = f"{glyph_class} @tone' @gender @source {markers[future]}"
             lines.append(f'rsub {context} by {markers[value]};')
-    # Seed the last source with its negated bucket. This covers all five
-    # singleton tones and is never the fixed point -(bucket+1) of the
-    # repeated-source recurrence, so repeated runs retain length variation.
+    # The negated terminal bucket avoids the repeated-source fixed point.
     for glyph_class, bucket in buckets:
-        prefix = glyph_class if base == 5 else glyph_class + ' @tone'
-        lines.append(f"rsub {prefix} {target}' by {markers[(-bucket) % base]};")
+        lines.append(f"rsub {glyph_class} @tone' by {markers[(-bucket) % base]};")
     lines.append(f'}} {name};')
+    return lines
+
+
+def _gender_seed_from_tone(buckets):
+    """Reuse the completed base-five hash without a second recursive sweep.
+
+    Rebase relative to the repeated-source fixed point, then mix the bucket.
+    Every four-cycle of a repeated source visits all three gender states.
+    Across 25 (bucket,hash) combinations: 9 neutral, 8 female and 8 male.
+    """
+    lines = ['lookup seedGenderFromTone useExtension {']
+    for glyph_class, bucket in buckets:
+        for gender in range(3):
+            markers = [marker for tone, marker in enumerate(TONES)
+                       if (((tone + bucket + 1) % 5) + bucket + 2) % 3 == gender]
+            # Group hash values with the same result: 15 rules for 25 pairs.
+            hashes = '[' + ' '.join(markers) + ']'
+            lines.append(f"rsub {glyph_class} {hashes} @gender' by {GENDERS[gender]};")
+    lines.append('} seedGenderFromTone;')
     return lines
 
 
@@ -210,7 +222,7 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     lines += [f'sub {name} by {name} {TONES[0]} {GENDERS[0]};' for name in sources]
     lines.append('} seedExpand;')
     lines += _reverse_hash('seedToneRTL', TONES, buckets)
-    lines += _reverse_hash('seedGenderRTL', GENDERS, buckets)
+    lines += _gender_seed_from_tone(buckets)
     lines += _feedback('tone', TONES, TONE_COEFFICIENTS)
     lines += _feedback('gender', GENDERS, GENDER_COEFFICIENTS)
     lines.append('lookup foldStatePairs useExtension {')
@@ -228,7 +240,7 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     for sequence, target in sorted(assembly.items(), key=lambda item: (-len(item[0]), item[0])):
         lines.append('sub ' + ' '.join(sequence) + f' by {target};')
     lines += ['} modifierAssembly;', 'feature calt {',
-              'lookup seedExpand;', 'lookup seedToneRTL;', 'lookup seedGenderRTL;',
+              'lookup seedExpand;', 'lookup seedToneRTL;', 'lookup seedGenderFromTone;',
               'lookup toneFeedback;', 'lookup genderFeedback;',
               'lookup foldStates;', 'lookup sweepStates;',
               'lookup modifierAssembly;', '} calt;']
@@ -302,7 +314,7 @@ def add_modifier_ligatures(font):
     gsub.LookupList.LookupCount = len(gsub.LookupList.Lookup)
     from zombie_artwork import variant_mappings
     custom_count = len(variant_mappings(font))
-    info = dict(version=3, seeding="reverse-suffix-all-source-glyphs",
+    info = dict(version=4, gender_seeding="base5-hash-and-source-bucket", seeding="reverse-suffix-all-source-glyphs",
                 seed_source_glyphs=len(source_glyphs(font)), created_calt=created_calt, original_lookup_count=offset, lookup_count=len(new_lookups),
                 original_glyph_count=len(original_order), marker_count=len(MARKERS),
                 calt_roots=roots, state_periods=[625, 81], combined_period=50625,
@@ -323,7 +335,7 @@ def remove_modifier_ligatures(font, info):
     gsub = font['GSUB'].table
     start, glyph_start = info['original_lookup_count'], info['original_glyph_count']
     order = font.getGlyphOrder()
-    if (info['version'] not in (1, 2, 3) or len(gsub.LookupList.Lookup) != start + info['lookup_count']
+    if (info['version'] not in (1, 2, 3, 4) or len(gsub.LookupList.Lookup) != start + info['lookup_count']
             or len(order) != glyph_start + info['marker_count'] or info['marker_count'] != 8):
         raise ValueError('Unrecognized modifier bundle metadata')
     marker_names = set(order[glyph_start:])
