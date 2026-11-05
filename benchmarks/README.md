@@ -131,3 +131,123 @@ python web/benchmark_rendering.py \
   --chromium /usr/bin/chromium --trials 3 \
   --output benchmarks/rendering.json
 ```
+
+## Pass ablation and seeding controls
+
+`web/benchmark_passes.py` creates **diagnostic copies** of the exact published
+fonts identified by `build.json`. Every original lookup remains in the base
+copy; its nine root passes are exposed as private features instead of the normal
+`calt` entry point. These copies are not release fonts. Generated TTFs stay under
+`build/`, not in the published font downloads.
+
+| Pass | Diagnostic feature |
+| --- | --- |
+| clustering | `DCLT` |
+| expansion | `DEXP` |
+| suffix_hash | `DHSH` |
+| gender_seed | `DGSD` |
+| tone_feedback | `DTFB` |
+| gender_feedback | `DGFB` |
+| folding | `DFLD` |
+| sweep | `DSWP` |
+| assembly | `DASM` |
+
+The runner validates that enabling all nine features reproduces original glyphs,
+positions and clusters on affected and unaffected strings. It measures original
+on/off, actual upstream, all-off/all-on diagnostic controls, every leave-one-out
+case, and minimal expansion+one-pass+sweep combinations. Chromium samples use
+3,200 mapped unaffected emoji, at 32 px, with ordinary wrapping and all glyphs
+visible. A separate no-wrap layout diagnostic is included. Pixel comparisons
+against the original font with rules off must match for every diagnostic case.
+
+Removing **expansion** makes marker-dependent rules inapplicable. Removing the
+**RTL hash does not**: zero-valued tone/gender slots already exist. Both feedback
+generators were checked directly with all seeders disabled: their fifth outputs
+are tone 2 and gender 1, proving they still execute. The full private-state
+sequences are recorded in `feedback_without_rtl` in the reports.
+
+`without_sweep` is intentionally **not a valid final output**: it retains 6,400
+private zero-advance glyphs even though the pixels match. Its timing is diagnostic
+only. All other configurations keep valid cleanup.
+
+### Leave-one-out results
+
+[`passes.json`](passes.json), wrapped layout medians in milliseconds:
+
+| Configuration | COLRv1 | CBDT |
+| --- | ---: | ---: |
+| upstream | 1.4 | 1.3 |
+| original_off | 1.9 | 1.2 |
+| original_on | 891.3 | 878.7 |
+| diagnostic_off | 1.8 | 1.4 |
+| full | 873.1 | 846.6 |
+| without_clustering | 817.9 | 891.7 |
+| without_expansion | 1.4 | 1.5 |
+| without_suffix_hash | 22.5 | 16.8 |
+| without_gender_seed | 979.7 | 873.1 |
+| without_tone_feedback | 149.3 | 158.0 |
+| without_gender_feedback | 875.2 | 812.0 |
+| without_folding | 820.1 | 866.7 |
+| without_sweep | 878.0 | 967.2 |
+| without_assembly | 830.9 | 919.8 |
+| expansion_sweep | 1.5 | 1.4 |
+| clustering_only | 1.2 | 1.4 |
+| expansion_suffix_hash_sweep | 68.9 | 62.0 |
+| expansion_gender_seed_sweep | 1.8 | 2.2 |
+| expansion_tone_feedback_sweep | 17.7 | 16.4 |
+| expansion_gender_feedback_sweep | 3.2 | 3.3 |
+| expansion_folding_sweep | 1.5 | 1.9 |
+| expansion_assembly_sweep | 1.5 | 1.5 |
+
+HarfBuzz also records glyph counts, remaining private markers and
+`UNSAFE_TO_BREAK` flags. With the RTL hash, 3,199 of the 3,200 final glyphs carry
+that flag. Removing that pass clears them and removes the large wrapping
+amplification. Tone-feedback matching remains the largest standalone CPU cost
+on this ineligible input (about 13 ms), despite making no visible substitution.
+The measurements identify an interaction, rather than one additive paint cost.
+
+### Replacement seeders
+
+[`seeding.json`](seeding.json) tests two replacements at the original hash stage,
+leaving the downstream pipeline intact:
+
+* **LTR:** mirror the recurrence to depend on the prior source hash. It changes
+  suffix-based seeding into prefix-based seeding, not identical seed values.
+* **Local:** use the same negative glyph-ID bucket as a singleton terminal seed,
+  with no adjacent-source dependency. It has less contextual variation.
+
+Both preserve valid state slots. Independent expected-state calculations verify
+their actual output sequences. These are policy experiments, not production
+seeding changes.
+
+| Configuration | COLRv1 wrapped layout | CBDT wrapped layout |
+| --- | ---: | ---: |
+| original_on | 883.0 | 908.2 |
+| seed_ltr_full | 860.0 | 962.6 |
+| seed_ltr_hash_only | 86.1 | 79.4 |
+| seed_local_full | 17.9 | 19.1 |
+| seed_local_hash_only | 1.9 | 2.7 |
+
+The LTR hash still produces 3,199 unsafe-to-break glyphs. Local seeding produces
+none. Direction alone is not the remedy; cross-source contextual dependencies
+cause the break-safety issue. Full local seeding still pays tone-feedback
+matching cost, while local seeding with just expansion/hash/sweep is near 2 ms.
+
+Reproduce the recorded datasets (Playwright, Chromium, fontTools and Pillow):
+
+```sh
+python web/benchmark_passes.py --site build/site \
+  --upstream build/upstream-fonts --work build/pass-ablation \
+  --config-set ablation --chromium /usr/bin/chromium --trials 3 \
+  --output benchmarks/passes.json
+python web/benchmark_passes.py --site build/site \
+  --upstream build/upstream-fonts --work build/pass-seeding \
+  --config-set seeders --chromium /usr/bin/chromium --trials 3 \
+  --output benchmarks/seeding.json
+```
+
+`--config-set all` runs both sets in one report. With a generated diagnostic
+font, explicitly enable the desired four-letter tags through
+`font-feature-settings`; keep `DSWP` enabled whenever `DEXP` is enabled, except
+when deliberately reproducing the invalid-output cleanup experiment. Source
+font hashes must match the accompanying build metadata.

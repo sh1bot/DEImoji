@@ -1,0 +1,1784 @@
+{
+  "schema": 1,
+  "source_commit": "15efc48a752231c48c22181c0d80f16bbc144b7e",
+  "passes": {
+    "clustering": "DCLT",
+    "expansion": "DEXP",
+    "suffix_hash": "DHSH",
+    "gender_seed": "DGSD",
+    "tone_feedback": "DTFB",
+    "gender_feedback": "DGFB",
+    "folding": "DFLD",
+    "sweep": "DSWP",
+    "assembly": "DASM"
+  },
+  "method": {
+    "count": 3200,
+    "trials": 3,
+    "font_size_px": 32,
+    "control": "Upstream, original on/off, and partitioned off/full; lookup tables are retained",
+    "features": "Each root is exposed as a separate private feature, in original lookup order",
+    "dependencies": "Removing expansion makes marker-dependent passes inapplicable. Minimal expansion+pass+sweep cases test them independently.",
+    "cleanup": "without_sweep intentionally retains private zero-advance glyphs: invalid final output, diagnostic only",
+    "visibility": "Wrapped samples entirely visible; nowrap is layout-only; glyph caches warm",
+    "flags": "unsafe_to_break counts from HarfBuzz default buffer flags, before signature/timing calls"
+  },
+  "fonts": [
+    {
+      "format": "colr",
+      "source": "build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+      "source_sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63",
+      "diagnostic": "build/pass-seeding/colr-diagnostic.ttf",
+      "diagnostic_sha256": "dec0c74fef09d0ecac15e0240717fb0be96b23a38c18dfc9ffc2a96ea2037545",
+      "roots": {
+        "clustering": {
+          "tag": "DCLT",
+          "lookup": 21
+        },
+        "expansion": {
+          "tag": "DEXP",
+          "lookup": 22
+        },
+        "suffix_hash": {
+          "tag": "DHSH",
+          "lookup": 23
+        },
+        "gender_seed": {
+          "tag": "DGSD",
+          "lookup": 24
+        },
+        "tone_feedback": {
+          "tag": "DTFB",
+          "lookup": 30
+        },
+        "gender_feedback": {
+          "tag": "DGFB",
+          "lookup": 34
+        },
+        "folding": {
+          "tag": "DFLD",
+          "lookup": 36
+        },
+        "sweep": {
+          "tag": "DSWP",
+          "lookup": 37
+        },
+        "assembly": {
+          "tag": "DASM",
+          "lookup": 38
+        }
+      },
+      "all_on_matches_original": true,
+      "feedback_without_rtl": {
+        "enabled": [
+          "expansion",
+          "tone_feedback",
+          "gender_feedback"
+        ],
+        "tone_states": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          2,
+          1,
+          4,
+          2,
+          4
+        ],
+        "gender_states": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          2
+        ],
+        "interpretation": "No RTL or gender seeding: feedback changes the fifth state; fold/sweep disabled only to inspect private slots"
+      },
+      "seeding_variants": {
+        "ltr": {
+          "path": "build/pass-seeding/colr-ltr.ttf",
+          "sha256": "12b940203ae1c764d7d598629e12d6af73d0038edf797e2bcdcde2b4de05588f",
+          "policy": "prefix hash, mirror recurrence",
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2,
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2
+            ],
+            "expected_states": [
+              1,
+              3,
+              2,
+              0,
+              4,
+              3,
+              1,
+              0,
+              0,
+              1,
+              3,
+              2,
+              3,
+              1,
+              2,
+              2
+            ],
+            "actual_states": [
+              1,
+              3,
+              2,
+              0,
+              4,
+              3,
+              1,
+              0,
+              0,
+              1,
+              3,
+              2,
+              3,
+              1,
+              2,
+              2
+            ]
+          }
+        },
+        "local": {
+          "path": "build/pass-seeding/colr-local.ttf",
+          "sha256": "6c2f7ffc9eb6ba42b0dcaf65933c6fc2d1f499b21acdc9dafbfa2f7e45b6753c",
+          "policy": "local negative source bucket; no adjacent-source dependency",
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2,
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2
+            ],
+            "expected_states": [
+              1,
+              0,
+              0,
+              0,
+              2,
+              1,
+              1,
+              3,
+              1,
+              0,
+              0,
+              0,
+              2,
+              1,
+              1,
+              3
+            ],
+            "actual_states": [
+              1,
+              0,
+              0,
+              0,
+              2,
+              1,
+              1,
+              3,
+              1,
+              0,
+              0,
+              0,
+              2,
+              1,
+              1,
+              3
+            ]
+          }
+        }
+      },
+      "harfbuzz_cases": [
+        {
+          "name": "seed_ltr_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_ltr",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 16.4646,
+            "min_batch_ms": 16.2011,
+            "max_batch_ms": 16.7946,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_ltr_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_ltr",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 1.4214,
+            "min_batch_ms": 1.3161,
+            "max_batch_ms": 1.4304,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_local_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_local",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 14.92,
+            "min_batch_ms": 14.691,
+            "max_batch_ms": 15.0662,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_local_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_local",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.7452,
+            "min_batch_ms": 0.6998,
+            "max_batch_ms": 0.7722,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        }
+      ],
+      "browser_cases": [
+        {
+          "name": "upstream",
+          "role": "upstream",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 25.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 1
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 11,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 2
+                },
+                {
+                  "forced_layout_ms": 1.3999999910593033,
+                  "two_raf_latency_ms": 38.19999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 3
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 11.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1025
+                },
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 3.2000000029802322,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1026
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 13.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1027
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_off",
+          "role": "original",
+          "features": {
+            "calt": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.300000011920929,
+                  "two_raf_latency_ms": 12.800000011920929,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 17
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 38.79999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 18
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 8.599999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 19
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 10,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1041
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 9.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1042
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 15.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1043
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_on",
+          "role": "original",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 883,
+              "samples": [
+                {
+                  "forced_layout_ms": 883.5,
+                  "two_raf_latency_ms": 886.4000000059605,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 33
+                },
+                {
+                  "forced_layout_ms": 851,
+                  "two_raf_latency_ms": 852.1000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 34
+                },
+                {
+                  "forced_layout_ms": 883,
+                  "two_raf_latency_ms": 884.1999999880791,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 35
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 16.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 16.200000002980232,
+                  "two_raf_latency_ms": 17,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1057
+                },
+                {
+                  "forced_layout_ms": 15.799999997019768,
+                  "two_raf_latency_ms": 16.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1058
+                },
+                {
+                  "forced_layout_ms": 19.599999994039536,
+                  "two_raf_latency_ms": 20.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1059
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_ltr_full",
+          "role": "seed_ltr",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 860,
+              "samples": [
+                {
+                  "forced_layout_ms": 870.4000000059605,
+                  "two_raf_latency_ms": 871.6000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 49
+                },
+                {
+                  "forced_layout_ms": 837.3999999910593,
+                  "two_raf_latency_ms": 838.3999999910593,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 50
+                },
+                {
+                  "forced_layout_ms": 860,
+                  "two_raf_latency_ms": 861.2000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 51
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 17.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.100000008940697,
+                  "two_raf_latency_ms": 18,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1073
+                },
+                {
+                  "forced_layout_ms": 17.899999991059303,
+                  "two_raf_latency_ms": 22.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1074
+                },
+                {
+                  "forced_layout_ms": 19,
+                  "two_raf_latency_ms": 20.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1075
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_ltr_hash_only",
+          "role": "seed_ltr",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 86.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 92.3999999910593,
+                  "two_raf_latency_ms": 93.69999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 65
+                },
+                {
+                  "forced_layout_ms": 86.09999999403954,
+                  "two_raf_latency_ms": 87.3999999910593,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 66
+                },
+                {
+                  "forced_layout_ms": 80.40000000596046,
+                  "two_raf_latency_ms": 81.20000000298023,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 67
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 2.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 3,
+                  "two_raf_latency_ms": 6.100000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1089
+                },
+                {
+                  "forced_layout_ms": 2.0999999940395355,
+                  "two_raf_latency_ms": 7.199999988079071,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1090
+                },
+                {
+                  "forced_layout_ms": 2.2999999970197678,
+                  "two_raf_latency_ms": 15,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1091
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_local_full",
+          "role": "seed_local",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 17.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.899999991059303,
+                  "two_raf_latency_ms": 18.69999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 81
+                },
+                {
+                  "forced_layout_ms": 17.900000005960464,
+                  "two_raf_latency_ms": 19.100000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 82
+                },
+                {
+                  "forced_layout_ms": 20.299999997019768,
+                  "two_raf_latency_ms": 21.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 83
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 16.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 15.5,
+                  "two_raf_latency_ms": 16.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1105
+                },
+                {
+                  "forced_layout_ms": 16.69999998807907,
+                  "two_raf_latency_ms": 17.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1106
+                },
+                {
+                  "forced_layout_ms": 19.799999997019768,
+                  "two_raf_latency_ms": 21,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1107
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_local_hash_only",
+          "role": "seed_local",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5999999940395355,
+                  "two_raf_latency_ms": 10.099999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 97
+                },
+                {
+                  "forced_layout_ms": 1.9000000059604645,
+                  "two_raf_latency_ms": 34.400000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 98
+                },
+                {
+                  "forced_layout_ms": 1.8999999910593033,
+                  "two_raf_latency_ms": 10.399999991059303,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 99
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.3999999910593033,
+                  "two_raf_latency_ms": 18.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1121
+                },
+                {
+                  "forced_layout_ms": 2.0999999940395355,
+                  "two_raf_latency_ms": 8.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1122
+                },
+                {
+                  "forced_layout_ms": 1.8999999910593033,
+                  "two_raf_latency_ms": 10.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1123
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "font_inputs": {
+        "upstream": {
+          "path": "build/upstream-fonts/Noto-COLRv1.ttf",
+          "sha256": "b8e25ea68db82f9e4d0aee921f4420be2be39887bd5c893a2ad98710531f9d0c"
+        },
+        "original": {
+          "path": "build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+          "sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63"
+        },
+        "diagnostic": {
+          "path": "build/pass-seeding/colr-diagnostic.ttf",
+          "sha256": "dec0c74fef09d0ecac15e0240717fb0be96b23a38c18dfc9ffc2a96ea2037545"
+        },
+        "seed_ltr": {
+          "path": "build/pass-seeding/colr-ltr.ttf",
+          "sha256": "12b940203ae1c764d7d598629e12d6af73d0038edf797e2bcdcde2b4de05588f"
+        },
+        "seed_local": {
+          "path": "build/pass-seeding/colr-local.ttf",
+          "sha256": "6c2f7ffc9eb6ba42b0dcaf65933c6fc2d1f499b21acdc9dafbfa2f7e45b6753c"
+        }
+      }
+    },
+    {
+      "format": "cbdt",
+      "source": "build/rear-cross-live/fonts/DEImoji-CBDT.ttf",
+      "source_sha256": "db8ea9790e2bcf37ebe66a32b48ef95c30c3f21b7b5ad1d189f43c04e9f46651",
+      "diagnostic": "build/pass-seeding/cbdt-diagnostic.ttf",
+      "diagnostic_sha256": "7e9e58e914b1475e4648f4d61efda4cff0514de5a0fbcfb7e41a09066ce4cae8",
+      "roots": {
+        "clustering": {
+          "tag": "DCLT",
+          "lookup": 21
+        },
+        "expansion": {
+          "tag": "DEXP",
+          "lookup": 22
+        },
+        "suffix_hash": {
+          "tag": "DHSH",
+          "lookup": 23
+        },
+        "gender_seed": {
+          "tag": "DGSD",
+          "lookup": 24
+        },
+        "tone_feedback": {
+          "tag": "DTFB",
+          "lookup": 30
+        },
+        "gender_feedback": {
+          "tag": "DGFB",
+          "lookup": 34
+        },
+        "folding": {
+          "tag": "DFLD",
+          "lookup": 36
+        },
+        "sweep": {
+          "tag": "DSWP",
+          "lookup": 37
+        },
+        "assembly": {
+          "tag": "DASM",
+          "lookup": 38
+        }
+      },
+      "all_on_matches_original": true,
+      "feedback_without_rtl": {
+        "enabled": [
+          "expansion",
+          "tone_feedback",
+          "gender_feedback"
+        ],
+        "tone_states": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          2,
+          1,
+          4,
+          2,
+          4
+        ],
+        "gender_states": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          2
+        ],
+        "interpretation": "No RTL or gender seeding: feedback changes the fifth state; fold/sweep disabled only to inspect private slots"
+      },
+      "seeding_variants": {
+        "ltr": {
+          "path": "build/pass-seeding/cbdt-ltr.ttf",
+          "sha256": "4796f46fa8a344c0f0dd7c770586cada9cf7acb59174b9ab9dc9ffce08c89d6e",
+          "policy": "prefix hash, mirror recurrence",
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3,
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3
+            ],
+            "expected_states": [
+              0,
+              2,
+              2,
+              0,
+              4,
+              2,
+              3,
+              0,
+              1,
+              4,
+              1,
+              3,
+              0,
+              4,
+              2,
+              3
+            ],
+            "actual_states": [
+              0,
+              2,
+              2,
+              0,
+              4,
+              2,
+              3,
+              0,
+              1,
+              4,
+              1,
+              3,
+              0,
+              4,
+              2,
+              3
+            ]
+          }
+        },
+        "local": {
+          "path": "build/pass-seeding/cbdt-local.ttf",
+          "sha256": "e98800b620a55d0fad29bdc8ae67ca0dd13513d324c7d7ac2eb42e03101f9f84",
+          "policy": "local negative source bucket; no adjacent-source dependency",
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3,
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3
+            ],
+            "expected_states": [
+              0,
+              4,
+              3,
+              0,
+              2,
+              2,
+              2,
+              2,
+              0,
+              4,
+              3,
+              0,
+              2,
+              2,
+              2,
+              2
+            ],
+            "actual_states": [
+              0,
+              4,
+              3,
+              0,
+              2,
+              2,
+              2,
+              2,
+              0,
+              4,
+              3,
+              0,
+              2,
+              2,
+              2,
+              2
+            ]
+          }
+        }
+      },
+      "harfbuzz_cases": [
+        {
+          "name": "seed_ltr_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_ltr",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 19.3048,
+            "min_batch_ms": 18.9023,
+            "max_batch_ms": 21.1188,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_ltr_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_ltr",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 1.3644,
+            "min_batch_ms": 1.3227,
+            "max_batch_ms": 1.389,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_local_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_local",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 17.0138,
+            "min_batch_ms": 16.9795,
+            "max_batch_ms": 17.2186,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_local_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_local",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.7946,
+            "min_batch_ms": 0.7155,
+            "max_batch_ms": 0.8595,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        }
+      ],
+      "browser_cases": [
+        {
+          "name": "upstream",
+          "role": "upstream",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.0999999940395355,
+                  "two_raf_latency_ms": 7.399999991059303,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 1
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 9.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 2
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 37.29999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 3
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 0.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 15,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1025
+                },
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 12.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1026
+                },
+                {
+                  "forced_layout_ms": 0.7999999970197678,
+                  "two_raf_latency_ms": 8.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1027
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_off",
+          "role": "original",
+          "features": {
+            "calt": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 38.1000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 17
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 36,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 18
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 33.29999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 19
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 11.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1041
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 14.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1042
+                },
+                {
+                  "forced_layout_ms": 1.7000000029802322,
+                  "two_raf_latency_ms": 15.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1043
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_on",
+          "role": "original",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 908.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 891.5,
+                  "two_raf_latency_ms": 892.7999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 33
+                },
+                {
+                  "forced_layout_ms": 908.2000000029802,
+                  "two_raf_latency_ms": 910.2000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 34
+                },
+                {
+                  "forced_layout_ms": 966.6000000089407,
+                  "two_raf_latency_ms": 967.9000000059605,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 35
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 16.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 16,
+                  "two_raf_latency_ms": 16.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1057
+                },
+                {
+                  "forced_layout_ms": 18,
+                  "two_raf_latency_ms": 18.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1058
+                },
+                {
+                  "forced_layout_ms": 16.5,
+                  "two_raf_latency_ms": 17.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1059
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_ltr_full",
+          "role": "seed_ltr",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 962.6,
+              "samples": [
+                {
+                  "forced_layout_ms": 874.5,
+                  "two_raf_latency_ms": 875.7000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 49
+                },
+                {
+                  "forced_layout_ms": 962.6000000089407,
+                  "two_raf_latency_ms": 963.7999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 50
+                },
+                {
+                  "forced_layout_ms": 1043.3999999910593,
+                  "two_raf_latency_ms": 1044.7000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 51
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 18.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 18.5,
+                  "two_raf_latency_ms": 19.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1073
+                },
+                {
+                  "forced_layout_ms": 17.80000001192093,
+                  "two_raf_latency_ms": 18.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1074
+                },
+                {
+                  "forced_layout_ms": 23.400000005960464,
+                  "two_raf_latency_ms": 24.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1075
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_ltr_hash_only",
+          "role": "seed_ltr",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 79.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 79.1000000089407,
+                  "two_raf_latency_ms": 82.79999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 65
+                },
+                {
+                  "forced_layout_ms": 84,
+                  "two_raf_latency_ms": 85,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 66
+                },
+                {
+                  "forced_layout_ms": 79.3999999910593,
+                  "two_raf_latency_ms": 80.29999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 67
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 2.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.2000000029802322,
+                  "two_raf_latency_ms": 13.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1089
+                },
+                {
+                  "forced_layout_ms": 2.2999999970197678,
+                  "two_raf_latency_ms": 8.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1090
+                },
+                {
+                  "forced_layout_ms": 2.2000000029802322,
+                  "two_raf_latency_ms": 2.7000000029802322,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1091
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_local_full",
+          "role": "seed_local",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 19.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 19.099999994039536,
+                  "two_raf_latency_ms": 21.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 81
+                },
+                {
+                  "forced_layout_ms": 20.700000002980232,
+                  "two_raf_latency_ms": 29.600000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 82
+                },
+                {
+                  "forced_layout_ms": 18.30000001192093,
+                  "two_raf_latency_ms": 19.100000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 83
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 17.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 21.099999994039536,
+                  "two_raf_latency_ms": 21.899999991059303,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1105
+                },
+                {
+                  "forced_layout_ms": 17.299999997019768,
+                  "two_raf_latency_ms": 17.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1106
+                },
+                {
+                  "forced_layout_ms": 16.900000005960464,
+                  "two_raf_latency_ms": 17.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1107
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_local_hash_only",
+          "role": "seed_local",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 2.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.2999999970197678,
+                  "two_raf_latency_ms": 13,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 97
+                },
+                {
+                  "forced_layout_ms": 2.699999988079071,
+                  "two_raf_latency_ms": 13.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 98
+                },
+                {
+                  "forced_layout_ms": 2.7000000029802322,
+                  "two_raf_latency_ms": 10.799999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 99
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 2.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.4000000059604645,
+                  "two_raf_latency_ms": 15.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1121
+                },
+                {
+                  "forced_layout_ms": 2.0999999940395355,
+                  "two_raf_latency_ms": 6.4000000059604645,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1122
+                },
+                {
+                  "forced_layout_ms": 2,
+                  "two_raf_latency_ms": 7.199999988079071,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1123
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "font_inputs": {
+        "upstream": {
+          "path": "build/upstream-fonts/NotoColorEmoji.ttf",
+          "sha256": "15671215ab769fdc7162a045d56fd7d7e477c51b04e6b3c761d914d8fdd6cc44"
+        },
+        "original": {
+          "path": "build/rear-cross-live/fonts/DEImoji-CBDT.ttf",
+          "sha256": "db8ea9790e2bcf37ebe66a32b48ef95c30c3f21b7b5ad1d189f43c04e9f46651"
+        },
+        "diagnostic": {
+          "path": "build/pass-seeding/cbdt-diagnostic.ttf",
+          "sha256": "7e9e58e914b1475e4648f4d61efda4cff0514de5a0fbcfb7e41a09066ce4cae8"
+        },
+        "seed_ltr": {
+          "path": "build/pass-seeding/cbdt-ltr.ttf",
+          "sha256": "4796f46fa8a344c0f0dd7c770586cada9cf7acb59174b9ab9dc9ffce08c89d6e"
+        },
+        "seed_local": {
+          "path": "build/pass-seeding/cbdt-local.ttf",
+          "sha256": "e98800b620a55d0fad29bdc8ae67ca0dd13513d324c7d7ac2eb42e03101f9f84"
+        }
+      }
+    }
+  ],
+  "chromium": "154.0.8037.57",
+  "config_set": "seeders",
+  "environment": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "harfbuzz": "10.2.0"
+  }
+}

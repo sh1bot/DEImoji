@@ -1,0 +1,4752 @@
+{
+  "schema": 1,
+  "source_commit": "15efc48a752231c48c22181c0d80f16bbc144b7e",
+  "passes": {
+    "clustering": "DCLT",
+    "expansion": "DEXP",
+    "suffix_hash": "DHSH",
+    "gender_seed": "DGSD",
+    "tone_feedback": "DTFB",
+    "gender_feedback": "DGFB",
+    "folding": "DFLD",
+    "sweep": "DSWP",
+    "assembly": "DASM"
+  },
+  "method": {
+    "count": 3200,
+    "trials": 3,
+    "font_size_px": 32,
+    "control": "Upstream, original on/off, and partitioned off/full; lookup tables are retained",
+    "features": "Each root is exposed as a separate private feature, in original lookup order",
+    "dependencies": "Removing expansion makes marker-dependent passes inapplicable. Minimal expansion+pass+sweep cases test them independently.",
+    "cleanup": "without_sweep intentionally retains private zero-advance glyphs: invalid final output, diagnostic only",
+    "visibility": "Wrapped samples entirely visible; nowrap is layout-only; glyph caches warm",
+    "flags": "unsafe_to_break counts from HarfBuzz default buffer flags, before signature/timing calls"
+  },
+  "fonts": [
+    {
+      "format": "colr",
+      "source": "build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+      "source_sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63",
+      "diagnostic": "build/pass-ablation/colr-diagnostic.ttf",
+      "diagnostic_sha256": "daab1fc5f027e9b35ef5bde161ab9c1affe67cc0a313e92af7a1b42b5b3a2fd8",
+      "roots": {
+        "clustering": {
+          "tag": "DCLT",
+          "lookup": 21
+        },
+        "expansion": {
+          "tag": "DEXP",
+          "lookup": 22
+        },
+        "suffix_hash": {
+          "tag": "DHSH",
+          "lookup": 23
+        },
+        "gender_seed": {
+          "tag": "DGSD",
+          "lookup": 24
+        },
+        "tone_feedback": {
+          "tag": "DTFB",
+          "lookup": 30
+        },
+        "gender_feedback": {
+          "tag": "DGFB",
+          "lookup": 34
+        },
+        "folding": {
+          "tag": "DFLD",
+          "lookup": 36
+        },
+        "sweep": {
+          "tag": "DSWP",
+          "lookup": 37
+        },
+        "assembly": {
+          "tag": "DASM",
+          "lookup": 38
+        }
+      },
+      "all_on_matches_original": true,
+      "harfbuzz_cases": [
+        {
+          "name": "diagnostic_off",
+          "enabled": [],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 0,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 0,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.1457,
+            "min_batch_ms": 0.1288,
+            "max_batch_ms": 0.152,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 15.651,
+            "min_batch_ms": 15.4111,
+            "max_batch_ms": 16.3759,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_clustering",
+          "enabled": [
+            "assembly",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 15.3425,
+            "min_batch_ms": 15.0146,
+            "max_batch_ms": 15.5691,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_expansion",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 0,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 0.2635,
+            "min_batch_ms": 0.2574,
+            "max_batch_ms": 0.2957,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_suffix_hash",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 14.8196,
+            "min_batch_ms": 14.5861,
+            "max_batch_ms": 15.5359,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_gender_seed",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 17.5415,
+            "min_batch_ms": 16.5305,
+            "max_batch_ms": 17.688,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_tone_feedback",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 0,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 3.0682,
+            "min_batch_ms": 2.8962,
+            "max_batch_ms": 3.325,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_gender_feedback",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 0,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 15.2564,
+            "min_batch_ms": 15.0186,
+            "max_batch_ms": 16.4658,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_folding",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 16.2651,
+            "min_batch_ms": 15.1235,
+            "max_batch_ms": 17.0824,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_sweep",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 0,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 15.3733,
+            "min_batch_ms": 15.1971,
+            "max_batch_ms": 16.9709,
+            "glyphs": 9600,
+            "private_markers_remaining": 6400,
+            "unsafe_to_break_glyphs": 9597,
+            "outputs_identical": false,
+            "valid_cleanup": false
+          }
+        },
+        {
+          "name": "without_assembly",
+          "enabled": [
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 15.8214,
+            "min_batch_ms": 15.5351,
+            "max_batch_ms": 16.2203,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_sweep",
+          "enabled": [
+            "expansion",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.3261,
+            "min_batch_ms": 0.322,
+            "max_batch_ms": 0.3517,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "clustering_only",
+          "enabled": [
+            "clustering"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 0,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 0,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.1331,
+            "min_batch_ms": 0.1267,
+            "max_batch_ms": 0.1341,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_suffix_hash_sweep",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 1.2327,
+            "min_batch_ms": 1.1558,
+            "max_batch_ms": 1.2472,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_gender_seed_sweep",
+          "enabled": [
+            "expansion",
+            "gender_seed",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 1,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.6659,
+            "min_batch_ms": 0.6628,
+            "max_batch_ms": 0.6873,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_tone_feedback_sweep",
+          "enabled": [
+            "expansion",
+            "tone_feedback",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 1,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 12.898,
+            "min_batch_ms": 12.5572,
+            "max_batch_ms": 13.0595,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_gender_feedback_sweep",
+          "enabled": [
+            "expansion",
+            "gender_feedback",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 1,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 1.3558,
+            "min_batch_ms": 1.3509,
+            "max_batch_ms": 1.3912,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_folding_sweep",
+          "enabled": [
+            "expansion",
+            "folding",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.4855,
+            "min_batch_ms": 0.4323,
+            "max_batch_ms": 0.4904,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_assembly_sweep",
+          "enabled": [
+            "expansion",
+            "assembly",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 0.3876,
+            "min_batch_ms": 0.3683,
+            "max_batch_ms": 0.3889,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        }
+      ],
+      "browser_cases": [
+        {
+          "name": "upstream",
+          "role": "upstream",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.3999999910593033,
+                  "two_raf_latency_ms": 18.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 1
+                },
+                {
+                  "forced_layout_ms": 5.799999997019768,
+                  "two_raf_latency_ms": 52.8999999910593,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 2
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 7.799999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 3
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 9.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1025
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 3,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1026
+                },
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 10.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1027
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_off",
+          "role": "original",
+          "features": {
+            "calt": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.800000011920929,
+                  "two_raf_latency_ms": 9.400000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 17
+                },
+                {
+                  "forced_layout_ms": 1.9000000059604645,
+                  "two_raf_latency_ms": 66.29999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 18
+                },
+                {
+                  "forced_layout_ms": 3.2000000029802322,
+                  "two_raf_latency_ms": 12,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 19
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 11,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1041
+                },
+                {
+                  "forced_layout_ms": 1.199999988079071,
+                  "two_raf_latency_ms": 14.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1042
+                },
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 4.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1043
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_on",
+          "role": "original",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 891.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 848.8999999910593,
+                  "two_raf_latency_ms": 850.1999999880791,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 33
+                },
+                {
+                  "forced_layout_ms": 905.5,
+                  "two_raf_latency_ms": 907.0999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 34
+                },
+                {
+                  "forced_layout_ms": 891.3000000119209,
+                  "two_raf_latency_ms": 894.7000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 35
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 18,
+              "samples": [
+                {
+                  "forced_layout_ms": 18,
+                  "two_raf_latency_ms": 18.899999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1057
+                },
+                {
+                  "forced_layout_ms": 19.299999997019768,
+                  "two_raf_latency_ms": 21.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1058
+                },
+                {
+                  "forced_layout_ms": 17.700000002980232,
+                  "two_raf_latency_ms": 18.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1059
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "diagnostic_off",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 0,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 0,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.4000000059604645,
+                  "two_raf_latency_ms": 12.700000002980232,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 49
+                },
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 10,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 50
+                },
+                {
+                  "forced_layout_ms": 1.6000000089406967,
+                  "two_raf_latency_ms": 38.900000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 51
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 10.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1073
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 15.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1074
+                },
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 5.899999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1075
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "full",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 873.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 873.0999999940395,
+                  "two_raf_latency_ms": 879.6999999880791,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 65
+                },
+                {
+                  "forced_layout_ms": 838.5999999940395,
+                  "two_raf_latency_ms": 839.7000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 66
+                },
+                {
+                  "forced_layout_ms": 877.2999999970198,
+                  "two_raf_latency_ms": 878.2000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 67
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 20.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 20.400000005960464,
+                  "two_raf_latency_ms": 21.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1089
+                },
+                {
+                  "forced_layout_ms": 23.099999994039536,
+                  "two_raf_latency_ms": 24.19999998807907,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1090
+                },
+                {
+                  "forced_layout_ms": 16.600000008940697,
+                  "two_raf_latency_ms": 17.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1091
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_clustering",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 817.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 817.9000000059605,
+                  "two_raf_latency_ms": 819.3000000119209,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 81
+                },
+                {
+                  "forced_layout_ms": 813.5,
+                  "two_raf_latency_ms": 814.6000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 82
+                },
+                {
+                  "forced_layout_ms": 909.2999999970198,
+                  "two_raf_latency_ms": 912.7000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 83
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 18.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 19.600000008940697,
+                  "two_raf_latency_ms": 20.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1105
+                },
+                {
+                  "forced_layout_ms": 16.299999997019768,
+                  "two_raf_latency_ms": 16.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1106
+                },
+                {
+                  "forced_layout_ms": 18.700000002980232,
+                  "two_raf_latency_ms": 19.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1107
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_expansion",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 0,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.6000000089406967,
+                  "two_raf_latency_ms": 9,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 97
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 40.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 98
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 32.400000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 99
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 13.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1121
+                },
+                {
+                  "forced_layout_ms": 1.199999988079071,
+                  "two_raf_latency_ms": 2.8999999910593033,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1122
+                },
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 4.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1123
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_suffix_hash",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 22.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 18.400000005960464,
+                  "two_raf_latency_ms": 19.200000002980232,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 113
+                },
+                {
+                  "forced_layout_ms": 26,
+                  "two_raf_latency_ms": 27.899999991059303,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 114
+                },
+                {
+                  "forced_layout_ms": 22.5,
+                  "two_raf_latency_ms": 23.899999991059303,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 115
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 21.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 16,
+                  "two_raf_latency_ms": 17.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1137
+                },
+                {
+                  "forced_layout_ms": 22.700000002980232,
+                  "two_raf_latency_ms": 23.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1138
+                },
+                {
+                  "forced_layout_ms": 21.700000002980232,
+                  "two_raf_latency_ms": 24,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1139
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_gender_seed",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 979.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 993.8999999910593,
+                  "two_raf_latency_ms": 995.1999999880791,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 129
+                },
+                {
+                  "forced_layout_ms": 979.7000000029802,
+                  "two_raf_latency_ms": 980.5999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 130
+                },
+                {
+                  "forced_layout_ms": 934.5999999940395,
+                  "two_raf_latency_ms": 936,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 131
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 16.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 18.400000005960464,
+                  "two_raf_latency_ms": 21.30000001192093,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1153
+                },
+                {
+                  "forced_layout_ms": 15.899999991059303,
+                  "two_raf_latency_ms": 16.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1154
+                },
+                {
+                  "forced_layout_ms": 16.299999997019768,
+                  "two_raf_latency_ms": 17.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1155
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_tone_feedback",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 0,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 149.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 162,
+                  "two_raf_latency_ms": 166.79999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 145
+                },
+                {
+                  "forced_layout_ms": 149.29999999701977,
+                  "two_raf_latency_ms": 150.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 146
+                },
+                {
+                  "forced_layout_ms": 143,
+                  "two_raf_latency_ms": 144.1000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 147
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 4.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 4.100000008940697,
+                  "two_raf_latency_ms": 15.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1169
+                },
+                {
+                  "forced_layout_ms": 4.100000008940697,
+                  "two_raf_latency_ms": 6,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1170
+                },
+                {
+                  "forced_layout_ms": 3.7999999970197678,
+                  "two_raf_latency_ms": 13.100000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1171
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_gender_feedback",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 0,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 875.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 875.2000000029802,
+                  "two_raf_latency_ms": 876.2000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 161
+                },
+                {
+                  "forced_layout_ms": 893.5999999940395,
+                  "two_raf_latency_ms": 894.5999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 162
+                },
+                {
+                  "forced_layout_ms": 839,
+                  "two_raf_latency_ms": 840,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 163
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 15.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 15.799999997019768,
+                  "two_raf_latency_ms": 17.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1185
+                },
+                {
+                  "forced_layout_ms": 15.099999994039536,
+                  "two_raf_latency_ms": 15.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1186
+                },
+                {
+                  "forced_layout_ms": 14.700000002980232,
+                  "two_raf_latency_ms": 15.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1187
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_folding",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 820.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 905.0999999940395,
+                  "two_raf_latency_ms": 906.2999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 177
+                },
+                {
+                  "forced_layout_ms": 820.0999999940395,
+                  "two_raf_latency_ms": 821.0999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 178
+                },
+                {
+                  "forced_layout_ms": 809.2000000029802,
+                  "two_raf_latency_ms": 810.3999999910593,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 179
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 19.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 20.5,
+                  "two_raf_latency_ms": 22.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1201
+                },
+                {
+                  "forced_layout_ms": 19.299999997019768,
+                  "two_raf_latency_ms": 20.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1202
+                },
+                {
+                  "forced_layout_ms": 19.200000002980232,
+                  "two_raf_latency_ms": 21.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1203
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 0,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 878,
+              "samples": [
+                {
+                  "forced_layout_ms": 882.3000000119209,
+                  "two_raf_latency_ms": 886.1000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 193
+                },
+                {
+                  "forced_layout_ms": 820.7999999970198,
+                  "two_raf_latency_ms": 822.2999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 194
+                },
+                {
+                  "forced_layout_ms": 878,
+                  "two_raf_latency_ms": 879.3000000119209,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 195
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 17.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.299999997019768,
+                  "two_raf_latency_ms": 18.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1217
+                },
+                {
+                  "forced_layout_ms": 18.5,
+                  "two_raf_latency_ms": 19.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1218
+                },
+                {
+                  "forced_layout_ms": 17.100000008940697,
+                  "two_raf_latency_ms": 17.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1219
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_assembly",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 830.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 852.7999999970198,
+                  "two_raf_latency_ms": 853.7999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 209
+                },
+                {
+                  "forced_layout_ms": 821,
+                  "two_raf_latency_ms": 822.0999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 210
+                },
+                {
+                  "forced_layout_ms": 830.9000000059605,
+                  "two_raf_latency_ms": 831.9000000059605,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 211
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 17.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.099999994039536,
+                  "two_raf_latency_ms": 17.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1233
+                },
+                {
+                  "forced_layout_ms": 17.200000002980232,
+                  "two_raf_latency_ms": 18,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1234
+                },
+                {
+                  "forced_layout_ms": 20.799999997019768,
+                  "two_raf_latency_ms": 21.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1235
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 9.700000002980232,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 225
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 34.29999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 226
+                },
+                {
+                  "forced_layout_ms": 1.800000011920929,
+                  "two_raf_latency_ms": 32.6000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 227
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 10.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1249
+                },
+                {
+                  "forced_layout_ms": 1.7000000029802322,
+                  "two_raf_latency_ms": 4.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1250
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 8.899999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1251
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "clustering_only",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 0,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 0,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 38.6000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 241
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 36.70000000298023,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 242
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 7.799999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 243
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 0.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 10.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1265
+                },
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 16.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1266
+                },
+                {
+                  "forced_layout_ms": 0.7999999970197678,
+                  "two_raf_latency_ms": 9.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1267
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_suffix_hash_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 68.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 68.3999999910593,
+                  "two_raf_latency_ms": 69.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 257
+                },
+                {
+                  "forced_layout_ms": 70.90000000596046,
+                  "two_raf_latency_ms": 71.79999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 258
+                },
+                {
+                  "forced_layout_ms": 68.90000000596046,
+                  "two_raf_latency_ms": 70,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 259
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 2,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.2999999970197678,
+                  "two_raf_latency_ms": 10.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1281
+                },
+                {
+                  "forced_layout_ms": 2,
+                  "two_raf_latency_ms": 10.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1282
+                },
+                {
+                  "forced_layout_ms": 2,
+                  "two_raf_latency_ms": 12.800000011920929,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1283
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_gender_seed_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 1,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.7000000029802322,
+                  "two_raf_latency_ms": 7.899999991059303,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 273
+                },
+                {
+                  "forced_layout_ms": 2.6000000089406967,
+                  "two_raf_latency_ms": 12.300000011920929,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 274
+                },
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 35.20000000298023,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 275
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 2,
+                  "two_raf_latency_ms": 4.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1297
+                },
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 2.8999999910593033,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1298
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 7,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1299
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_tone_feedback_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 1,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 17.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 16.200000002980232,
+                  "two_raf_latency_ms": 17.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 289
+                },
+                {
+                  "forced_layout_ms": 17.700000002980232,
+                  "two_raf_latency_ms": 19.100000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 290
+                },
+                {
+                  "forced_layout_ms": 19,
+                  "two_raf_latency_ms": 20,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 291
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 13.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.299999997019768,
+                  "two_raf_latency_ms": 18.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1313
+                },
+                {
+                  "forced_layout_ms": 13.099999994039536,
+                  "two_raf_latency_ms": 13.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1314
+                },
+                {
+                  "forced_layout_ms": 13.700000002980232,
+                  "two_raf_latency_ms": 14.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1315
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_gender_feedback_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 1,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 3.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 3.2000000029802322,
+                  "two_raf_latency_ms": 13.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 305
+                },
+                {
+                  "forced_layout_ms": 3.4000000059604645,
+                  "two_raf_latency_ms": 41.79999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 306
+                },
+                {
+                  "forced_layout_ms": 2.9000000059604645,
+                  "two_raf_latency_ms": 9.799999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 307
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 3.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 3.4000000059604645,
+                  "two_raf_latency_ms": 13.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1329
+                },
+                {
+                  "forced_layout_ms": 6.5,
+                  "two_raf_latency_ms": 14.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1330
+                },
+                {
+                  "forced_layout_ms": 2.5999999940395355,
+                  "two_raf_latency_ms": 6.9000000059604645,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1331
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_folding_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.3999999910593033,
+                  "two_raf_latency_ms": 10.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 321
+                },
+                {
+                  "forced_layout_ms": 1.7000000029802322,
+                  "two_raf_latency_ms": 33.099999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 322
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 21.19999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 323
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.300000011920929,
+                  "two_raf_latency_ms": 14.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1345
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 5.0999999940395355,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1346
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 17.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1347
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_assembly_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5999999940395355,
+                  "two_raf_latency_ms": 11.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 337
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 33.8999999910593,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 338
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 36.29999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 339
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.6,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.199999988079071,
+                  "two_raf_latency_ms": 11.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1361
+                },
+                {
+                  "forced_layout_ms": 1.9000000059604645,
+                  "two_raf_latency_ms": 3.300000011920929,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1362
+                },
+                {
+                  "forced_layout_ms": 1.5999999940395355,
+                  "two_raf_latency_ms": 17.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1363
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "feedback_without_rtl": {
+        "enabled": [
+          "expansion",
+          "tone_feedback",
+          "gender_feedback"
+        ],
+        "tone_states": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          2,
+          1,
+          4,
+          2,
+          4
+        ],
+        "gender_states": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          2
+        ],
+        "interpretation": "No RTL or gender seeding: feedback changes the fifth state; fold/sweep disabled only to inspect private slots"
+      },
+      "font_inputs": {
+        "upstream": {
+          "path": "build/upstream-fonts/Noto-COLRv1.ttf",
+          "sha256": "b8e25ea68db82f9e4d0aee921f4420be2be39887bd5c893a2ad98710531f9d0c"
+        },
+        "original": {
+          "path": "build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+          "sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63"
+        },
+        "diagnostic": {
+          "path": "build/pass-ablation/colr-diagnostic.ttf",
+          "sha256": "daab1fc5f027e9b35ef5bde161ab9c1affe67cc0a313e92af7a1b42b5b3a2fd8"
+        }
+      }
+    },
+    {
+      "format": "cbdt",
+      "source": "build/rear-cross-live/fonts/DEImoji-CBDT.ttf",
+      "source_sha256": "db8ea9790e2bcf37ebe66a32b48ef95c30c3f21b7b5ad1d189f43c04e9f46651",
+      "diagnostic": "build/pass-ablation/cbdt-diagnostic.ttf",
+      "diagnostic_sha256": "53e1992c9aa65787406f751b7c6c362119e0ee200a01e683f54e5ce535851627",
+      "roots": {
+        "clustering": {
+          "tag": "DCLT",
+          "lookup": 21
+        },
+        "expansion": {
+          "tag": "DEXP",
+          "lookup": 22
+        },
+        "suffix_hash": {
+          "tag": "DHSH",
+          "lookup": 23
+        },
+        "gender_seed": {
+          "tag": "DGSD",
+          "lookup": 24
+        },
+        "tone_feedback": {
+          "tag": "DTFB",
+          "lookup": 30
+        },
+        "gender_feedback": {
+          "tag": "DGFB",
+          "lookup": 34
+        },
+        "folding": {
+          "tag": "DFLD",
+          "lookup": 36
+        },
+        "sweep": {
+          "tag": "DSWP",
+          "lookup": 37
+        },
+        "assembly": {
+          "tag": "DASM",
+          "lookup": 38
+        }
+      },
+      "all_on_matches_original": true,
+      "harfbuzz_cases": [
+        {
+          "name": "diagnostic_off",
+          "enabled": [],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 0,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 0,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.1196,
+            "min_batch_ms": 0.1188,
+            "max_batch_ms": 0.13,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 16.2187,
+            "min_batch_ms": 15.9482,
+            "max_batch_ms": 16.2863,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_clustering",
+          "enabled": [
+            "assembly",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 16.4233,
+            "min_batch_ms": 16.1267,
+            "max_batch_ms": 17.1635,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_expansion",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 0,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 0.1526,
+            "min_batch_ms": 0.1481,
+            "max_batch_ms": 0.1676,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_suffix_hash",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 14.992,
+            "min_batch_ms": 14.8908,
+            "max_batch_ms": 15.1838,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_gender_seed",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 15.8264,
+            "min_batch_ms": 15.7661,
+            "max_batch_ms": 16.2157,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_tone_feedback",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 0,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 2.8698,
+            "min_batch_ms": 2.5774,
+            "max_batch_ms": 2.9204,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_gender_feedback",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 0,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 15.0402,
+            "min_batch_ms": 14.939,
+            "max_batch_ms": 15.63,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_folding",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 16.3013,
+            "min_batch_ms": 15.5309,
+            "max_batch_ms": 16.8996,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "without_sweep",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 0,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 16.4314,
+            "min_batch_ms": 16.1159,
+            "max_batch_ms": 16.8087,
+            "glyphs": 9600,
+            "private_markers_remaining": 6400,
+            "unsafe_to_break_glyphs": 9597,
+            "outputs_identical": false,
+            "valid_cleanup": false
+          }
+        },
+        {
+          "name": "without_assembly",
+          "enabled": [
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 17.2598,
+            "min_batch_ms": 16.4711,
+            "max_batch_ms": 18.4691,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_sweep",
+          "enabled": [
+            "expansion",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.3176,
+            "min_batch_ms": 0.3126,
+            "max_batch_ms": 0.3634,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "clustering_only",
+          "enabled": [
+            "clustering"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 0,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 0,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.1188,
+            "min_batch_ms": 0.1182,
+            "max_batch_ms": 0.1356,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_suffix_hash_sweep",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 1.046,
+            "min_batch_ms": 0.9655,
+            "max_batch_ms": 1.1206,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_gender_seed_sweep",
+          "enabled": [
+            "expansion",
+            "gender_seed",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 1,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.6537,
+            "min_batch_ms": 0.5813,
+            "max_batch_ms": 0.6918,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_tone_feedback_sweep",
+          "enabled": [
+            "expansion",
+            "tone_feedback",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 1,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 13.6095,
+            "min_batch_ms": 13.3037,
+            "max_batch_ms": 14.9647,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_gender_feedback_sweep",
+          "enabled": [
+            "expansion",
+            "gender_feedback",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 1,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 1.42,
+            "min_batch_ms": 1.3407,
+            "max_batch_ms": 1.4301,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_folding_sweep",
+          "enabled": [
+            "expansion",
+            "folding",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.5612,
+            "min_batch_ms": 0.5337,
+            "max_batch_ms": 0.5659,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "expansion_assembly_sweep",
+          "enabled": [
+            "expansion",
+            "assembly",
+            "sweep"
+          ],
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 0.4335,
+            "min_batch_ms": 0.3429,
+            "max_batch_ms": 0.4608,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        }
+      ],
+      "browser_cases": [
+        {
+          "name": "upstream",
+          "role": "upstream",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 12.799999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 1
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 33.20000000298023,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 2
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 36.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 3
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 10.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1025
+                },
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 13.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1026
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 14.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1027
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_off",
+          "role": "original",
+          "features": {
+            "calt": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 9.099999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 17
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 36.599999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 18
+                },
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 9.899999991059303,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 19
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 13.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1041
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 3.0999999940395355,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1042
+                },
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 7.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1043
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_on",
+          "role": "original",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 878.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 878.7000000029802,
+                  "two_raf_latency_ms": 880.4000000059605,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 33
+                },
+                {
+                  "forced_layout_ms": 836.2999999970198,
+                  "two_raf_latency_ms": 838.2000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 34
+                },
+                {
+                  "forced_layout_ms": 909.1000000089407,
+                  "two_raf_latency_ms": 910.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 35
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 17.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 17,
+                  "two_raf_latency_ms": 17.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1057
+                },
+                {
+                  "forced_layout_ms": 17.5,
+                  "two_raf_latency_ms": 20.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1058
+                },
+                {
+                  "forced_layout_ms": 25,
+                  "two_raf_latency_ms": 26.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1059
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "diagnostic_off",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 0,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 0,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 9.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 49
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 33.099999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 50
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 12.100000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 51
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 3.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1073
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 12.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1074
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 11.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1075
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "full",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 846.6,
+              "samples": [
+                {
+                  "forced_layout_ms": 829.2999999970198,
+                  "two_raf_latency_ms": 830.7000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 65
+                },
+                {
+                  "forced_layout_ms": 846.5999999940395,
+                  "two_raf_latency_ms": 847.7999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 66
+                },
+                {
+                  "forced_layout_ms": 941.4000000059605,
+                  "two_raf_latency_ms": 942.6000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 67
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 18.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 16.69999998807907,
+                  "two_raf_latency_ms": 17.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1089
+                },
+                {
+                  "forced_layout_ms": 18.299999997019768,
+                  "two_raf_latency_ms": 19.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1090
+                },
+                {
+                  "forced_layout_ms": 44.69999998807907,
+                  "two_raf_latency_ms": 45.29999999701977,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1091
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_clustering",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 891.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 956,
+                  "two_raf_latency_ms": 957.7999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 81
+                },
+                {
+                  "forced_layout_ms": 863.7999999970198,
+                  "two_raf_latency_ms": 865.0999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 82
+                },
+                {
+                  "forced_layout_ms": 891.7000000029802,
+                  "two_raf_latency_ms": 893,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 83
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 16.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 16.200000002980232,
+                  "two_raf_latency_ms": 17,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1105
+                },
+                {
+                  "forced_layout_ms": 16.099999994039536,
+                  "two_raf_latency_ms": 18.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1106
+                },
+                {
+                  "forced_layout_ms": 17.299999997019768,
+                  "two_raf_latency_ms": 18,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1107
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_expansion",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 0,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 9.100000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 97
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 38.400000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 98
+                },
+                {
+                  "forced_layout_ms": 2.2999999970197678,
+                  "two_raf_latency_ms": 53.1000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 99
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1,
+              "samples": [
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 64.79999999701977,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1121
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 12.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1122
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 9.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1123
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_suffix_hash",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 16.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 16.80000001192093,
+                  "two_raf_latency_ms": 18.200000002980232,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 113
+                },
+                {
+                  "forced_layout_ms": 15.600000008940697,
+                  "two_raf_latency_ms": 16.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 114
+                },
+                {
+                  "forced_layout_ms": 16.900000005960464,
+                  "two_raf_latency_ms": 17.600000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 115
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 18,
+              "samples": [
+                {
+                  "forced_layout_ms": 16.799999997019768,
+                  "two_raf_latency_ms": 19.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1137
+                },
+                {
+                  "forced_layout_ms": 19.599999994039536,
+                  "two_raf_latency_ms": 22.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1138
+                },
+                {
+                  "forced_layout_ms": 18,
+                  "two_raf_latency_ms": 18.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1139
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_gender_seed",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 873.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 884,
+                  "two_raf_latency_ms": 885.2000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 129
+                },
+                {
+                  "forced_layout_ms": 818.4000000059605,
+                  "two_raf_latency_ms": 819.9000000059605,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 130
+                },
+                {
+                  "forced_layout_ms": 873.0999999940395,
+                  "two_raf_latency_ms": 874.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 131
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 19.6,
+              "samples": [
+                {
+                  "forced_layout_ms": 18,
+                  "two_raf_latency_ms": 19.100000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1153
+                },
+                {
+                  "forced_layout_ms": 19.599999994039536,
+                  "two_raf_latency_ms": 20.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1154
+                },
+                {
+                  "forced_layout_ms": 19.799999997019768,
+                  "two_raf_latency_ms": 20.899999991059303,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1155
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_tone_feedback",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 0,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 158,
+              "samples": [
+                {
+                  "forced_layout_ms": 158,
+                  "two_raf_latency_ms": 159.19999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 145
+                },
+                {
+                  "forced_layout_ms": 161.40000000596046,
+                  "two_raf_latency_ms": 162.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 146
+                },
+                {
+                  "forced_layout_ms": 154.5,
+                  "two_raf_latency_ms": 155.70000000298023,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 147
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 3.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 3.7000000029802322,
+                  "two_raf_latency_ms": 9.100000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1169
+                },
+                {
+                  "forced_layout_ms": 5,
+                  "two_raf_latency_ms": 11.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1170
+                },
+                {
+                  "forced_layout_ms": 3.7000000029802322,
+                  "two_raf_latency_ms": 5.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1171
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_gender_feedback",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 0,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 812,
+              "samples": [
+                {
+                  "forced_layout_ms": 898.3999999910593,
+                  "two_raf_latency_ms": 900,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 161
+                },
+                {
+                  "forced_layout_ms": 771,
+                  "two_raf_latency_ms": 772,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 162
+                },
+                {
+                  "forced_layout_ms": 812,
+                  "two_raf_latency_ms": 813.2999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 163
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 15.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 15.299999997019768,
+                  "two_raf_latency_ms": 16,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1185
+                },
+                {
+                  "forced_layout_ms": 15.599999994039536,
+                  "two_raf_latency_ms": 16.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1186
+                },
+                {
+                  "forced_layout_ms": 15.099999994039536,
+                  "two_raf_latency_ms": 15.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1187
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_folding",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 866.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 849.9000000059605,
+                  "two_raf_latency_ms": 851.1000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 177
+                },
+                {
+                  "forced_layout_ms": 881.5999999940395,
+                  "two_raf_latency_ms": 882.5999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 178
+                },
+                {
+                  "forced_layout_ms": 866.7000000029802,
+                  "two_raf_latency_ms": 868.3999999910593,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 179
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 20.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 28.299999997019768,
+                  "two_raf_latency_ms": 29.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1201
+                },
+                {
+                  "forced_layout_ms": 20.900000005960464,
+                  "two_raf_latency_ms": 21.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1202
+                },
+                {
+                  "forced_layout_ms": 19.400000005960464,
+                  "two_raf_latency_ms": 20.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1203
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 0,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 967.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 872.2000000029802,
+                  "two_raf_latency_ms": 882.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 193
+                },
+                {
+                  "forced_layout_ms": 967.2000000029802,
+                  "two_raf_latency_ms": 968.8000000119209,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 194
+                },
+                {
+                  "forced_layout_ms": 986.2000000029802,
+                  "two_raf_latency_ms": 988,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 195
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 18.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 18.900000005960464,
+                  "two_raf_latency_ms": 20.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1217
+                },
+                {
+                  "forced_layout_ms": 16.900000005960464,
+                  "two_raf_latency_ms": 17.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1218
+                },
+                {
+                  "forced_layout_ms": 18.19999998807907,
+                  "two_raf_latency_ms": 18.899999991059303,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1219
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "without_assembly",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 919.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 855.9000000059605,
+                  "two_raf_latency_ms": 857.1000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 209
+                },
+                {
+                  "forced_layout_ms": 920.2999999970198,
+                  "two_raf_latency_ms": 922.7999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 210
+                },
+                {
+                  "forced_layout_ms": 919.8000000119209,
+                  "two_raf_latency_ms": 920.7000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 211
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 20.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.299999997019768,
+                  "two_raf_latency_ms": 18.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1233
+                },
+                {
+                  "forced_layout_ms": 20.099999994039536,
+                  "two_raf_latency_ms": 20.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1234
+                },
+                {
+                  "forced_layout_ms": 25.200000002980232,
+                  "two_raf_latency_ms": 25.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1235
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 8.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 225
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 8.599999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 226
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 9.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 227
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 13.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1249
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 9.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1250
+                },
+                {
+                  "forced_layout_ms": 1.699999988079071,
+                  "two_raf_latency_ms": 16.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1251
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "clustering_only",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 0,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 0,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 13.800000011920929,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 241
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 36.30000001192093,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 242
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 9.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 243
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 0.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 0.8999999910593033,
+                  "two_raf_latency_ms": 14.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1265
+                },
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 15,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1266
+                },
+                {
+                  "forced_layout_ms": 0.7999999970197678,
+                  "two_raf_latency_ms": 8.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1267
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_suffix_hash_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 62,
+              "samples": [
+                {
+                  "forced_layout_ms": 63.1000000089407,
+                  "two_raf_latency_ms": 64,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 257
+                },
+                {
+                  "forced_layout_ms": 62,
+                  "two_raf_latency_ms": 63.69999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 258
+                },
+                {
+                  "forced_layout_ms": 60.900000005960464,
+                  "two_raf_latency_ms": 62.29999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 259
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.800000011920929,
+                  "two_raf_latency_ms": 14.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1281
+                },
+                {
+                  "forced_layout_ms": 2,
+                  "two_raf_latency_ms": 11.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1282
+                },
+                {
+                  "forced_layout_ms": 2.2000000029802322,
+                  "two_raf_latency_ms": 6.9000000059604645,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1283
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_gender_seed_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 1,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 2.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.4000000059604645,
+                  "two_raf_latency_ms": 3.6000000089406967,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 273
+                },
+                {
+                  "forced_layout_ms": 2.2000000029802322,
+                  "two_raf_latency_ms": 37,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 274
+                },
+                {
+                  "forced_layout_ms": 2.1000000089406967,
+                  "two_raf_latency_ms": 8.600000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 275
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 10.100000008940697,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1297
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 5.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1298
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 12.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1299
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_tone_feedback_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 1,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 16.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 16.400000005960464,
+                  "two_raf_latency_ms": 17.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 289
+                },
+                {
+                  "forced_layout_ms": 18.200000002980232,
+                  "two_raf_latency_ms": 20.600000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 290
+                },
+                {
+                  "forced_layout_ms": 15.900000005960464,
+                  "two_raf_latency_ms": 16.900000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 291
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 16.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 15.699999988079071,
+                  "two_raf_latency_ms": 16.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1313
+                },
+                {
+                  "forced_layout_ms": 17.099999994039536,
+                  "two_raf_latency_ms": 17.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1314
+                },
+                {
+                  "forced_layout_ms": 16.5,
+                  "two_raf_latency_ms": 17.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1315
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_gender_feedback_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 1,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 3.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 3.2999999970197678,
+                  "two_raf_latency_ms": 14.400000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 305
+                },
+                {
+                  "forced_layout_ms": 2.4000000059604645,
+                  "two_raf_latency_ms": 12.099999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 306
+                },
+                {
+                  "forced_layout_ms": 4.200000002980232,
+                  "two_raf_latency_ms": 49.79999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 307
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 2.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.7000000029802322,
+                  "two_raf_latency_ms": 7.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1329
+                },
+                {
+                  "forced_layout_ms": 2.6000000089406967,
+                  "two_raf_latency_ms": 4.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1330
+                },
+                {
+                  "forced_layout_ms": 2.8999999910593033,
+                  "two_raf_latency_ms": 17.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1331
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_folding_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 10.600000008940697,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 321
+                },
+                {
+                  "forced_layout_ms": 2.4000000059604645,
+                  "two_raf_latency_ms": 3.2999999970197678,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 322
+                },
+                {
+                  "forced_layout_ms": 1.8999999910593033,
+                  "two_raf_latency_ms": 12,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 323
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.6,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 16.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1345
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 16.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1346
+                },
+                {
+                  "forced_layout_ms": 1.6000000089406967,
+                  "two_raf_latency_ms": 15.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1347
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "expansion_assembly_sweep",
+          "role": "diagnostic",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 0,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 38.19999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 337
+                },
+                {
+                  "forced_layout_ms": 1.3999999910593033,
+                  "two_raf_latency_ms": 34.599999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 338
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 41.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 339
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 10.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1361
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 9.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1362
+                },
+                {
+                  "forced_layout_ms": 2.2999999970197678,
+                  "two_raf_latency_ms": 10,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1363
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "feedback_without_rtl": {
+        "enabled": [
+          "expansion",
+          "tone_feedback",
+          "gender_feedback"
+        ],
+        "tone_states": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          2,
+          1,
+          4,
+          2,
+          4
+        ],
+        "gender_states": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          2
+        ],
+        "interpretation": "No RTL or gender seeding: feedback changes the fifth state; fold/sweep disabled only to inspect private slots"
+      },
+      "font_inputs": {
+        "upstream": {
+          "path": "build/upstream-fonts/NotoColorEmoji.ttf",
+          "sha256": "15671215ab769fdc7162a045d56fd7d7e477c51b04e6b3c761d914d8fdd6cc44"
+        },
+        "original": {
+          "path": "build/rear-cross-live/fonts/DEImoji-CBDT.ttf",
+          "sha256": "db8ea9790e2bcf37ebe66a32b48ef95c30c3f21b7b5ad1d189f43c04e9f46651"
+        },
+        "diagnostic": {
+          "path": "build/pass-ablation/cbdt-diagnostic.ttf",
+          "sha256": "53e1992c9aa65787406f751b7c6c362119e0ee200a01e683f54e5ce535851627"
+        }
+      }
+    }
+  ],
+  "chromium": "154.0.8037.57",
+  "config_set": "ablation",
+  "environment": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "harfbuzz": "10.2.0"
+  }
+}

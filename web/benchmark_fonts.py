@@ -85,17 +85,22 @@ class Shaper:
         hb.hb_ot_font_set_funcs(self.font)
         self.buffer=hb.hb_buffer_create()
 
-    def shape(self,data,calt):
+    def shape(self,data,calt,features=None):
         hb=self.hb
         hb.hb_buffer_reset(self.buffer)
         hb.hb_buffer_add_utf8(self.buffer,data,len(data),0,len(data))
         hb.hb_buffer_guess_segment_properties(self.buffer)
-        feature=Feature(int.from_bytes(b'calt','big'),int(calt),0,0xFFFFFFFF)
-        hb.hb_shape(self.font,self.buffer,C.byref(feature),1)
+        if features is None:
+            feature=Feature(int.from_bytes(b'calt','big'),int(calt),0,0xFFFFFFFF)
+            hb.hb_shape(self.font,self.buffer,C.byref(feature),1)
+        else:
+            settings={'calt':int(calt),**features}
+            values=(Feature*len(settings))(*(Feature(int.from_bytes(tag.encode('ascii'),'big'),int(value),0,0xFFFFFFFF) for tag,value in settings.items()))
+            hb.hb_shape(self.font,self.buffer,values,len(settings))
         return hb.hb_buffer_get_length(self.buffer)
 
-    def signature(self,data,calt):
-        self.shape(data,calt)
+    def signature(self,data,calt,features=None):
+        self.shape(data,calt,features)
         count=C.c_uint()
         infos=self.hb.hb_buffer_get_glyph_infos(self.buffer,C.byref(count))
         positions=self.hb.hb_buffer_get_glyph_positions(self.buffer,C.byref(count))

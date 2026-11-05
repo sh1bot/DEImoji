@@ -27,11 +27,11 @@ html,body{margin:0;background:white}body{padding:16px}
 </style><main id="host"></main>'''
 
 
-LAYOUT_JS = '''async ({text,family,calt,wrapped}) => {
+LAYOUT_JS = '''async ({text,family,calt,wrapped,settings}) => {
         performance.clearMarks();performance.mark('render.begin');
         const t=performance.now();
         const node=document.createElement('div');node.className='sample';
-        node.style.fontFamily=family;node.style.fontFeatureSettings=`"calt" ${calt}`;
+        node.style.fontFamily=family;node.style.fontFeatureSettings=settings ?? `"calt" ${calt}`;
         if(!wrapped)node.style.whiteSpace='nowrap';
         node.textContent=text;document.getElementById('host').replaceChildren(node);
         const box=node.getBoundingClientRect();const layout=performance.now()-t;
