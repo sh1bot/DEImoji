@@ -72,11 +72,13 @@ def discover(font):
                 (len(seq) == 2 and seq[1] in tones or
                  seq[0] in gender_bases and len(seq) == 4 and seq[1] in tones
                  and seq[2:] in tails)}
-    # Person uses separate woman/man bases instead of native ZWJ gender forms.
-    # Accept our generated suffixes and explicit suffixes already partly
-    # assembled by ccmp, reusing the existing artwork in both cases.
-    people = [cmap.get(cp) for cp in (0x1F9D1, 0x1F469, 0x1F468)]
-    if all(base in tone_bases for base in people):
+    # Adult and older person use separate woman/man codepoints, rather than
+    # native ZWJ gender ligatures. Fold generated states directly into those
+    # existing toned glyphs; accept explicit font-level suffix aliases too.
+    for codepoints in ((0x1F9D1, 0x1F469, 0x1F468), (0x1F9D3, 0x1F475, 0x1F474)):
+        people = [cmap.get(cp) for cp in codepoints]
+        if not all(base in tone_bases for base in people):
+            continue
         person, woman, man = people
         gender_bases[person] = [list(pair) for pair in
                                 zip(tone_bases[woman], tone_bases[man])]

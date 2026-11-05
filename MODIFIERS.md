@@ -14,8 +14,12 @@ off restores plain rendering and disables zombie/sunflower/poop clustering.
 
 Artwork eligibility comes from native GSUB ligatures. A tone base must have all
 five tone outputs. A gender base must also have both gender outputs for every
-tone. The current full fonts supply 135 tone bases and 50 gender bases, including
-person (whose gender choices reuse the separate woman/man artwork).
+tone. The current full fonts supply 135 tone bases and 51 gender bases, including
+adult and older person. Their gender choices reuse the separate woman/man and
+older woman/older man artwork. Plain 🧓 can select 🧓, 👵 or 👴 at every tone;
+explicit typed older-person gender suffixes use the same aliases as adult
+person, including a tone already assembled by native ccmp. Typed 👵/👴 retain
+their gender, and explicit skin tones remain as typed.
 
 Seed collection is broader than artwork eligibility. It includes mapped input
 glyphs and native/cluster GSUB output glyphs: ordinary mapped text, spaces,

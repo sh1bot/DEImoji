@@ -116,13 +116,16 @@ def main():
                 page.locator('#zombie-proof').evaluate('node => node.remove()')
             page.select_option('#preset', 'poop')
             assert page.locator('#text').input_value() == '💩' * 36
+            page.select_option('#preset', 'old')
+            assert page.locator('#text').input_value() == '🧓' * 36
             page.select_option('#preset', 'runners')
             assert page.locator('#text').input_value() == '🏃' * 36
             for fmt in ('colr', 'cbdt'):
                 page.select_option('#format', fmt)
                 page.wait_for_function(loaded)
                 for text, should_differ in (('🏃' * 8, True), ('🧑' * 8, True),
-                                            ('🏃', True), ('🧑', True),
+                                            ('🏃', True), ('🧑', True), ('🧓' * 8, True),
+                                            ('👵🏻👴🏿', False),
                                             ('🏃🏽‍♀️🏃🏻‍♂️🏃🏿', False)):
                     page.locator('#text').fill(text)
                     # Capture the same element at the same position/background;

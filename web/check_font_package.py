@@ -50,6 +50,23 @@ def check_font_package(site):
                     for t, g in zip(ts, gs)]
         actual = shape(font, '🏃' * 1252)
         assert actual == expected, ('full-font feedback', name)
+        elder = font.getBestCmap()[0x1F9D3]
+        assert elder in genders, ('older person missing gender mappings', name)
+        elderly = shape(font,'🧓'*1252)
+        assert elderly == reference_variations(font,'🧓'*1252), ('older-person feedback',name)
+        choices = [set(tones[elder])] + [set(row[g] for row in genders[elder]) for g in (0,1)]
+        first = shape(font,'🧓'*4)
+        assert all(set(first).intersection(group) for group in choices), ('older-person genders',name)
+        cmap = font.getBestCmap()
+        for cp, target_cp, g in ((0x2640,0x1F475,0),(0x2642,0x1F474,1)):
+            assert shape(font,'🧓\u200d'+chr(cp)) == [cmap[target_cp]]
+            for t in range(5):
+                tone = chr(0x1F3FB+t)
+                target = genders[elder][t][g]
+                assert shape(font,'🧓'+tone+'\u200d'+chr(cp)) == [target]
+                for suffix in ('','\ufe0f'):
+                    typed = chr(target_cp)+tone+suffix
+                    assert shape(font,typed) == shape(font,typed,calt=False), ('explicit older person',name)
         # Inspect actual private gender seeds before either feedback pass.
         # Cover every source bucket, rather than checking only one runner ID.
         cmap = font.getBestCmap()
@@ -138,6 +155,8 @@ def check_font_package(site):
                 distant_noneligible_noise_checked=True,
                 zombie_compositions_checked=10, zombie_grouping_input_length=4000,
                 zombie_artwork_bundle=verify_zombies(),
+                older_person_genders_checked=True,
+                older_person_feedback_outputs_checked=1252,
                 private_state_cleanup=True, bitmap_artwork_bytes_verified=True)
 
 

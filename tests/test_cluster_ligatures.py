@@ -407,11 +407,13 @@ class NativeCacheTests(unittest.TestCase):
 def make_modifier_font():
     font = make_font()
     gendered = ('runner', 'swimmer', 'cyclist', 'climber')
-    bases = ('runner', 'woman', 'man', 'person', 'thumb', 'swimmer', 'cyclist', 'climber')
+    bases = ('runner', 'woman', 'man', 'person', 'thumb', 'swimmer', 'cyclist', 'climber',
+             'old', 'oldwoman', 'oldman')
     names = ['runner', 'woman', 'man', 'person', 'thumb', 'male', 'swimmer', 'cyclist',
              'unused', 'climber'] + ['skin' + str(i) for i in range(5)]
     names += [b + str(t) + str(g) for b in bases for t in range(5)
               for g in (range(3) if b in gendered else range(1))]
+    names += ['old', 'oldwoman', 'oldman']
     font.setGlyphOrder(font.getGlyphOrder() + names)
     for name in names:
         font['glyf'].glyphs[name] = TTGlyphPen(None).glyph()
@@ -422,6 +424,7 @@ def make_modifier_font():
             table.cmap.update({0x1F3C3: 'runner', 0x1F469: 'woman', 0x1F468: 'man',
                                0x1F9D1: 'person', 0x1F44D: 'thumb', 0x2642: 'male',
                                0x1F3CA: 'swimmer', 0x1F6B4: 'cyclist', 0x1F9D7: 'climber',
+                               0x1F9D3: 'old', 0x1F475: 'oldwoman', 0x1F474: 'oldman',
                                **{0x1F3FB + t: 'skin' + str(t) for t in range(5)}})
     rules = []
     for t in range(5):
@@ -595,6 +598,20 @@ class ModifierTests(unittest.TestCase):
                 text = '🧑' + chr(0x1F3FB+t) + '\u200d' + sign
                 self.assertEqual(shape(self.font, text), [f'{base}{t}0'])
 
+    def test_older_person_gender_variants_and_explicit_choices(self):
+        for text in ('🧓'*4, '🧓'*1252, '🧓🏃🧑'*20):
+            self.assertEqual(shape(self.font,text),reference_variations(self.font,text))
+        actual=shape(self.font,'🧓'*4)
+        self.assertEqual({g[:-2] for g in actual},{'old','oldwoman','oldman'})
+        self.assertEqual(shape(self.font,'🧓'*4,calt=False),['old']*4)
+        for sign,base in (('♀','oldwoman'),('♂','oldman')):
+            self.assertEqual(shape(self.font,'🧓\u200d'+sign),[base])
+            for t in range(5):
+                self.assertEqual(shape(self.font,'🧓'+chr(0x1F3FB+t)+'\u200d'+sign),[f'{base}{t}0'])
+                text=('👵' if sign=='♀' else '👴')+chr(0x1F3FB+t)
+                self.assertEqual(shape(self.font,text),[f'{base}{t}0'])
+                self.assertEqual(shape(self.font,text),shape(self.font,text,calt=False))
+
     def test_explicit_sequences_and_calt_off(self):
         for t in range(5):
             for suffix, gender in (('', 0), ('\u200d♀', 1), ('\u200d♂', 2)):
@@ -723,7 +740,7 @@ class ZombieVariantTests(unittest.TestCase):
         self.assertEqual(shape(self.font,'🧟'*40,calt=False),['z']*40)
         self.assertEqual(shape(self.font,'🧟\u200d♀'),shape(self.font,'🧟\u200d♀',calt=False))
         self.assertEqual(self.info['custom_bases'],2)
-        self.assertEqual(self.info['tone_bases'],8)
+        self.assertEqual(self.info['tone_bases'],11)
 
     def test_mixed_people_and_crowds_keep_both_histories(self):
         from modifier_ligatures import discover
