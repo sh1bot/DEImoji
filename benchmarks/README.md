@@ -336,3 +336,61 @@ python web/benchmark_passes.py --site build/rear-cross-live \
   --config-set bounded --chromium /usr/bin/chromium --trials 3 \
   --output benchmarks/bounded.json
 ```
+
+### Prefix-anchored entropy and backward feedback
+
+[`prefix.json`](prefix.json) implements one prefix entropy sweep. After expansion,
+an `ignore sub @any @source @tone'` guard marks only the first source's state.
+Longest-first rules choose an anchor at source 16, 8, 4, 2 or 1. A reverse pass
+collects entropy back from that anchor using distinct temporary state glyphs;
+a final pass converts them to normal tone states. Downstream gender seeding,
+forward feedback, folding and cleanup remain enabled. No recursive entropy is
+collected after the anchor. The endpoint reuses a state slot rather than adding
+an extra slot. All temporary glyphs are removed before the existing pipeline.
+
+The independent proof checks lengths 1, 2, 3, 4, 7, 8, 15, 16, 17 and 24, including
+anchor selection, expected prefix states, zero states beyond the prefix and
+absence of temporary glyphs. Forty runners produce more than five distinct final
+glyphs, with all private markers removed. Unaffected glyphs, positions and clusters
+match rules-off output for lengths through 3,200.
+
+COLRv1, 3,200 emoji, median forced layout time across three warmed trials:
+
+| Configuration | Unaffected wrapped | Runners wrapped | Runners one line |
+| --- | ---: | ---: | ---: |
+| upstream | 1.9 ms | 1.2 ms | 1.2 ms |
+| original, calt off | 1.4 ms | 1.3 ms | 1.1 ms |
+| original, calt on | 770.2 ms | 1,078.2 ms | 19.4 ms |
+| local seeds, full pipeline | 16.9 ms | 1,031.1 ms | 18.6 ms |
+| prefix seeds, full pipeline | 922.4 ms | 1,065.6 ms | 20.1 ms |
+| prefix seeds, expansion/hash/sweep only | 143.8 ms | 174.6 ms | 4.2 ms |
+
+Two separate problems remain. First, backward feedback rules match actual runners
+and mark 3,199 glyphs unsafe even without recursive hashing. On unaffected input
+the same feedback rules fail eligibility checks and produce no such flags; the
+earlier unaffected benchmark was not evidence that matched feedback was cheap to
+wrap. Direction does not exempt a successful contextual match from break safety.
+
+Second, the start guard itself introduces matches across every source boundary.
+[`prefix-guard.json`](prefix-guard.json) isolates just the guard plus resetting
+its temporary start marker, with no anchor or entropy collection. With expansion
+and sweep only, this already marks 3,199 glyphs unsafe and wraps in 44–46 ms.
+With the full downstream pipeline it takes 863 ms on unaffected input and 995 ms
+on runners. HarfBuzz marks a successful ignore-context match unsafe even though
+it suppresses substitution. Prefix-only collection therefore does not restrict
+all contextual dependencies to the prefix in this implementation.
+
+HarfBuzz diagnostics use 3,200 plain runners. Browser trials move one explicitly
+male runner near the beginning of an otherwise unmodified 3,200-runner paragraph
+to avoid reusing identical paragraph text. Unaffected trials vary their first
+few glyphs using the existing benchmark payload. These measurements concern
+layout, not rasterization, and do not trace individual browser reshaping calls.
+The prefix font is diagnostic only; published assets remain unchanged.
+
+```sh
+python web/benchmark_prefix.py --site build/rear-cross-live \
+  --upstream build/upstream-fonts --output benchmarks/prefix.json
+python web/benchmark_prefix.py --site build/rear-cross-live \
+  --upstream build/upstream-fonts --guard-only \
+  --output benchmarks/prefix-guard.json
+```
