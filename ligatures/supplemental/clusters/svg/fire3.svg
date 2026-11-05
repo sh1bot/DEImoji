@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" width="230" height="128" viewBox="0 0 230 128"><g transform="translate(56 -3) scale(1)"><g>
+<svg xmlns="http://www.w3.org/2000/svg" width="230" height="128" viewBox="0 0 230 128"><g transform="translate(56 -3) scale(1) translate(128 0) scale(-1 1)"><g>
 	
 		<radialGradient id="fire3_p0_SVGID_1_" cx="68.8839" cy="124.2963" r="70.587" gradientTransform="matrix(-1 -4.343011e-03 -7.125917e-03 1.6408 131.9857 -79.3452)" gradientUnits="userSpaceOnUse">
 		<stop offset="0.3144" style="stop-color:#FF9800" />

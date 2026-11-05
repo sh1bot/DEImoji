@@ -179,7 +179,10 @@ all five source buckets, in both TTFs and WOFF2. The report records this coverag
 Plain 🪦, 🎆, 🎉 and 🔥 have one pair and one trio each. Their grouping uses
 trios with a 2+2 tail for four remaining inputs; these families do not use the
 binary grouping register or diversity generators. Headstones mix arched,
-rounded and bevelled crowns. Fireworks share one panoramic sky per cluster.
+rounded, bevelled and cross shapes, shuffled inscriptions and smaller rear
+stones. Fireworks share a panoramic sky and show opening, full-bloom and
+falling-spark stages. Middle poppers/flames are mirrored; streamers and confetti
+have different positions and colours.
 
 `ligatures/supplemental/build_clusters.py` composes the pinned Noto vectors and
 builds the checked-in unencoded bitmap/COLRv1 pack. `fixed_cluster_artwork.py`

@@ -7,11 +7,14 @@ from copy import deepcopy
 from pathlib import Path
 import hashlib
 import json
+import math
 import os
 import shutil
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
+
+from picosvg.svg_types import SVGPath
 
 ROOT = Path(__file__).resolve().parents[2]
 ART = ROOT / 'ligatures/supplemental/clusters'
@@ -53,12 +56,88 @@ def stone_shape(source, shape):
         front='M37.67 114.07 V42 C37.67 -2 105.95 -2 105.95 42 V114.07 Z'
         back='M21.8 114.07 V42 C21.8 15 36 8 55.8 8 H71.8 V114.07 Z'
         edge='M21.8 42 C21.8 15 36 8 55.8 8 H71.8 C48 8 37.67 24 37.67 42 Z'
+    elif shape == 'cross':
+        front='M58 114.07 V53 H37.67 V31 H58 V8 H85.6 V31 H105.95 V53 H85.6 V114.07 Z'
+        back='M42.13 114.07 V53 H21.8 V31 H42.13 V8 H69.73 V31 H90.08 V53 H69.73 V114.07 Z'
+        edge='M21.8 31 H37.67 V53 H21.8 Z M42.13 8 H58 V31 H42.13 Z'
     else:
         front='M37.67 114.07 V24 L49.67 12 H93.95 L105.95 24 V114.07 Z'
         back='M21.8 114.07 V24 L33.8 12 H77.95 L89.95 24 V114.07 Z'
         edge='M21.8 24 L33.8 12 H49.67 L37.67 24 Z'
     body[1].set('d',back);body[3].set('d',edge);body[5].set('d',front)
     return result
+
+
+def inscription(source, variant, cross=False):
+    result=deepcopy(source)
+    # Move complete engraved strokes, including their Noto bevel highlights.
+    targets=((38,64,51),(64,38,51),(51,64,38))[variant%3]
+    if cross:
+        targets=(70,94,82)
+    for group in result[0][1:5]:
+        for path in group.iter(T('path')):
+            box=SVGPath(d=path.get('d')).bounding_box()
+            row=min(range(3),key=lambda i:abs(box.y-(35.4,48.6,61.5)[i]))
+            dy=targets[row]-(38,51,64)[row]
+            path.set('transform',f'translate(31 {dy}) scale(.58 1)' if cross else f'translate(0 {dy})')
+    return result
+
+
+def party(source, variant):
+    result=deepcopy(source)
+    # Cone material stays yellow; recolour and move only the airborne paper.
+    body=result[0][0][0]
+    streamers=[p for p in body if p.tag==T('path')][-3:]
+    swaps=({'#03A9F4':'#F48FB1','#F44336':'#03A9F4','#F48FB1':'#F44336'},
+           {'#03A9F4':'#F44336','#F44336':'#F48FB1','#F48FB1':'#03A9F4'},
+           {'#03A9F4':'#FFC107','#F44336':'#AB47BC','#F48FB1':'#F48FB1'})[variant%3]
+    moves=(('rotate(-9 64 67)','translate(5 3) rotate(8 55 55)','translate(-4 8)'),
+           ('translate(-3 -7)','rotate(-12 55 55)','translate(2 -3) rotate(7 75 55)'),
+           ('rotate(7 64 67)','translate(-5 5)','rotate(-8 75 55)'))[variant%3]
+    for node,move in zip(streamers,moves):
+        node.set('style','fill:'+swaps.get(node.get('style','').split(':')[-1].rstrip(';'),'#03A9F4')+';')
+        node.set('transform',move)
+    # The red inner curl follows the recoloured red streamer.
+    result[0][0][-1].set('style','fill:'+('#7B1FA2' if variant%3==2 else '#0277BD' if variant%3==0 else '#AD4E73')+';')
+    result[0][0][-1].set('transform',moves[1])
+    colors=('#FFC107','#03A9F4','#F48FB1','#F44336','#FB8C00')
+    for j,node in enumerate(list(result[0])[1:]):
+        wrapper=ET.Element(T('g'),transform=f'translate({((j*7+variant*5)%15)-7} {((j*11+variant*7)%17)-8}) rotate({(j*17+variant*29)%51-25} 64 64)')
+        for part in node.iter():
+            if 'fill:' in part.get('style',''):
+                part.set('style','fill:'+colors[(j+variant*2)%len(colors)]+';')
+        result[0].remove(node);wrapper.append(node);result[0].append(wrapper)
+    return result
+
+
+def burst(stage,cx,cy):
+    group=ET.Element(T('g'))
+    colors=('#F48FB1','#4FC3F7','#FFD54F','#FF8A80')
+    def path(d,color,width):
+        ET.SubElement(group,T('path'),d=d,fill='none',stroke=color,
+                      attrib={'stroke-width':str(width),'stroke-linecap':'round'})
+    if stage=='opening':
+        # Compact straight jets and a brilliant core, before the long trails.
+        for i in range(18):
+            a=2*math.pi*i/18+.14+(i%3-1)*.035
+            r=19+(i%4)*3
+            x,y=math.cos(a),math.sin(a)
+            path(f'M{cx+x*8:.2f} {cy+y*8:.2f} Q{cx+x*r*.72-y*2:.2f} {cy+y*r*.72+x*2:.2f} {cx+x*r:.2f} {cy+y*r:.2f}',colors[i%4],2.8)
+            if i%3==0:
+                ET.SubElement(group,T('circle'),cx=f'{cx+x*(r+4):.2f}',cy=f'{cy+y*(r+4):.2f}',r='1.3',fill='#FFF9C4')
+        ET.SubElement(group,T('circle'),cx=str(cx),cy=str(cy),r='4',fill='#FFF9C4')
+        path(f'M{cx} {cy+39} Q{cx-4} {cy+55} {cx-1} {cy+67}','#FFD54F',2)
+    else:
+        # The core has burnt out; separated sparks curve down under gravity.
+        for i in range(16):
+            a=2*math.pi*i/16-.2
+            x,y=math.cos(a),math.sin(a)
+            r=23+(i%3)*3
+            x0,y0=cx+x*r,cy+y*r
+            x1,y1=cx+x*(r+8),cy+y*(r+8)+14
+            path(f'M{x0:.2f} {y0:.2f} Q{cx+x*(r+7):.2f} {cy+y*(r+7):.2f} {x1:.2f} {y1:.2f}',colors[i%4],2.8)
+            ET.SubElement(group,T('circle'),cx=f'{x1:.2f}',cy=f'{y1+6:.2f}',r='1.6',fill='#FFF9C4')
+    return group
 
 
 def compose(family, count):
@@ -70,15 +149,20 @@ def compose(family, count):
     root = ET.Element(T('svg'),width=str(width),height='128',viewBox=f'0 0 {width} 128')
     if family == 'headstone':
         # Rear stone first: staggered crowns and bases, shared ground level.
-        placements = (('translate(53 1) scale(.94)', 'translate(-9 9) scale(.94)') if count==2 else
-                      ('translate(55 -3) scale(.98)', 'translate(-10 10) scale(.94)',
+        placements = (('translate(78 0) scale(.72)', 'translate(-9 9) scale(.94)') if count==2 else
+                      ('translate(72 0) scale(.72)', 'translate(-10 10) scale(.94)',
                        'translate(116 7) scale(.96)'))
     elif family == 'fireworks':
         # Stretch only the background. Bursts retain circular proportions.
         root.append(copy_art(source,f'{family}{count}_sky_',f'scale({width/128} 1)',range(2,len(source))))
-        placements = (('translate(-2 9) scale(.90)', 'translate(77 -3) scale(.88)') if count==2 else
-                      ('translate(63 -3) scale(.94)', 'translate(-6 18) scale(.86)',
-                       'translate(143 14) scale(.87)'))
+        if count==2:
+            root.append(copy_art(source,'fireworks2_full_','translate(-2 9) scale(.90)',(0,1)))
+            root.append(burst('opening',143,43))
+        else:
+            root.append(burst('falling',45,51))
+            root.append(copy_art(source,'fireworks3_full_','translate(63 3) scale(.94)',(0,1)))
+            root.append(burst('opening',211,39))
+        return root
     elif family == 'popper':
         placements = (('translate(59 -1) scale(.96) rotate(8 64 64)',
                        'translate(-1 8) scale(.94) rotate(-5 64 64)') if count==2 else
@@ -91,7 +175,16 @@ def compose(family, count):
                       ('translate(56 -3) scale(1)', 'translate(-5 23) scale(.82)',
                        'translate(121 14) scale(.90)'))
     for i, transform in enumerate(placements):
-        member = stone_shape(source, ('round','bevel')[i] if count==2 else ('arched','round','bevel')[i]) if family=='headstone' else source
+        member=source
+        if family=='headstone':
+            shape=('cross','arched')[i] if count==2 else ('cross','round','bevel')[i]
+            member=inscription(stone_shape(source,shape),i,cross=shape=='cross')
+        elif family=='popper':
+            member=party(source,i+(count-2))
+            if i==0:
+                transform+=' translate(128 0) scale(-1 1)'
+        elif family=='fire' and i==0:
+            transform+=' translate(128 0) scale(-1 1)'
         root.append(copy_art(member,f'{family}{count}_p{i}_',transform, (0,1) if family=='fireworks' else ()))
     return root
 

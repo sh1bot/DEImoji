@@ -1,7 +1,9 @@
 # Fixed decorative clusters
 
-Noto-derived pairs and trios for 🪦, 🎆, 🎉 and 🔥. Headstones mix three crown
-profiles; fireworks use one shared panoramic sky. The native singleton is
+Noto-derived pairs and trios for 🪦, 🎆, 🎉 and 🔥. Headstones mix arched, rounded, bevelled and cross shapes, with shuffled
+inscriptions and a smaller rear row. Fireworks share one sky and show opening,
+full-bloom and falling-spark stages. Poppers vary paper colours/positions and
+reverse the middle cone; the middle flame also curls the opposite way. The native singleton is
 unchanged. These families use fixed grouping rather than an LFSR.
 
 The source SVGs are pinned in `clusters/source/` (see `clusters/manifest.json` for the commit).
