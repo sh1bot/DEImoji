@@ -251,3 +251,41 @@ font, explicitly enable the desired four-letter tags through
 `font-feature-settings`; keep `DSWP` enabled whenever `DEXP` is enabled, except
 when deliberately reproducing the invalid-output cleanup experiment. Source
 font hashes must match the accompanying build metadata.
+
+### Buffer growth control
+
+[`buffer.json`](buffer.json) compares fresh buffers, fresh buffers preallocated to
+12,800 glyphs, and warmed reused buffers. Font setup and explicit preallocation
+are outside the timer; shaping includes reset and UTF-8 insertion. Each result
+is the median of 25 trials on 3,200 unaffected emoji, using the same partitioned
+COLRv1 font. Fresh/preallocated trial order alternates.
+
+| Enabled passes | Fresh | Preallocated | Reused |
+| --- | ---: | ---: | ---: |
+| none | 0.177 ms | 0.177 ms | 0.128 ms |
+| expansion + sweep | 0.390 ms | 0.382 ms | 0.325 ms |
+| expansion + RTL hash + sweep | 1.179 ms | 1.171 ms | 1.125 ms |
+| full pipeline | 15.555 ms | 15.553 ms | 15.145 ms |
+
+Preallocation does not materially reduce these times. This is a capacity control,
+not an allocator-call trace. Source inspection of the measured HarfBuzz 10.2.0
+also rules out a reallocation per insertion:
+
+* [`enlarge`](https://github.com/harfbuzz/harfbuzz/blob/10.2.0/src/hb-buffer.cc#L158)
+  increases capacity geometrically (`capacity += capacity / 2 + 32`).
+* `make_room_for` switches to a separate output buffer when expansion would
+  overwrite unread input, rather than shifting the entire suffix per insertion.
+* `reset`/`clear` reset lengths and retain allocated capacity. The earlier warm
+  shaping benchmarks already reuse buffers this way.
+
+The recursive RTL hash itself is length-preserving single substitution; expansion
+is a separate pass. Both LTR and local seeding experiments retain exactly that
+same expansion. Their wrapped-layout difference therefore cannot be attributed
+to a different number of inserted state glyphs. A moving entropy payload might
+reduce temporary glyph count, but cannot in itself remove the semantic dependency
+across a line boundary; it would need a separate break-safety measurement.
+
+```sh
+python web/benchmark_buffer.py --font build/pass-seeding/colr-diagnostic.ttf \
+  --output benchmarks/buffer.json --trials 25
+```
