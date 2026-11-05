@@ -182,7 +182,8 @@ They use the same period-31 binary LFSR grouping as zombies, sunflowers and
 poop, with short tails adjusted to avoid singletons. They do not use the
 base-3/base-5 diversity generators. Headstones mix arched,
 rounded and bevelled shapes, shuffled inscriptions and smaller rear stones.
-A ringed Celtic cross sits in the foreground, including in the trio. Fireworks share a panoramic sky and show opening, full-bloom and
+A ringed Celtic cross sits behind the round stone in the pair and in the
+foreground of the trio. Fireworks share a panoramic sky and show opening, full-bloom and
 falling-spark stages. Middle poppers/flames are mirrored; streamers and confetti
 have different positions and colours.
 

@@ -205,7 +205,7 @@ def compose(family, count):
     for i, transform in enumerate(placements):
         member=source
         if family=='headstone':
-            shape=('round','cross')[i] if count==2 else ('arched','cross','bevel')[i]
+            shape=('cross','round')[i] if count==2 else ('arched','cross','bevel')[i]
             member=inscription(stone_shape(source,shape),i,cross=shape=='cross')
         elif family=='popper':
             member=party(source,i if count==2 else i+2)

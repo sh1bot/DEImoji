@@ -1,7 +1,7 @@
 # Fixed decorative clusters
 
-Noto-derived pairs and trios for 🪦, 🎆, 🎉 and 🔥. Headstones mix arched, rounded and bevelled stones with a foreground Celtic
-cross (ring plus cross), with shuffled
+Noto-derived pairs and trios for 🪦, 🎆, 🎉 and 🔥. Headstones mix arched, rounded and bevelled stones with a Celtic
+cross (ring plus cross), behind in the pair and in front in the trio, with shuffled
 inscriptions and a smaller rear row. Fireworks share one sky and show opening,
 full-bloom and falling-spark stages. Poppers vary paper colours/positions and
 reverse the middle cone; each of the five poppers has a distinct permutation
