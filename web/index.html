@@ -38,7 +38,7 @@
     <p id="palette" aria-label="Base emoji to copy and paste">☝⛹✊✋✌✍🎅🏂🏃🏄🏇🏊🏋🏌👂👃👆👇👈👉👊👋👌👍👎👏👐👦👧👨👩👫👬👭👮👯👰👱👲👳👴👵👶👷👸👼💁💂💃💅💆💇💏💑💪🕴🕵🕺🖐🖕🖖🙅🙆🙇🙋🙌🙍🙎🙏🚣🚴🚵🚶🛀🛌🤌🤏🤘🤙🤚🤛🤜🤝🤞🤟🤦🤰🤱🤲🤳🤴🤵🤶🤷🤸🤹🤼🤽🤾🥷🦵🦶🦸🦹🦻🧍🧎🧏🧑🧒🧓🧔🧕🧖🧗🧘🧙🧚🧛🧜🧝🫃🫄🫅🫰🫱🫲🫳🫴🫵🫶🫷🫸🫹🫺🧟🌻💩🪦🎆🎉🔥</p>
     <label class="input-label" for="text">Or type your own sequence</label>
     <textarea id="text" rows="3" spellcheck="false" aria-describedby="scope"></textarea>
-    <p class="muted" id="scope">Plain 🧟, 🌻, 💩, 🪦, 🎆, 🎉 and 🔥 form clusters. Compatible plain emoji such as 🏃 vary in skin tone and gender. Explicit modifiers stay as typed; spaces restart the variation.</p>
+    <p class="muted" id="scope">Plain 🧟, 🌻, 💩, 🪦, 🎆, 🎉 and 🔥 form clusters. Compatible plain emoji such as 🏃 vary in skin tone and gender. Explicit modifiers stay as typed.</p>
     <details class="debug" open>
       <summary>Input codepoints</summary>
       <output id="codepoints" aria-label="Input Unicode codepoints"></output>
@@ -53,8 +53,8 @@
       <div class="sample-heading"><h2 id="off-title">Individual emoji</h2><span>calt = 0 · same font</span></div>
       <div id="individual" class="emoji off waiting" aria-label="The same text with contextual variation disabled"></div>
     </section>
-    <p class="explanation">For all seven cluster families, group sizes repeat <strong>3 · 3 · 3 · 3 · 2 · 2 · 2 · 3 · 2 · 2 · 3 · 3 · 2 · 3 · 2</strong>.
-      Short tails adjust to avoid leaving one emoji behind. Scroll sideways through long samples; each line stays unwrapped so line breaking does not change the grouping.</p>
+    <p class="explanation">For an isolated run in any cluster family, group sizes repeat <strong>3 · 2 · 3 · 2 · 3 · 3 · 3 · 2 · 3 · 3 · 2 · 2 · 2 · 3 · 3 · 3 · 3 · 3 · 2 · 2 · 3 · 3 · 2 · 3 · 2 · 2 · 3 · 2 · 2 · 2 · 2</strong>.
+      The pattern continues across different emoji; short tails adjust to avoid leaving one emoji behind. Scroll sideways through long samples; each line stays unwrapped so line breaking does not change the grouping.</p>
 
     <footer>
       <h2>Take the font with you.</h2>

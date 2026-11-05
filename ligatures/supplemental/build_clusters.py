@@ -14,7 +14,9 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
-from picosvg.svg_types import SVGPath
+from picosvg.svg_types import SVGPath, SVGCircle
+from picosvg.svg_pathops import difference, union
+from picosvg.svg_transform import Affine2D
 
 ROOT = Path(__file__).resolve().parents[2]
 ART = ROOT / 'ligatures/supplemental/clusters'
@@ -57,9 +59,16 @@ def stone_shape(source, shape):
         back='M21.8 114.07 V42 C21.8 15 36 8 55.8 8 H71.8 V114.07 Z'
         edge='M21.8 42 C21.8 15 36 8 55.8 8 H71.8 C48 8 37.67 24 37.67 42 Z'
     elif shape == 'cross':
-        front='M58 114.07 V53 H37.67 V31 H58 V8 H85.6 V31 H105.95 V53 H85.6 V114.07 Z'
-        back='M42.13 114.07 V53 H21.8 V31 H42.13 V8 H69.73 V31 H90.08 V53 H69.73 V114.07 Z'
-        edge='M21.8 31 H37.67 V53 H21.8 Z M42.13 8 H58 V31 H42.13 Z'
+        # Celtic ring and cross are a single stone silhouette, with four open
+        # quadrants. Keep the extrusion shallow enough that the holes stay open.
+        outer=SVGCircle(cx=72,cy=38,r=28).as_path()
+        inner=SVGCircle(cx=72,cy=38,r=21).as_path()
+        ring=SVGPath().update_path(difference([outer.as_cmd_seq(),inner.as_cmd_seq()],['nonzero','nonzero']))
+        cross=SVGPath(d='M63 8 H81 V30 H108 V46 H81 V67 L87 114.07 H57 L63 67 V46 H36 V30 H63 Z')
+        face=SVGPath().update_path(union([ring.as_cmd_seq(),cross.as_cmd_seq()],['nonzero','nonzero']))
+        front=face.d
+        back=face.apply_transform(Affine2D(1,0,0,1,-6,0)).d
+        edge=''
     else:
         front='M37.67 114.07 V24 L49.67 12 H93.95 L105.95 24 V114.07 Z'
         back='M21.8 114.07 V24 L33.8 12 H77.95 L89.95 24 V114.07 Z'
@@ -79,7 +88,7 @@ def inscription(source, variant, cross=False):
             box=SVGPath(d=path.get('d')).bounding_box()
             row=min(range(3),key=lambda i:abs(box.y-(35.4,48.6,61.5)[i]))
             dy=targets[row]-(38,51,64)[row]
-            path.set('transform',f'translate(31 {dy}) scale(.58 1)' if cross else f'translate(0 {dy})')
+            path.set('transform',f'translate(42 {dy}) scale(.40 1)' if cross else f'translate(0 {dy})')
     return result
 
 
@@ -196,7 +205,7 @@ def compose(family, count):
     for i, transform in enumerate(placements):
         member=source
         if family=='headstone':
-            shape=('cross','arched')[i] if count==2 else ('cross','round','bevel')[i]
+            shape=('round','cross')[i] if count==2 else ('arched','cross','bevel')[i]
             member=inscription(stone_shape(source,shape),i,cross=shape=='cross')
         elif family=='popper':
             member=party(source,i if count==2 else i+2)

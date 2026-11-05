@@ -8,7 +8,7 @@ artwork, without generating Unicode skin-tone or ZWJ gender sequences.
 
 Native `ccmp` assembles explicit user sequences before private states exist.
 Typed choices are preserved, including person gender aliases. Turning `calt`
-off restores plain rendering and disables zombie/sunflower/poop clustering.
+off restores plain rendering and disables clustering in all seven families.
 
 ## Eligibility and noise
 
@@ -78,11 +78,10 @@ of identical sources cancelled, and homogeneous startup used only two states.
 A direct `here5 % 3` mapping would also omit one gender for one of the five
 repeated-source cycles. Rebasing around that cycle's fixed point avoids this.
 
-Each of the first four eligible positions keeps its own suffix hash. There is
-no previous-output startup cycle and no current/next-only seed fallback.
-Full feedback takes priority once four previous eligible outputs are present.
-Noneligible glyphs break forward feedback history, while their seed carriers
-allow reverse hash collection through them. Consequently later text can affect
+Each eligible position keeps its suffix hash until four prior expanded sources
+are available. Full feedback then takes priority. Noneligible source glyphs
+contribute their private hash states to history rather than resetting it.
+Default-ignorables remain unmodified and may interrupt the private-slot stride. Consequently later text can affect
 an earlier run's seed even across a noneligible glyph in the same shaping run.
 These are deterministic hashes, not cryptographic randomness or new entropy.
 
@@ -106,7 +105,9 @@ collapse states, so visible repetition can be shorter.
 
 Both forward generators advance through every eligible base. A base without
 gender variants ignores that state during artwork selection; it does not stop
-the gender clock. Spaces and other ineligible glyphs reset forward history.
+the gender clock. Mapped spaces and other noneligible source glyphs feed their hash states into
+forward history. The playground's separate normal-text spans still delimit
+shaping runs.
 
 ## Ordered folding and cleanup
 
@@ -177,11 +178,11 @@ all five source buckets, in both TTFs and WOFF2. The report records this coverag
 ## Fixed decorative clusters
 
 Plain 🪦, 🎆, 🎉 and 🔥 have one artwork choice for pairs and one for trios.
-They use the same period-15 binary LFSR grouping as zombies, sunflowers and
+They use the same period-31 binary LFSR grouping as zombies, sunflowers and
 poop, with short tails adjusted to avoid singletons. They do not use the
 base-3/base-5 diversity generators. Headstones mix arched,
-rounded, bevelled and cross shapes, shuffled inscriptions and smaller rear
-stones. Fireworks share a panoramic sky and show opening, full-bloom and
+rounded and bevelled shapes, shuffled inscriptions and smaller rear stones.
+A ringed Celtic cross sits in the foreground, including in the trio. Fireworks share a panoramic sky and show opening, full-bloom and
 falling-spark stages. Middle poppers/flames are mirrored; streamers and confetti
 have different positions and colours.
 
@@ -190,3 +191,32 @@ builds the checked-in unencoded bitmap/COLRv1 pack. `fixed_cluster_artwork.py`
 appends it after the zombie pack, preserving native glyph IDs and the native
 cache key. Recovery removes this tail before zombies and poop. Kerning applies
 only when a neighboring glyph is a cluster, preserving singleton pairs.
+
+## Shared binary history and class cost
+
+Every family shares pair=0 and trio=1 history classes. Other mapped buffer glyphs
+are classified by glyph-ID parity, with explicit overrides for all pair/trio
+outputs (including later zombie artwork choices). Five history entries drive the
+XOR generator (`x^5+x^2+1`, period 31); with shorter history the next choice is the opposite of
+the previous bit. With no history, the first free choice is a trio. Four-item tails remain 2+2;
+three/two-item tails finish directly. An all-zero register is escaped with a trio.
+
+Thirty-two disjoint binary-register patterns let fontTools emit compact GSUB
+ClassDefs. Broad binary membership costs about 8.5–9 KB raw in each full font (78 bytes
+and 5.4 KB respectively when independently Brotli-compressing GSUB). A 3,200-emoji
+HarfBuzz sample measured about 8–9 ms with either membership policy; this is one
+local microbenchmark, not a cross-browser performance guarantee. See
+[the measurements](ligatures/supplemental/history-benchmark.json).
+Putting every source glyph directly into all ternary/quinary state classes
+instead cost another 0.55–0.56 MB, so that expansion is not enabled. Those streams
+read the compact state slots already attached to ordinary source glyphs.
+Unreachable colour-outline components are not text-buffer codepoints and are
+excluded. Protected invisible glyphs are read-only members of binary classes;
+they are never expanded or exposed by state insertion.
+
+`lfsr_history.py` provides shared buffer discovery, class partitioning and private
+marker layout for future streams. The eight private marker glyphs use no padding:
+the three gender states occupy a residue-aligned run, followed by the five tone
+states. Their IDs satisfy `gid % 3 == gender` and `gid % 5 == tone`. Semantic
+marker IDs are recorded explicitly in build metadata; recovery supports old and
+new layouts.

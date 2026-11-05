@@ -11,13 +11,15 @@ sequences are outside the matching policy for now.
 
 The default-enabled `calt` feature advances left to right. Previous output
 clusters carry the state: a pair is bit 0 and a triple is bit 1. The next bit
-is the XOR of the oldest and next-oldest of the preceding four clusters.
-The first four free choices seed with 1. Coefficients are `0,0,1,1`, newest first.
-This gives a maximal period of fifteen **clusters**, consuming 38 input emoji
+is the XOR of the oldest and second-newest of the preceding five glyphs.
+With short history, each choice is the opposite of the previous bit; an empty
+history starts with a trio. History is shared across all families, with mapped
+noise glyphs assigned by parity. Coefficients are `0,1,0,0,1`, newest first.
+This gives a maximal period of thirty-one **clusters**, consuming 78 input emoji
 per complete cycle:
 
 ```
-3 3 3 3 2 2 2 3 2 2 3 3 2 3 2 | ...
+3 2 3 2 3 3 3 2 3 3 2 2 2 3 3 3 3 3 2 2 3 3 2 3 2 2 3 2 2 2 2 | ...
 ```
 
 At least five remaining inputs allow either choice without leaving a singleton.
@@ -87,7 +89,7 @@ python -m unittest discover -s tests -p test_cluster_ligatures.py -v
 
 Requires fontTools and the system HarfBuzz shared library (`libharfbuzz0b` on
 Ubuntu). Tests cover all three families, lengths 0–100 and 1000, run boundaries,
-the period-fifteen prefix, modified zombie sequences, disabling `calt`, retained
+the period-thirty-one prefix, modified zombie sequences, disabling `calt`, retained
 positioning/ligatures, and a binary/TTX round trip.
 
 Artwork derives from Google Noto Emoji under Apache-2.0; see `LICENSE` and

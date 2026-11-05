@@ -1,0 +1,1067 @@
+{
+  "schema": 1,
+  "upstream_ref": "99701e07d3d1fe1bdbcdb14964547f0fd592966f",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "machine": "x86_64",
+    "fonttools": "4.68.0",
+    "harfbuzz": "10.2.0"
+  },
+  "method": {
+    "batches": 5,
+    "iterations_per_warm_batch": 3,
+    "warmups": 3,
+    "font_bytes": "resident in memory; disk/network I/O excluded",
+    "fonttools_layout": "new font: cmap, GSUB, GPOS and hmtx decoding; includes directory open",
+    "cold_shape": "new HarfBuzz blob/face/font/buffer plus short_clusters, calt on; includes blob copy",
+    "warm_shape": "reuse font/shape plans; buffer reset, UTF-8 input, guessing segment properties and hb_shape",
+    "limits": "No rasterization, browser font fallback or screen painting. Native-cache fonts include existing zombie/sunflower assembly; output counts show differing behavior."
+  },
+  "cases": {
+    "short_clusters": {
+      "unit": "🪦🪦🪦🎉🎉🔥🔥🔥🌻🌻💩💩💩",
+      "repeat": 1
+    },
+    "cluster_run": {
+      "unit": "💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩💩🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥",
+      "repeat": 10
+    },
+    "short_diversity": {
+      "unit": "🏃",
+      "repeat": 36
+    },
+    "diversity_run": {
+      "unit": "🏃",
+      "repeat": 3200
+    },
+    "mixed_run": {
+      "unit": "🏃🌻💩🧟🪦🎉🔥🧑🧓👍 ",
+      "repeat": 200
+    },
+    "explicit_sequences": {
+      "unit": "🏃🏽‍♀️👍🏿🧑🏻‍♂️👵🏿 ",
+      "repeat": 120
+    },
+    "plain_text": {
+      "unit": "Lorem ipsum dolor sit amet. ",
+      "repeat": 100
+    }
+  },
+  "fonts": [
+    {
+      "label": "upstream-cbdt",
+      "path": "build/upstream-fonts/NotoColorEmoji.ttf",
+      "sha256": "15671215ab769fdc7162a045d56fd7d7e477c51b04e6b3c761d914d8fdd6cc44",
+      "file_bytes": 10730124,
+      "format": "CBDT",
+      "glyphs": 4046,
+      "mapped_codepoints": 1510,
+      "gsub_bytes": 53880,
+      "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
+      "fonttools_directory_open": {
+        "median_ms": 0.0371,
+        "min_batch_ms": 0.0345,
+        "max_batch_ms": 0.0921
+      },
+      "fonttools_layout_decode": {
+        "median_ms": 32.2143,
+        "min_batch_ms": 30.9108,
+        "max_batch_ms": 43.6156
+      },
+      "harfbuzz_setup": {
+        "median_ms": 0.5883,
+        "min_batch_ms": 0.4628,
+        "max_batch_ms": 4.1206
+      },
+      "harfbuzz_cold_first_shape": {
+        "median_ms": 0.4163,
+        "min_batch_ms": 0.3832,
+        "max_batch_ms": 0.6164
+      },
+      "shaping": {
+        "short_clusters": {
+          "codepoints": 13,
+          "utf8_bytes": 52,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.003,
+            "min_batch_ms": 0.0029,
+            "max_batch_ms": 0.0033,
+            "output_glyphs": 13
+          },
+          "calt_on": {
+            "median_ms": 0.003,
+            "min_batch_ms": 0.0029,
+            "max_batch_ms": 0.003,
+            "output_glyphs": 13
+          }
+        },
+        "cluster_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1317,
+            "min_batch_ms": 0.1265,
+            "max_batch_ms": 0.1346,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.1319,
+            "min_batch_ms": 0.1255,
+            "max_batch_ms": 0.1576,
+            "output_glyphs": 3200
+          }
+        },
+        "short_diversity": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0055,
+            "min_batch_ms": 0.0054,
+            "max_batch_ms": 0.0055,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0053,
+            "max_batch_ms": 0.0513,
+            "output_glyphs": 36
+          }
+        },
+        "diversity_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2447,
+            "min_batch_ms": 0.2363,
+            "max_batch_ms": 0.2623,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.2457,
+            "min_batch_ms": 0.235,
+            "max_batch_ms": 0.261,
+            "output_glyphs": 3200
+          }
+        },
+        "mixed_run": {
+          "codepoints": 2200,
+          "utf8_bytes": 8200,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1859,
+            "min_batch_ms": 0.173,
+            "max_batch_ms": 0.2063,
+            "output_glyphs": 2200
+          },
+          "calt_on": {
+            "median_ms": 0.2039,
+            "min_batch_ms": 0.1731,
+            "max_batch_ms": 0.2147,
+            "output_glyphs": 2200
+          }
+        },
+        "explicit_sequences": {
+          "codepoints": 1800,
+          "utf8_bytes": 6120,
+          "unmapped_unique_codepoints": [
+            "FE0F"
+          ],
+          "calt_off": {
+            "median_ms": 0.2963,
+            "min_batch_ms": 0.2847,
+            "max_batch_ms": 0.3351,
+            "output_glyphs": 840
+          },
+          "calt_on": {
+            "median_ms": 0.3184,
+            "min_batch_ms": 0.2958,
+            "max_batch_ms": 0.3332,
+            "output_glyphs": 840
+          }
+        },
+        "plain_text": {
+          "codepoints": 2800,
+          "utf8_bytes": 2800,
+          "unmapped_unique_codepoints": [
+            "002E",
+            "004C",
+            "0061",
+            "0064",
+            "0065",
+            "0069",
+            "006C",
+            "006D",
+            "006F",
+            "0070",
+            "0072",
+            "0073",
+            "0074",
+            "0075"
+          ],
+          "calt_off": {
+            "median_ms": 0.1212,
+            "min_batch_ms": 0.1205,
+            "max_batch_ms": 0.1346,
+            "output_glyphs": 2800
+          },
+          "calt_on": {
+            "median_ms": 0.1485,
+            "min_batch_ms": 0.136,
+            "max_batch_ms": 0.1663,
+            "output_glyphs": 2800
+          }
+        }
+      }
+    },
+    {
+      "label": "native-cbdt",
+      "path": "build/published-font-check/native-DEImoji-CBDT.ttf",
+      "sha256": "55f47cb2913ad6711acbb6058e9abf66f451e6b99e1838244a4bcd88e4b552b9",
+      "file_bytes": 25785644,
+      "format": "CBDT",
+      "glyphs": 4050,
+      "mapped_codepoints": 1510,
+      "gsub_bytes": 53922,
+      "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
+      "fonttools_directory_open": {
+        "median_ms": 0.0381,
+        "min_batch_ms": 0.0317,
+        "max_batch_ms": 0.1501
+      },
+      "fonttools_layout_decode": {
+        "median_ms": 33.3132,
+        "min_batch_ms": 30.877,
+        "max_batch_ms": 47.4126
+      },
+      "harfbuzz_setup": {
+        "median_ms": 1.6772,
+        "min_batch_ms": 1.5347,
+        "max_batch_ms": 10.4507
+      },
+      "harfbuzz_cold_first_shape": {
+        "median_ms": 1.2846,
+        "min_batch_ms": 1.2541,
+        "max_batch_ms": 1.5292
+      },
+      "shaping": {
+        "short_clusters": {
+          "codepoints": 13,
+          "utf8_bytes": 52,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0031,
+            "min_batch_ms": 0.0029,
+            "max_batch_ms": 0.0032,
+            "output_glyphs": 12
+          },
+          "calt_on": {
+            "median_ms": 0.003,
+            "min_batch_ms": 0.0029,
+            "max_batch_ms": 0.0215,
+            "output_glyphs": 12
+          }
+        },
+        "cluster_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1332,
+            "min_batch_ms": 0.1314,
+            "max_batch_ms": 0.162,
+            "output_glyphs": 2670
+          },
+          "calt_on": {
+            "median_ms": 0.1428,
+            "min_batch_ms": 0.1308,
+            "max_batch_ms": 0.2631,
+            "output_glyphs": 2670
+          }
+        },
+        "short_diversity": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0053,
+            "max_batch_ms": 0.0055,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0053,
+            "max_batch_ms": 0.0054,
+            "output_glyphs": 36
+          }
+        },
+        "diversity_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2393,
+            "min_batch_ms": 0.2345,
+            "max_batch_ms": 0.3426,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.2703,
+            "min_batch_ms": 0.2356,
+            "max_batch_ms": 0.2884,
+            "output_glyphs": 3200
+          }
+        },
+        "mixed_run": {
+          "codepoints": 2200,
+          "utf8_bytes": 8200,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2233,
+            "min_batch_ms": 0.1908,
+            "max_batch_ms": 0.2907,
+            "output_glyphs": 2200
+          },
+          "calt_on": {
+            "median_ms": 0.191,
+            "min_batch_ms": 0.1801,
+            "max_batch_ms": 0.2469,
+            "output_glyphs": 2200
+          }
+        },
+        "explicit_sequences": {
+          "codepoints": 1800,
+          "utf8_bytes": 6120,
+          "unmapped_unique_codepoints": [
+            "FE0F"
+          ],
+          "calt_off": {
+            "median_ms": 0.295,
+            "min_batch_ms": 0.2849,
+            "max_batch_ms": 0.3779,
+            "output_glyphs": 840
+          },
+          "calt_on": {
+            "median_ms": 0.3126,
+            "min_batch_ms": 0.2992,
+            "max_batch_ms": 0.3259,
+            "output_glyphs": 840
+          }
+        },
+        "plain_text": {
+          "codepoints": 2800,
+          "utf8_bytes": 2800,
+          "unmapped_unique_codepoints": [
+            "002E",
+            "004C",
+            "0061",
+            "0064",
+            "0065",
+            "0069",
+            "006C",
+            "006D",
+            "006F",
+            "0070",
+            "0072",
+            "0073",
+            "0074",
+            "0075"
+          ],
+          "calt_off": {
+            "median_ms": 0.1269,
+            "min_batch_ms": 0.1204,
+            "max_batch_ms": 0.1474,
+            "output_glyphs": 2800
+          },
+          "calt_on": {
+            "median_ms": 0.1338,
+            "min_batch_ms": 0.1286,
+            "max_batch_ms": 0.1619,
+            "output_glyphs": 2800
+          }
+        }
+      }
+    },
+    {
+      "label": "deimoji-cbdt",
+      "path": "build/history-fonts/NotoColorEmoji.ttf",
+      "sha256": "f391b9f7f6b0ee572b06062e9dd8adf7ddb51f3bd6ba2e3426014c986c9f9eff",
+      "file_bytes": 26411996,
+      "format": "CBDT",
+      "glyphs": 4078,
+      "mapped_codepoints": 1510,
+      "gsub_bytes": 271476,
+      "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
+      "fonttools_directory_open": {
+        "median_ms": 0.0437,
+        "min_batch_ms": 0.037,
+        "max_batch_ms": 0.0864
+      },
+      "fonttools_layout_decode": {
+        "median_ms": 269.1391,
+        "min_batch_ms": 212.7784,
+        "max_batch_ms": 287.4822
+      },
+      "harfbuzz_setup": {
+        "median_ms": 1.9867,
+        "min_batch_ms": 1.7723,
+        "max_batch_ms": 10.8101
+      },
+      "harfbuzz_cold_first_shape": {
+        "median_ms": 1.6021,
+        "min_batch_ms": 1.5028,
+        "max_batch_ms": 2.0011
+      },
+      "shaping": {
+        "short_clusters": {
+          "codepoints": 13,
+          "utf8_bytes": 52,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0034,
+            "min_batch_ms": 0.0033,
+            "max_batch_ms": 0.0039,
+            "output_glyphs": 13
+          },
+          "calt_on": {
+            "median_ms": 0.0339,
+            "min_batch_ms": 0.0335,
+            "max_batch_ms": 0.034,
+            "output_glyphs": 5
+          }
+        },
+        "cluster_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.242,
+            "min_batch_ms": 0.2061,
+            "max_batch_ms": 0.353,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 8.592,
+            "min_batch_ms": 8.2837,
+            "max_batch_ms": 8.8329,
+            "output_glyphs": 1280
+          }
+        },
+        "short_diversity": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0055,
+            "min_batch_ms": 0.0054,
+            "max_batch_ms": 0.0059,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.2367,
+            "min_batch_ms": 0.197,
+            "max_batch_ms": 0.2531,
+            "output_glyphs": 36
+          }
+        },
+        "diversity_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2394,
+            "min_batch_ms": 0.2355,
+            "max_batch_ms": 0.2672,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 19.166,
+            "min_batch_ms": 18.8576,
+            "max_batch_ms": 19.7151,
+            "output_glyphs": 3200
+          }
+        },
+        "mixed_run": {
+          "codepoints": 2200,
+          "utf8_bytes": 8200,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2098,
+            "min_batch_ms": 0.2039,
+            "max_batch_ms": 0.2445,
+            "output_glyphs": 2200
+          },
+          "calt_on": {
+            "median_ms": 12.6076,
+            "min_batch_ms": 12.1898,
+            "max_batch_ms": 12.8695,
+            "output_glyphs": 2200
+          }
+        },
+        "explicit_sequences": {
+          "codepoints": 1800,
+          "utf8_bytes": 6120,
+          "unmapped_unique_codepoints": [
+            "FE0F"
+          ],
+          "calt_off": {
+            "median_ms": 0.3041,
+            "min_batch_ms": 0.285,
+            "max_batch_ms": 0.4387,
+            "output_glyphs": 840
+          },
+          "calt_on": {
+            "median_ms": 4.0621,
+            "min_batch_ms": 3.9345,
+            "max_batch_ms": 4.1674,
+            "output_glyphs": 600
+          }
+        },
+        "plain_text": {
+          "codepoints": 2800,
+          "utf8_bytes": 2800,
+          "unmapped_unique_codepoints": [
+            "002E",
+            "004C",
+            "0061",
+            "0064",
+            "0065",
+            "0069",
+            "006C",
+            "006D",
+            "006F",
+            "0070",
+            "0072",
+            "0073",
+            "0074",
+            "0075"
+          ],
+          "calt_off": {
+            "median_ms": 0.1221,
+            "min_batch_ms": 0.1207,
+            "max_batch_ms": 0.1314,
+            "output_glyphs": 2800
+          },
+          "calt_on": {
+            "median_ms": 2.9193,
+            "min_batch_ms": 2.8426,
+            "max_batch_ms": 3.1451,
+            "output_glyphs": 2800
+          }
+        }
+      }
+    },
+    {
+      "label": "upstream-colr",
+      "path": "build/upstream-fonts/Noto-COLRv1.ttf",
+      "sha256": "b8e25ea68db82f9e4d0aee921f4420be2be39887bd5c893a2ad98710531f9d0c",
+      "file_bytes": 5038236,
+      "format": "COLRv1",
+      "glyphs": 42330,
+      "mapped_codepoints": 1508,
+      "gsub_bytes": 31384,
+      "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
+      "fonttools_directory_open": {
+        "median_ms": 0.0387,
+        "min_batch_ms": 0.0362,
+        "max_batch_ms": 0.0783
+      },
+      "fonttools_layout_decode": {
+        "median_ms": 45.094,
+        "min_batch_ms": 41.8504,
+        "max_batch_ms": 78.4997
+      },
+      "harfbuzz_setup": {
+        "median_ms": 0.1401,
+        "min_batch_ms": 0.1224,
+        "max_batch_ms": 0.4131
+      },
+      "harfbuzz_cold_first_shape": {
+        "median_ms": 0.1446,
+        "min_batch_ms": 0.1395,
+        "max_batch_ms": 0.2218
+      },
+      "shaping": {
+        "short_clusters": {
+          "codepoints": 13,
+          "utf8_bytes": 52,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0031,
+            "min_batch_ms": 0.0029,
+            "max_batch_ms": 0.0032,
+            "output_glyphs": 13
+          },
+          "calt_on": {
+            "median_ms": 0.0029,
+            "min_batch_ms": 0.0028,
+            "max_batch_ms": 0.0087,
+            "output_glyphs": 13
+          }
+        },
+        "cluster_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1147,
+            "min_batch_ms": 0.1098,
+            "max_batch_ms": 0.271,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.1141,
+            "min_batch_ms": 0.1085,
+            "max_batch_ms": 0.2007,
+            "output_glyphs": 3200
+          }
+        },
+        "short_diversity": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0054,
+            "max_batch_ms": 0.0056,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.0053,
+            "min_batch_ms": 0.0053,
+            "max_batch_ms": 0.0054,
+            "output_glyphs": 36
+          }
+        },
+        "diversity_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2574,
+            "min_batch_ms": 0.2361,
+            "max_batch_ms": 0.3466,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.2459,
+            "min_batch_ms": 0.2345,
+            "max_batch_ms": 0.2768,
+            "output_glyphs": 3200
+          }
+        },
+        "mixed_run": {
+          "codepoints": 2200,
+          "utf8_bytes": 8200,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1857,
+            "min_batch_ms": 0.1515,
+            "max_batch_ms": 0.2879,
+            "output_glyphs": 2200
+          },
+          "calt_on": {
+            "median_ms": 0.1736,
+            "min_batch_ms": 0.1517,
+            "max_batch_ms": 0.1853,
+            "output_glyphs": 2200
+          }
+        },
+        "explicit_sequences": {
+          "codepoints": 1800,
+          "utf8_bytes": 6120,
+          "unmapped_unique_codepoints": [
+            "FE0F"
+          ],
+          "calt_off": {
+            "median_ms": 0.2709,
+            "min_batch_ms": 0.2565,
+            "max_batch_ms": 0.3257,
+            "output_glyphs": 840
+          },
+          "calt_on": {
+            "median_ms": 0.2566,
+            "min_batch_ms": 0.2422,
+            "max_batch_ms": 0.279,
+            "output_glyphs": 840
+          }
+        },
+        "plain_text": {
+          "codepoints": 2800,
+          "utf8_bytes": 2800,
+          "unmapped_unique_codepoints": [
+            "002E",
+            "004C",
+            "0061",
+            "0064",
+            "0065",
+            "0069",
+            "006C",
+            "006D",
+            "006F",
+            "0070",
+            "0072",
+            "0073",
+            "0074",
+            "0075"
+          ],
+          "calt_off": {
+            "median_ms": 0.1677,
+            "min_batch_ms": 0.156,
+            "max_batch_ms": 0.2362,
+            "output_glyphs": 2800
+          },
+          "calt_on": {
+            "median_ms": 0.1599,
+            "min_batch_ms": 0.1557,
+            "max_batch_ms": 0.2469,
+            "output_glyphs": 2800
+          }
+        }
+      }
+    },
+    {
+      "label": "native-colr",
+      "path": "build/published-font-check/native-DEImoji-COLRv1.ttf",
+      "sha256": "d9cbcafc4cab74d45a5c8b56756d909079326ddef80876351bfc7a81b1ac7f47",
+      "file_bytes": 5056304,
+      "format": "COLRv1",
+      "glyphs": 42417,
+      "mapped_codepoints": 1508,
+      "gsub_bytes": 31426,
+      "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
+      "fonttools_directory_open": {
+        "median_ms": 0.0502,
+        "min_batch_ms": 0.0392,
+        "max_batch_ms": 0.3124
+      },
+      "fonttools_layout_decode": {
+        "median_ms": 64.7837,
+        "min_batch_ms": 41.513,
+        "max_batch_ms": 89.3321
+      },
+      "harfbuzz_setup": {
+        "median_ms": 0.2146,
+        "min_batch_ms": 0.1362,
+        "max_batch_ms": 0.7296
+      },
+      "harfbuzz_cold_first_shape": {
+        "median_ms": 0.145,
+        "min_batch_ms": 0.1408,
+        "max_batch_ms": 0.2861
+      },
+      "shaping": {
+        "short_clusters": {
+          "codepoints": 13,
+          "utf8_bytes": 52,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.003,
+            "min_batch_ms": 0.0029,
+            "max_batch_ms": 0.0032,
+            "output_glyphs": 12
+          },
+          "calt_on": {
+            "median_ms": 0.0029,
+            "min_batch_ms": 0.0029,
+            "max_batch_ms": 0.0128,
+            "output_glyphs": 12
+          }
+        },
+        "cluster_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1237,
+            "min_batch_ms": 0.1146,
+            "max_batch_ms": 0.2138,
+            "output_glyphs": 2670
+          },
+          "calt_on": {
+            "median_ms": 0.1407,
+            "min_batch_ms": 0.114,
+            "max_batch_ms": 0.1614,
+            "output_glyphs": 2670
+          }
+        },
+        "short_diversity": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0054,
+            "max_batch_ms": 0.0056,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0054,
+            "max_batch_ms": 0.0058,
+            "output_glyphs": 36
+          }
+        },
+        "diversity_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2622,
+            "min_batch_ms": 0.243,
+            "max_batch_ms": 0.3056,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.347,
+            "min_batch_ms": 0.2711,
+            "max_batch_ms": 0.5091,
+            "output_glyphs": 3200
+          }
+        },
+        "mixed_run": {
+          "codepoints": 2200,
+          "utf8_bytes": 8200,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1702,
+            "min_batch_ms": 0.1567,
+            "max_batch_ms": 0.2206,
+            "output_glyphs": 2200
+          },
+          "calt_on": {
+            "median_ms": 0.1858,
+            "min_batch_ms": 0.1573,
+            "max_batch_ms": 0.2669,
+            "output_glyphs": 2200
+          }
+        },
+        "explicit_sequences": {
+          "codepoints": 1800,
+          "utf8_bytes": 6120,
+          "unmapped_unique_codepoints": [
+            "FE0F"
+          ],
+          "calt_off": {
+            "median_ms": 0.2708,
+            "min_batch_ms": 0.2641,
+            "max_batch_ms": 0.3103,
+            "output_glyphs": 840
+          },
+          "calt_on": {
+            "median_ms": 0.2662,
+            "min_batch_ms": 0.2527,
+            "max_batch_ms": 0.3476,
+            "output_glyphs": 840
+          }
+        },
+        "plain_text": {
+          "codepoints": 2800,
+          "utf8_bytes": 2800,
+          "unmapped_unique_codepoints": [
+            "002E",
+            "004C",
+            "0061",
+            "0064",
+            "0065",
+            "0069",
+            "006C",
+            "006D",
+            "006F",
+            "0070",
+            "0072",
+            "0073",
+            "0074",
+            "0075"
+          ],
+          "calt_off": {
+            "median_ms": 0.1564,
+            "min_batch_ms": 0.1472,
+            "max_batch_ms": 0.1665,
+            "output_glyphs": 2800
+          },
+          "calt_on": {
+            "median_ms": 0.135,
+            "min_batch_ms": 0.129,
+            "max_batch_ms": 0.1882,
+            "output_glyphs": 2800
+          }
+        }
+      }
+    },
+    {
+      "label": "deimoji-colr",
+      "path": "build/history-fonts/Noto-COLRv1.ttf",
+      "sha256": "bdf20d658781bb623ba2b465533ab73afe6d46aa00efaff66f8e51e29db334f3",
+      "file_bytes": 5454820,
+      "format": "COLRv1",
+      "glyphs": 42975,
+      "mapped_codepoints": 1508,
+      "gsub_bytes": 255592,
+      "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
+      "fonttools_directory_open": {
+        "median_ms": 0.0498,
+        "min_batch_ms": 0.0377,
+        "max_batch_ms": 0.1552
+      },
+      "fonttools_layout_decode": {
+        "median_ms": 391.1931,
+        "min_batch_ms": 376.1147,
+        "max_batch_ms": 408.3542
+      },
+      "harfbuzz_setup": {
+        "median_ms": 0.3649,
+        "min_batch_ms": 0.1517,
+        "max_batch_ms": 0.5217
+      },
+      "harfbuzz_cold_first_shape": {
+        "median_ms": 0.2575,
+        "min_batch_ms": 0.2392,
+        "max_batch_ms": 0.4493
+      },
+      "shaping": {
+        "short_clusters": {
+          "codepoints": 13,
+          "utf8_bytes": 52,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0033,
+            "min_batch_ms": 0.0032,
+            "max_batch_ms": 0.0036,
+            "output_glyphs": 13
+          },
+          "calt_on": {
+            "median_ms": 0.0362,
+            "min_batch_ms": 0.0333,
+            "max_batch_ms": 0.0803,
+            "output_glyphs": 5
+          }
+        },
+        "cluster_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.244,
+            "min_batch_ms": 0.2023,
+            "max_batch_ms": 0.2762,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 9.0146,
+            "min_batch_ms": 8.8122,
+            "max_batch_ms": 9.381,
+            "output_glyphs": 1280
+          }
+        },
+        "short_diversity": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0055,
+            "min_batch_ms": 0.0054,
+            "max_batch_ms": 0.0059,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.2024,
+            "min_batch_ms": 0.1987,
+            "max_batch_ms": 0.2644,
+            "output_glyphs": 36
+          }
+        },
+        "diversity_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.268,
+            "min_batch_ms": 0.2437,
+            "max_batch_ms": 0.2763,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 19.4648,
+            "min_batch_ms": 18.527,
+            "max_batch_ms": 19.9163,
+            "output_glyphs": 3200
+          }
+        },
+        "mixed_run": {
+          "codepoints": 2200,
+          "utf8_bytes": 8200,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2008,
+            "min_batch_ms": 0.194,
+            "max_batch_ms": 0.2211,
+            "output_glyphs": 2200
+          },
+          "calt_on": {
+            "median_ms": 13.7005,
+            "min_batch_ms": 12.6023,
+            "max_batch_ms": 13.9158,
+            "output_glyphs": 2200
+          }
+        },
+        "explicit_sequences": {
+          "codepoints": 1800,
+          "utf8_bytes": 6120,
+          "unmapped_unique_codepoints": [
+            "FE0F"
+          ],
+          "calt_off": {
+            "median_ms": 0.2528,
+            "min_batch_ms": 0.2414,
+            "max_batch_ms": 0.2765,
+            "output_glyphs": 840
+          },
+          "calt_on": {
+            "median_ms": 4.0554,
+            "min_batch_ms": 3.7841,
+            "max_batch_ms": 4.1803,
+            "output_glyphs": 600
+          }
+        },
+        "plain_text": {
+          "codepoints": 2800,
+          "utf8_bytes": 2800,
+          "unmapped_unique_codepoints": [
+            "002E",
+            "004C",
+            "0061",
+            "0064",
+            "0065",
+            "0069",
+            "006C",
+            "006D",
+            "006F",
+            "0070",
+            "0072",
+            "0073",
+            "0074",
+            "0075"
+          ],
+          "calt_off": {
+            "median_ms": 0.1346,
+            "min_batch_ms": 0.1294,
+            "max_batch_ms": 0.1611,
+            "output_glyphs": 2800
+          },
+          "calt_on": {
+            "median_ms": 2.9744,
+            "min_batch_ms": 2.7821,
+            "max_batch_ms": 3.1474,
+            "output_glyphs": 2800
+          }
+        }
+      }
+    }
+  ]
+}

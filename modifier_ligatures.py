@@ -99,24 +99,8 @@ def source_glyphs(font):
     COLRv1 outline components are not buffer glyphs. Excluding those avoids
     thousands of pointless expansion rules without excluding shaped text.
     """
-    from fontTools.ttLib.tables.otBase import BaseTable
-    names = set(font.getBestCmap().values())
-
-    def visit(table):
-        if isinstance(table, list):
-            for item in table:
-                visit(item)
-        elif isinstance(table, BaseTable):
-            for attr in ('mapping', 'alternates'):
-                mapping = getattr(table, attr, {})
-                for output in mapping.values():
-                    names.update([output] if isinstance(output, str) else output)
-            for ligatures in getattr(table, 'ligatures', {}).values():
-                names.update(lig.LigGlyph for lig in ligatures)
-            for value in vars(table).values():
-                if isinstance(value, (list, BaseTable)):
-                    visit(value)
-    visit(font['GSUB'].table.LookupList.Lookup)
+    from lfsr_history import buffer_glyphs
+    names = set(buffer_glyphs(font))
     # Touching .notdef would mark an unsupported variation selector as
     # substituted, preventing HarfBuzz from hiding that default-ignorable.
     protected = {font.getGlyphOrder()[0]}
@@ -182,8 +166,8 @@ def _feedback(name, markers, coefficients):
         context = []
         for value in register:
             state = marker_class if value is None else markers[value]
-            context.extend(['@tonebase', state, '@gender'] if base == 5 else
-                           ['@tonebase', '@tone', state])
+            context.extend(['@source', state, '@gender'] if base == 5 else
+                           ['@source', '@tone', state])
         lines.append('sub ' + ' '.join(context + current) +
                      f" {marker_class}' lookup {name}{result} " + ' '.join(suffix) + ';')
 
@@ -259,7 +243,7 @@ def _languages(gsub):
 
 
 def add_modifier_ligatures(font):
-    from cluster_ligatures import _offset_references
+    from cluster_ligatures import _offset_references, BINARY_DEGREE, BINARY_PERIOD
     if 'GSUB' not in font:
         return None
     if any(name in font.getGlyphOrder() for name in MARKERS):
@@ -273,7 +257,8 @@ def add_modifier_ligatures(font):
     if getattr(gsub, 'FeatureVariations', None):
         raise ValueError('Modifier feature merging does not support FeatureVariations')
     original_order = font.getGlyphOrder()
-    font.setGlyphOrder(original_order + list(MARKERS))
+    from lfsr_history import marker_order
+    font.setGlyphOrder(original_order + marker_order(len(original_order),(GENDERS,TONES)))
     for name in MARKERS:
         if 'glyf' in font:
             font['glyf'].glyphs[name] = TTGlyphPen(None).glyph()
@@ -316,7 +301,11 @@ def add_modifier_ligatures(font):
     gsub.LookupList.LookupCount = len(gsub.LookupList.Lookup)
     from zombie_artwork import variant_mappings
     custom_count = len(variant_mappings(font))
-    info = dict(version=4, gender_seeding="base5-hash-and-source-bucket", seeding="reverse-suffix-all-source-glyphs",
+    info = dict(version=5, binary_degree=BINARY_DEGREE,binary_period=BINARY_PERIOD, history='all-source-private-states',
+                marker_layout='residue-aligned',
+                tone_marker_gids=[font.getGlyphID(g) for g in TONES],
+                gender_marker_gids=[font.getGlyphID(g) for g in GENDERS],
+                feedback_context='all-expanded-source-glyphs', gender_seeding="base5-hash-and-source-bucket", seeding="reverse-suffix-all-source-glyphs",
                 seed_source_glyphs=len(source_glyphs(font)), created_calt=created_calt, original_lookup_count=offset, lookup_count=len(new_lookups),
                 original_glyph_count=len(original_order), marker_count=len(MARKERS),
                 calt_roots=roots, state_periods=[625, 81], combined_period=50625,
@@ -337,7 +326,7 @@ def remove_modifier_ligatures(font, info):
     gsub = font['GSUB'].table
     start, glyph_start = info['original_lookup_count'], info['original_glyph_count']
     order = font.getGlyphOrder()
-    if (info['version'] not in (1, 2, 3, 4) or len(gsub.LookupList.Lookup) != start + info['lookup_count']
+    if (info['version'] not in (1, 2, 3, 4, 5) or len(gsub.LookupList.Lookup) != start + info['lookup_count']
             or len(order) != glyph_start + info['marker_count'] or info['marker_count'] != 8):
         raise ValueError('Unrecognized modifier bundle metadata')
     marker_names = set(order[glyph_start:])

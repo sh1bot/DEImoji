@@ -1,0 +1,63 @@
+{
+  "binary_degree": 5,
+  "binary_period": 31,
+  "method": "HarfBuzz OT shaping; median of 5 batches of 10 calls after 5 warmups; font serialization excluded",
+  "input": "3200 emoji: (80 poop + 80 sunflower + 80 popper + 80 fire) repeated 10 times",
+  "scope": "Binary history membership only; both configurations use all-source private-state feedback for bases 3 and 5. Standalone GSUB Brotli sizes are not whole WOFF2 sizes.",
+  "results": [
+    {
+      "font": "DEImoji-CBDT.ttf",
+      "binary_all_buffer": false,
+      "gsub_bytes": 262990,
+      "gsub_brotli_bytes": 29306,
+      "shape_3200_input_ms": 8.154,
+      "output_glyphs": 1280
+    },
+    {
+      "font": "DEImoji-CBDT.ttf",
+      "binary_all_buffer": true,
+      "gsub_bytes": 271476,
+      "gsub_brotli_bytes": 29384,
+      "shape_3200_input_ms": 8.989,
+      "output_glyphs": 1280
+    },
+    {
+      "font": "DEImoji-COLRv1.ttf",
+      "binary_all_buffer": false,
+      "gsub_bytes": 246564,
+      "gsub_brotli_bytes": 25033,
+      "shape_3200_input_ms": 8.276,
+      "output_glyphs": 1280
+    },
+    {
+      "font": "DEImoji-COLRv1.ttf",
+      "binary_all_buffer": true,
+      "gsub_bytes": 255592,
+      "gsub_brotli_bytes": 30406,
+      "shape_3200_input_ms": 8.188,
+      "output_glyphs": 1280
+    }
+  ],
+  "wide_prime_state_experiment": [
+    {
+      "font": "native-DEImoji-CBDT.ttf",
+      "wide_prime_states": false,
+      "gsub_bytes": 271476
+    },
+    {
+      "font": "native-DEImoji-CBDT.ttf",
+      "wide_prime_states": true,
+      "gsub_bytes": 823832
+    },
+    {
+      "font": "native-DEImoji-COLRv1.ttf",
+      "wide_prime_states": false,
+      "gsub_bytes": 255592
+    },
+    {
+      "font": "native-DEImoji-COLRv1.ttf",
+      "wide_prime_states": true,
+      "gsub_bytes": 811226
+    }
+  ]
+}

@@ -1,15 +1,20 @@
 """Optional contextual pair/triple ligatures for repeated plain emoji.
 
-For every family, four output clusters form an LFSR register. Pair=0,
-triple=1, with next = oldest XOR next-oldest and seed 1111 (period fifteen).
+For every family, five history entries form an LFSR register. Pair=0,
+triple=1, with next = oldest XOR second-newest (period thirty-one).
+History is shared across families; short-history startup alternates choices.
 """
 from copy import deepcopy
+from itertools import product
 
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables import otTables as ot
 from fontTools.ttLib.tables.otBase import BaseTable
 
+
+BINARY_DEGREE = 5
+BINARY_PERIOD = 31
 
 NATIVE_CLUSTER_CODEPOINTS = (0x1F9DF, 0x1F33B)
 DECORATIVE_CLUSTER_CODEPOINTS = (0x1FAA6, 0x1F386, 0x1F389, 0x1F525)
@@ -25,12 +30,16 @@ NATIVE_CLUSTER_NAMES = tuple('emoji_u' + '_'.join([f'{cp:x}'] * n)
                              for cp in sorted(NATIVE_CLUSTER_CODEPOINTS) for n in (2, 3))
 
 
-def feature_source(families):
+def feature_source(families, history=None):
     """families contains (base, pair, triple) glyph names, not Unicode strings."""
-    lines = ['languagesystem DFLT dflt;']
+    if history is None:
+        history = [[family[size] for family in families] for size in (1, 2)]
+    lines = ['languagesystem DFLT dflt;',
+             '@bit0 = [' + ' '.join(history[0]) + '];',
+             '@bit1 = [' + ' '.join(history[1]) + '];',
+             '@binary = [@bit0 @bit1];']
     for i, (base, pair, triple) in enumerate(families):
         lines += [
-            f'@history{i} = [{pair} {triple}];',
             f'lookup pair{i} {{ sub {base} {base} by {pair}; }} pair{i};',
             f'lookup triple{i} {{ sub {base} {base} {base} by {triple}; }} triple{i};',
         ]
@@ -39,15 +48,20 @@ def feature_source(families):
         # Five remaining items permit either choice without a leftover single.
         # The four-item tail forces 2+2; three and two finish exactly.
         tail = ' '.join([base] * 4)
-        for oldest in (0, 1):
-            for next_oldest in (0, 1):
-                a, b = (pair, triple)[oldest], (pair, triple)[next_oldest]
-                choice = ('pair', 'triple')[oldest ^ next_oldest]
-                lines.append(
-                    f"sub {a} {b} @history{i} @history{i} {base}' lookup {choice}{i} {tail};"
-                )
+        # External hash noise may produce the otherwise unreachable zero state.
+        lines.append(f"sub @bit0 @bit0 @bit0 @bit0 @bit0 {base}' lookup triple{i} {tail};")
+        # Enumerating thirty-two binary registers lets the compiler store one
+        # disjoint ClassDef instead of repeatedly storing overlapping coverages.
+        for register in product(range(2),repeat=BINARY_DEGREE):
+            if register==(0,)*BINARY_DEGREE:
+                continue  # escaped above
+            choice=('pair','triple')[register[0]^register[-2]]
+            context=' '.join(f'@bit{value}' for value in register)
+            lines.append(f"sub {context} {base}' lookup {choice}{i} {tail};")
         lines += [
-            f"sub {base}' lookup triple{i} {tail};",  # seed 1
+            f"sub @bit0 {base}' lookup triple{i} {tail};",
+            f"sub @bit1 {base}' lookup pair{i} {tail};",
+            f"sub {base}' lookup triple{i} {tail};",  # no history at all
             f"sub {base}' lookup pair{i} {base} {base} {base};",
             f"sub {base}' lookup triple{i} {base} {base};",
             f"sub {base}' lookup pair{i} {base};",
@@ -77,7 +91,7 @@ def _offset_references(table, offset):
                 _offset_references(value, offset)
 
 
-def _add_cluster_ligatures(font):
+def _add_cluster_ligatures(font, broad_history=True):
     """Keep native GSUB; move our repeated sequences to default calt.
 
     Discover output names from native ligatures, so both add_glyphs and
@@ -121,7 +135,15 @@ def _add_cluster_ligatures(font):
 
     temp = TTFont()
     temp.setGlyphOrder(font.getGlyphOrder())
-    addOpenTypeFeaturesFromString(temp, feature_source(families), tables=['GSUB'])
+    from lfsr_history import partition
+    overrides = {glyph:bit for _,pair,triple in families
+                 for bit,glyph in enumerate((pair,triple))}
+    from zombie_artwork import variant_mappings
+    for cluster,choices in variant_mappings(font).items():
+        if cluster in overrides:
+            overrides.update({glyph:overrides[cluster] for glyph in choices})
+    history = partition(font,2,overrides) if broad_history else None
+    addOpenTypeFeaturesFromString(temp, feature_source(families,history), tables=['GSUB'])
     extra = temp['GSUB'].table
     offset = len(gsub.LookupList.Lookup)
     new_lookups = deepcopy(extra.LookupList.Lookup)

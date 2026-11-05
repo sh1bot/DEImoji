@@ -12,7 +12,7 @@ from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests'))
-from test_cluster_ligatures import shape, reference, reference_private_states, reference_tones, reference_genders, reference_variations
+from test_cluster_ligatures import shape, reference, reference_cluster_stream, reference_clusters, reference_private_states, reference_tones, reference_genders, reference_variations
 from modifier_ligatures import discover
 from cluster_ligatures import _ligature_tables
 from supplemental_artwork import ART, NAMES, _verify_bundle
@@ -34,11 +34,16 @@ def check_font_package(site):
         # WOFF2 is the same logical COLRv1 font and must pass shaping too.
         published = name.replace('.woff2', '.ttf')
         info = metadata['modifiers'][published]
-        assert info['version'] >= 4, ('stale modifier bundle', name)
+        assert info['version'] >= 5, ('stale modifier bundle', name)
         assert info['seeding'] == 'reverse-suffix-all-source-glyphs'
         assert info['gender_seeding'] == 'base5-hash-and-source-bucket'
         assert info['state_periods'] == [625, 81]
         assert info['combined_period'] == 50625
+        assert info['binary_degree']==5 and info['binary_period']==31
+        assert info['feedback_context']=='all-expanded-source-glyphs'
+        assert info['marker_layout']=='residue-aligned'
+        assert [gid%5 for gid in info['tone_marker_gids']]==list(range(5))
+        assert [gid%3 for gid in info['gender_marker_gids']]==list(range(3))
         assert metadata['artwork'][published]['bundle'] == bundle, ('stale artwork bundle', name)
         assert metadata['artwork'][published]['style'] == 'noto-white-smile-v2'
         # Save a decoded webfont as TTF for the HarfBuzz harness.
@@ -83,7 +88,7 @@ def check_font_package(site):
                 record.Feature.LookupListIndex = [i for i in record.Feature.LookupListIndex
                                                  if i not in info['calt_roots'][3:]]
                 record.Feature.LookupCount = len(record.Feature.LookupListIndex)
-        private_genders = font.getGlyphOrder()[info['original_glyph_count']+5:][:3]
+        private_genders = [font.getGlyphOrder()[gid] for gid in info['gender_marker_gids']]
         try:
             for bucket,ch in bucket_examples.items():
                 seed_glyphs = shape(font,ch*4)
@@ -153,8 +158,18 @@ def check_font_package(site):
                 plain.extend([base]*n+[cmap[32]])
                 expected.extend(base if size==1 else outputs[cp,size] for size in reference(n))
                 expected.append(cmap[32])
+            expected=reference_cluster_stream(font,plain)
             assert shape(font,text)==expected, ('decorative LFSR grouping',name,cp)
             assert shape(font,text,calt=False)==plain
+        mixed_text='💩'*23+'🌻'*40+'🎉'*21+'🔥'*40
+        expected=reference_clusters(font,mixed_text)
+        assert shape(font,mixed_text)==expected, ('shared binary history',name)
+        # Startup follows the last observed bit, rather than repeating four trios.
+        for cp in FIXED_FAMILIES.values():
+            actual36=shape(font,chr(cp)*36)
+            assert actual36[:5]==[outputs[cp,size] for size in (3,2,3,2,3)]
+        noise_mix='🏃'*8+' 🌻🌻🌻🌻🌻 '+'💩'*15+'🏃'*8
+        assert shape(font,noise_mix)==reference_variations(font,noise_mix)
         for entry in fixed['entries']:
             glyph=order[entry['gid']]
             if 'CBDT' in font:
@@ -173,7 +188,9 @@ def check_font_package(site):
                 gender_seed_buckets_checked=[0,1,2,3,4],
                 gender_states_in_first_four_repeats=3,
                 distant_noneligible_noise_checked=True,
-                fixed_cluster_artwork_checked=8, fixed_cluster_grouping='binary-lfsr-period-15',
+                fixed_cluster_artwork_checked=8, fixed_cluster_grouping='binary-lfsr-period-31',
+                binary_startup='opposite-previous', binary_shared_history=True, binary_degree=5, binary_period=31,
+                feedback_context='all-expanded-source-glyphs', marker_layout='residue-aligned',
                 zombie_compositions_checked=10, zombie_grouping_input_length=4000,
                 zombie_artwork_bundle=verify_zombies(),
                 older_person_genders_checked=True,

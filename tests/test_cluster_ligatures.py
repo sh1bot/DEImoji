@@ -102,22 +102,53 @@ def shape(font, text, calt=True):
     return result
 
 
-def reference(count):
-    groups = []
-    while count >= 2:
-        if count == 4:
-            take = 2
-        elif count <= 3:
-            take = count
-        elif len(groups) < 4:
-            take = 3
+def reference(count, history=()):
+    bits=list(history)
+    groups=[]
+    while count>=2:
+        if count==4:
+            take=2
+        elif count<=3:
+            take=count
+        elif len(bits)>=5:
+            take=3 if bits[-5:]==[0,0,0,0,0] else 2+(bits[-5]^bits[-2])
         else:
-            take = 2 + ((groups[-4] - 2) ^ (groups[-3] - 2))
-        groups.append(take)
-        count -= take
-    if count:
-        groups.append(1)
+            take=2+(1-bits[-1]) if bits else 3
+        groups.append(take);bits.append(take-2);count-=take
+    if count:groups.append(1)
     return groups
+
+
+def reference_cluster_stream(font, raw):
+    """Model one whole buffer: cluster choices plus hash noise between runs."""
+    from cluster_ligatures import CLUSTER_CODEPOINTS, _ligature_tables
+    from zombie_artwork import variant_mappings
+    bases={font.getBestCmap()[cp] for cp in CLUSTER_CODEPOINTS if cp in font.getBestCmap()}
+    families={b:{} for b in bases}
+    for lookup in font['GSUB'].table.LookupList.Lookup:
+        for table in _ligature_tables(lookup):
+            for base in bases:
+                for lig in table.ligatures.get(base,[]):
+                    n=len(lig.Component)+1
+                    if n in (2,3) and tuple(lig.Component)==(base,)*(n-1):families[base][n]=lig.LigGlyph
+    bits={g:n-2 for sizes in families.values() for n,g in sizes.items()}
+    for g,choices in variant_mappings(font).items():
+        if g in bits:bits.update({c:bits[g] for c in choices})
+    result=[];history=[];i=0
+    while i<len(raw):
+        base=raw[i];remaining=1
+        while i+remaining<len(raw) and raw[i+remaining]==base:remaining+=1
+        if base in families and set(families[base])=={2,3} and remaining>=2:
+            size=reference(remaining,history)[0]
+            glyph=families[base][size];i+=size
+        else:
+            glyph=base;i+=1
+        result.append(glyph);history.append(bits.get(glyph,font.getGlyphID(glyph)%2))
+    return result
+
+
+def reference_clusters(font,text):
+    return reference_cluster_stream(font,shape(font,text,calt=False))
 
 
 class ClusterTests(unittest.TestCase):
@@ -147,19 +178,31 @@ class ClusterTests(unittest.TestCase):
                     self.assertEqual(shape(self.font, emoji * n),
                                      [base + str(k) if k > 1 else base for k in reference(n)])
 
-    def test_period_fifteen_per_cluster(self):
-        groups = shape(self.font, '🧟' * 200)
-        self.assertEqual(groups[:15], ['z' + str(n) for n in
-                         (3, 3, 3, 3, 2, 2, 2, 3, 2, 2, 3, 3, 2, 3, 2)])
-        self.assertEqual(groups[:15], groups[15:30])
-        self.assertEqual(groups[15:30], groups[30:45])
+    def test_period_thirty_one_per_cluster(self):
+        groups = shape(self.font, '🧟' * 400)
+        self.assertEqual(groups[:31], ['z' + str(n) for n in
+                         (3,2,3,2,3,3,3,2,3,3,2,2,2,3,3,3,3,3,2,2,3,3,2,3,2,2,3,2,2,2,2)])
+        self.assertEqual(groups[:31], groups[31:62])
+        self.assertEqual(groups[31:62], groups[62:93])
+        bits=[int(g[-1])-2 for g in groups]
+        registers={tuple(bits[i:i+5]) for i in range(31)}
+        self.assertEqual(len(registers),31)
+        self.assertNotIn((0,0,0,0,0),registers)
 
     def test_boundaries_and_modified_input(self):
         z = shape(self.font, '🧟' * 19)
         f = shape(self.font, '🌻' * 20)
-        self.assertEqual(shape(self.font, '🧟' * 19 + '🌻' * 20), z + f)
-        self.assertEqual(shape(self.font, '🧟' * 19 + ' ' + '🧟' * 19), z + ['space'] + z)
+        for text in ('🧟'*19+'🌻'*20,'🧟'*19+' '+'🧟'*19,'ab'+'🧟'*40):
+            self.assertEqual(shape(self.font,text),reference_clusters(self.font,text))
         self.assertEqual(shape(self.font, '🧟\u200d♀' * 3), ['zwoman'] * 3)
+
+    def test_alternating_bootstrap_shared_families_and_noise(self):
+        self.assertEqual(shape(self.font,'🧟'*40)[:5],['z3','z2','z3','z2','z3'])
+        for text in ('🧟'*25+'🌻'*40,'a'+'🧟'*40,'b'+'🧟'*40,'aaaaa'+'🧟'*40):
+            self.assertEqual(shape(self.font,text),reference_clusters(self.font,text))
+        self.assertEqual(shape(self.font,'a'+'🧟'*40)[1],'z3')
+        self.assertEqual(shape(self.font,'b'+'🧟'*40)[1],'z2')
+        self.assertIn('z3',shape(self.font,'aaaaa'+'🧟'*40))
 
     def test_calt_can_be_disabled(self):
         self.assertEqual(shape(self.font, '🧟' * 8 + '🌻' * 8, calt=False), ['z'] * 8 + ['f'] * 8)
@@ -248,16 +291,16 @@ class PoopClusterTests(unittest.TestCase):
                 expected = ['p' + str(k) if k > 1 else 'p' for k in reference(n)]
                 self.assertEqual(shape(self.font, '💩' * n), expected)
         text = '💩' * 40 + '🧟' * 40 + '🌻' * 40
-        self.assertEqual(shape(self.font, text), sum([
-            [base + str(k) for k in reference(40)] for base in ('p', 'z', 'f')], []))
+        self.assertEqual(shape(self.font,text),reference_clusters(self.font,text))
+        self.assertNotEqual(shape(self.font,text),sum([[b+str(k) for k in reference(40)] for b in ('p','z','f')],[]))
         self.assertEqual(shape(self.font, '💩' * 8, calt=False), ['p'] * 8)
 
-    def test_period_fifteen_and_cache_roundtrip(self):
-        groups = shape(self.font, '💩' * 200)
-        self.assertEqual(groups[:15], groups[15:30])
-        self.assertEqual(groups[15:30], groups[30:45])
-        self.assertEqual(groups[:15].count('p3'), 8)
-        self.assertEqual(groups[:15].count('p2'), 7)
+    def test_period_thirty_one_and_cache_roundtrip(self):
+        groups = shape(self.font, '💩' * 400)
+        self.assertEqual(groups[:31], groups[31:62])
+        self.assertEqual(groups[31:62], groups[62:93])
+        self.assertEqual(groups[:31].count('p3'), 16)
+        self.assertEqual(groups[:31].count('p2'), 15)
         data = BytesIO()
         self.font.save(data)
         restored = TTFont(BytesIO(data.getvalue()))
@@ -442,11 +485,13 @@ def reference_private_states(font, glyphs):
     """Independent suffix hash and forward-feedback model on shaped glyphs."""
     from modifier_ligatures import discover, TONE_COEFFICIENTS, GENDER_COEFFICIENTS
     eligible, _, _ = discover(font)
+    from modifier_ligatures import source_glyphs
+    expanded=set(source_glyphs(font))
     buckets = [font.getGlyphID(glyph) % 5 for glyph in glyphs]
     # One suffix hash, followed by a local remapping for the ternary seeds.
     hashes5 = [0] * len(glyphs)
     for i in range(len(glyphs)-1, -1, -1):
-        hashes5[i] = ((-buckets[i]) % 5 if i == len(glyphs)-1 else
+        hashes5[i] = ((-buckets[i]) % 5 if i == len(glyphs)-1 or glyphs[i+1] not in expanded else
                       (2 * hashes5[i+1] + buckets[i] + 1) % 5)
     hashes3 = [(((h+b+1) % 5) + b+2) % 3 for h,b in zip(hashes5,buckets)]
     streams = []
@@ -465,9 +510,10 @@ def reference_private_states(font, glyphs):
                         value = coefficients[-1] % base
                     else:
                         value = sum(c * register[-1-i] for i, c in enumerate(coefficients)) % base
+            if glyph in expanded:
                 history.append(value)
             else:
-                history = []
+                history=[]
             values.append(value)
         streams.append(values)
     return streams
@@ -491,7 +537,7 @@ def reference_genders(font, following, count, current='🏃'):
 def reference_variations(font, text):
     from modifier_ligatures import discover
     tone_bases, gender_bases, _ = discover(font)
-    raw = shape(font, text, calt=False)
+    raw = reference_clusters(font,text)
     tones, genders = reference_private_states(font, raw)
     result = []
     cmap = font.getBestCmap()
@@ -623,10 +669,10 @@ class ModifierTests(unittest.TestCase):
         self.assertEqual(shape(self.font, '🏃'*40, calt=False), ['runner'] * 40)
         self.assertEqual(shape(self.font, '🏃\u200d'), shape(self.font, '🏃\u200d', calt=False))
 
-    def test_noise_resets_feedback_but_suffix_hash_crosses_it(self):
+    def test_noise_feeds_feedback_and_suffix_hash_crosses_it(self):
         for text in ('🏃'*20+' '+'🏃'*20, '🏃'*20+'🏃🏻'+'🏃'*20):
             self.assertEqual(shape(self.font, text), reference_variations(self.font, text))
-            self.assertEqual(shape(self.font, text)[-20:], shape(self.font, '🏃'*20))
+            self.assertNotEqual(shape(self.font,text)[-20:],shape(self.font,'🏃'*20))
         self.assertNotEqual(shape(self.font, '🏃 a')[0], shape(self.font, '🏃 b')[0])
 
     def test_roundtrip_uninstall_and_reinstall(self):
@@ -644,6 +690,24 @@ class ModifierTests(unittest.TestCase):
         self.assertEqual(font['GSUB'].compile(font), original['GSUB'].compile(original))
         add_cluster_ligatures(font)
         self.assertEqual(shape(font, '🏃'*50), before)
+
+    def test_private_marker_residues_and_all_source_history(self):
+        from lfsr_history import marker_order,partition
+        from modifier_ligatures import TONES,GENDERS
+        for start in range(15):
+            names=marker_order(start,(GENDERS,TONES))
+            self.assertEqual(len(names),8)
+            for markers in (TONES,GENDERS):
+                for state,name in enumerate(markers):
+                    self.assertEqual((start+names.index(name))%len(markers),state)
+        for markers in (TONES,GENDERS):
+            for state,name in enumerate(markers):
+                self.assertEqual(self.font.getGlyphID(name)%len(markers),state)
+                self.assertIn(name,partition(self.font,len(markers),dict(zip(markers,range(len(markers)))))[state])
+        for text in ('a b 🏃'*10,'🏃'*8+'abc'+'🏃'*8,'👍🏃 a 🧑'*8,
+                     '🏃'*8+'🌻'*15+'💩'*15+'🏃'*8):
+            self.assertEqual(shape(self.font,text),reference_variations(self.font,text))
+        self.assertEqual(self.info['feedback_context'],'all-expanded-source-glyphs')
 
     def test_install_idempotent(self):
         before = self.font['GSUB'].compile(self.font)
@@ -745,7 +809,7 @@ class ZombieVariantTests(unittest.TestCase):
     def test_mixed_people_and_crowds_keep_both_histories(self):
         from modifier_ligatures import discover
         text = '🏃'*12 + '🧟'*20 + '🏃'*20
-        inputs = ['runner']*12+[f'z{n}' for n in reference(20)]+['runner']*20
+        inputs = reference_clusters(self.font,text)
         tones,genders = reference_private_states(self.font,inputs)
         bases,gendered,_ = discover(self.font)
         expected = [gendered[b][t][g-1] if g and b in gendered else bases[b][t]
@@ -808,7 +872,9 @@ class DecorativeClusterTests(unittest.TestCase):
                     self.assertEqual(shape(font,chr(cp)*n,calt=False),[base]*n)
             self.assertEqual(set(shape(font,chr(cp)*36)),{base+'2',base+'3'})
         mixed='🪦🪦🔥🔥🔥🎉🎉🎉🎉🎆🎆'
-        self.assertEqual(shape(font,mixed),['headstone2','fire3','popper2','popper2','fireworks2'])
+        self.assertEqual(shape(font,mixed),reference_clusters(font,mixed))
+        long='🪦'*20+'🎆'*25+'🎉'*30+'🔥'*40
+        self.assertEqual(shape(font,long),reference_clusters(font,long))
         data=BytesIO();font.save(data);font=TTFont(BytesIO(data.getvalue()))
         remove_cluster_ligatures(font)
         self.assertEqual(font['GSUB'].compile(font),original)

@@ -120,6 +120,8 @@ async function initialize() {
       art?.clusters ? 'Headstones, fireworks, poppers and fire: mixed pairs + trios' : '',
       art?.zombies ? 'Zombies: five pairs + five trios' : '',
       art?.style === 'noto-white-smile-v2' ? 'Poop heaps: white-smile artwork' : 'Poop heaps: original artwork',
+      rules?.binary_period ? `Pair/trio period: ${rules.binary_period}` : '',
+      rules?.feedback_context === 'all-expanded-source-glyphs' ? 'History: shared across source glyphs' : '',
       rules?.state_periods ? `Variation periods: ${rules.state_periods.join(' × ')} = ${rules.combined_period.toLocaleString()}` : '',
       rules?.seeding === 'reverse-suffix-all-source-glyphs' ? 'Seeding: reverse sweep across source glyphs' : 'Seeding: current/next glyph',
       rules?.gender_seeding === 'base5-hash-and-source-bucket' ? 'Gender startup: shared base-5 hash' : '',
