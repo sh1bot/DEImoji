@@ -25,17 +25,17 @@ function describeCodepoints(text) {
     if (cp < 0x80) ascii += character;
     else {
       flush();
-      const hex = `U+${cp.toString(16).toUpperCase().padStart(4, '0')}`;
+      const hex = `${cp.toString(16).toUpperCase().padStart(4, '0')}`;
       let name = invisibleNames.get(cp);
       if (!name && cp >= 0xFE00 && cp <= 0xFE0F) name = `VS${cp - 0xFE00 + 1}`;
       if (cp >= 0xE0020 && cp <= 0xE007E) name = `TAG ${JSON.stringify(String.fromCharCode(cp - 0xE0000))}`;
       if (cp >= 0xE0100 && cp <= 0xE01EF) name = `VS${cp - 0xE0100 + 17}`;
       if (!name && /\p{Cf}|\p{Cc}/u.test(character)) name = 'FORMAT CONTROL';
-      tokens.push(name ? `${hex} (${name})` : `${hex} (${character})`);
+      tokens.push(name ? `${hex}(${name})` : `${hex}(${character})`);
     }
   }
   flush();
-  return tokens.join(' · ');
+  return tokens.join(' ');
 }
 
 function updateText() {
@@ -63,7 +63,7 @@ function updateText() {
 }
 
 function updatePreset() {
-  const emoji = { flowers: '🌻', zombies: '🧟', runners: '🏃', poop: '💩' }[$('preset').value];
+  const emoji = { flowers: '🌻', zombies: '🧟', person: '🧑', old: '🧓', runners: '🏃', poop: '💩' }[$('preset').value];
   $('text').value = emoji.repeat(Number($('count').value));
   $('count-value').textContent = $('count').value;
   updateText();
