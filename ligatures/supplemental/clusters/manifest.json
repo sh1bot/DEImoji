@@ -45,7 +45,7 @@
     }
   ],
   "files": {
-    "Clusters-COLRv1.ttf": "b09794a9a6f137a9f897179e44e850af71de04e7ecd108043cc2376b3db02608",
+    "Clusters-COLRv1.ttf": "ff7fc3eead9b264a59662428102eddc852737860e2b296c812956351fc14fe2f",
     "png/128/fire2.png": "4a0da2792bb16825f672c9eb1f25c8640b4cd62755db0cdf7a62a80be6afce71",
     "png/128/fire3.png": "3145fe840dec8c9b80849dd8f0135286f9c758f89b19a9ded4dd1d37e0952e7b",
     "png/128/fireworks2.png": "11f0623bdd18dba7c56694185c79cc552651d7338f1e4e806434b0e7ae3c0800",
@@ -53,8 +53,8 @@
     "png/128/headstone2.png": "4ba0a26df523fb847d4def2f0f0d565d0f5e884a5a963583364013c7d70760fb",
     "png/128/headstone3.png": "1ba61a992606898fc13329ff80d50c4512c7c42fb08286b8f1529447d1ea9ad2",
     "png/128/popper2.png": "e73f57f572e8803b2a2b40863d271adee3186071ec6718842eedf686e9f9a4e7",
-    "png/128/popper3.png": "ff7db5fd9e5c347ad8a3bd0aa2be28d0672a02521a50d31e2b4c130a473378ac",
-    "preview.png": "553c01c0a205b2fd44ed5616ee8ef9d4c690f2b14fe8c1bc14deda49c2f7f2e7",
+    "png/128/popper3.png": "8dd01c1e8f0fddc7a43499f416b3b5f9ce57b902d171be09c2cf9d34f265f456",
+    "preview.png": "58d5e5fc82f7ad234ee770686c7aaf0518cf72ce0401d578327a3cceb6dab254",
     "source/emoji_u1f386.svg": "b4c1ba902c69a69884c3dd2115d58375a3f1e703e557b687b6d0d7cda17f20d5",
     "source/emoji_u1f389.svg": "4ab7ad6e03994f59b270eca28efc08e408d74a868aa025bb4d4576c195d1e522",
     "source/emoji_u1f525.svg": "dbea451b6cba787df0bb9bc84ceec1bed96e499e8b876b80682ce323f83b1a1b",
@@ -66,6 +66,6 @@
     "svg/headstone2.svg": "796409d3bfa26b4059fa7205461b3fdabc2413f3062c4154e99f75ec902f65d4",
     "svg/headstone3.svg": "35ea628dec2c4c21800ec60425a06654265828cecdf68a4f8576207aa22d0bd5",
     "svg/popper2.svg": "3df6db6ef7634275717995e7fc1e8a3cbb1568c04cfcbf5762d41857ab473270",
-    "svg/popper3.svg": "f71213f04067bac9ef070c9790af582717b164fc21a0711beebd2d48768f4b20"
+    "svg/popper3.svg": "fcf76eebc24811b9f59d91fffed3a1ecd80852747653a350d1fc60c17ff3f93c"
   }
 }

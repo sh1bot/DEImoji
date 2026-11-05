@@ -185,7 +185,7 @@ def compose(family, count):
     elif family == 'popper':
         placements = (('translate(59 -1) scale(.96) rotate(8 64 64)',
                        'translate(-1 8) scale(.94) rotate(-5 64 64)') if count==2 else
-                      ('translate(63 -5) scale(.96) rotate(3 64 64)',
+                      ('translate(45 -5) scale(.96) rotate(3 64 64)',
                        'translate(0 9) scale(.94) rotate(-6 64 64)',
                        'translate(124 8) scale(.94) rotate(9 64 64)'))
     else:
