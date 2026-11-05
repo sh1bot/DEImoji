@@ -85,21 +85,40 @@ def inscription(source, variant, cross=False):
 
 def party(source, variant):
     result=deepcopy(source)
-    # Cone material stays yellow; recolour and move only the airborne paper.
+    # Native groups 7–9 are the three airborne streamers. The direct paths
+    # before them are cone stripes/cavity: leave those untouched.
     body=result[0][0][0]
-    streamers=[p for p in body if p.tag==T('path')][-3:]
-    swaps=({'#03A9F4':'#F48FB1','#F44336':'#03A9F4','#F48FB1':'#F44336'},
-           {'#03A9F4':'#F44336','#F44336':'#F48FB1','#F48FB1':'#03A9F4'},
-           {'#03A9F4':'#FFC107','#F44336':'#AB47BC','#F48FB1':'#F48FB1'})[variant%3]
-    moves=(('rotate(-9 64 67)','translate(5 3) rotate(8 55 55)','translate(-4 8)'),
-           ('translate(-3 -7)','rotate(-12 55 55)','translate(2 -3) rotate(7 75 55)'),
-           ('rotate(7 64 67)','translate(-5 5)','rotate(-8 75 55)'))[variant%3]
-    for node,move in zip(streamers,moves):
-        node.set('style','fill:'+swaps.get(node.get('style','').split(':')[-1].rstrip(';'),'#03A9F4')+';')
-        node.set('transform',move)
-    # The red inner curl follows the recoloured red streamer.
-    result[0][0][-1].set('style','fill:'+('#7B1FA2' if variant%3==2 else '#0277BD' if variant%3==0 else '#AD4E73')+';')
-    result[0][0][-1].set('transform',moves[1])
+    streamers=list(body)[7:10]
+    assert [g[0].get('style') for g in streamers] == [
+        'fill:#03A9F4;', 'fill:#F44336;', 'fill:#F48FB1;']
+    anchors=((55,84),(43,72),(59,75))
+    directions=(-6,-81,-47)
+    # Each recipe lists which SHAPE occupies right, upright and diagonal slots.
+    # Pair and trio together use five different permutations, not one shared edit.
+    permutations=((2,0,1),(1,2,0),(0,2,1),(2,1,0),(1,0,2))
+    palettes=(('#F48FB1','#03A9F4','#F44336'),
+              ('#03A9F4','#AB47BC','#F48FB1'),
+              ('#FF7043','#F48FB1','#26A69A'),
+              ('#AB47BC','#03A9F4','#FF7043'),
+              ('#03A9F4','#F44336','#AB47BC'))
+    curl=result[0][0][-1]
+    result[0][0].remove(curl)
+    streamers[1].append(curl)  # Its inner fold travels with the red native shape.
+    for group in streamers:
+        body.remove(group)
+    for slot,shape in enumerate(permutations[variant]):
+        group=streamers[shape]
+        x,y=anchors[slot];sx,sy=anchors[shape]
+        angle=directions[slot]-directions[shape]
+        # The longest native streamer needs shortening when sent straight up.
+        scale=.78 if shape==2 and slot==1 else .94 if shape!=slot else 1
+        group.set('transform',f'translate({x} {y}) rotate({angle}) scale({scale}) translate({-sx} {-sy})')
+        color=palettes[variant][slot]
+        group[0].set('style','fill:'+color+';')
+        if shape==1:
+            rgb=[int(color[i:i+2],16) for i in (1,3,5)]
+            curl.set('style','fill:#'+''.join(f'{round(c*.68):02X}' for c in rgb)+';')
+        body.append(group)
     colors=('#FFC107','#03A9F4','#F48FB1','#F44336','#FB8C00')
     for j,node in enumerate(list(result[0])[1:]):
         wrapper=ET.Element(T('g'),transform=f'translate({((j*7+variant*5)%15)-7} {((j*11+variant*7)%17)-8}) rotate({(j*17+variant*29)%51-25} 64 64)')
@@ -180,7 +199,7 @@ def compose(family, count):
             shape=('cross','arched')[i] if count==2 else ('cross','round','bevel')[i]
             member=inscription(stone_shape(source,shape),i,cross=shape=='cross')
         elif family=='popper':
-            member=party(source,i+(count-2))
+            member=party(source,i if count==2 else i+2)
             if i==0:
                 transform+=' translate(128 0) scale(-1 1)'
         elif family=='fire' and i==0:

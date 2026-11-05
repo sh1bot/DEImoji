@@ -3,7 +3,9 @@
 Noto-derived pairs and trios for 🪦, 🎆, 🎉 and 🔥. Headstones mix arched, rounded, bevelled and cross shapes, with shuffled
 inscriptions and a smaller rear row. Fireworks share one sky and show opening,
 full-bloom and falling-spark stages. Poppers vary paper colours/positions and
-reverse the middle cone; the middle flame also curls the opposite way. The native singleton is
+reverse the middle cone; each of the five poppers has a distinct permutation
+of three streamer shapes across the same outward-facing slots. Cone stripes
+and shading are unchanged. The middle flame also curls the opposite way. The native singleton is
 unchanged. These families use fixed grouping rather than an LFSR.
 
 The source SVGs are pinned in `clusters/source/` (see `clusters/manifest.json` for the commit).
