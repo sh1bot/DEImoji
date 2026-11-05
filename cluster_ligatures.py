@@ -1,8 +1,7 @@
 """Optional contextual pair/triple ligatures for repeated plain emoji.
 
-For zombies, sunflowers and poop, four output clusters form an LFSR register. Pair=0,
+For every family, four output clusters form an LFSR register. Pair=0,
 triple=1, with next = oldest XOR next-oldest and seed 1111 (period fifteen).
-Other decorative families use fixed trios with pair tails.
 """
 from copy import deepcopy
 
@@ -13,8 +12,8 @@ from fontTools.ttLib.tables.otBase import BaseTable
 
 
 NATIVE_CLUSTER_CODEPOINTS = (0x1F9DF, 0x1F33B)
-FIXED_CLUSTER_CODEPOINTS = (0x1FAA6, 0x1F386, 0x1F389, 0x1F525)
-CLUSTER_CODEPOINTS = (*NATIVE_CLUSTER_CODEPOINTS, 0x1F4A9, *FIXED_CLUSTER_CODEPOINTS)
+DECORATIVE_CLUSTER_CODEPOINTS = (0x1FAA6, 0x1F386, 0x1F389, 0x1F525)
+CLUSTER_CODEPOINTS = (*NATIVE_CLUSTER_CODEPOINTS, 0x1F4A9, *DECORATIVE_CLUSTER_CODEPOINTS)
 CLUSTER_SEQUENCES = frozenset(
     (cp,) * count for cp in CLUSTER_CODEPOINTS for count in (2, 3)
 )
@@ -26,7 +25,7 @@ NATIVE_CLUSTER_NAMES = tuple('emoji_u' + '_'.join([f'{cp:x}'] * n)
                              for cp in sorted(NATIVE_CLUSTER_CODEPOINTS) for n in (2, 3))
 
 
-def feature_source(families, fixed_bases=()):
+def feature_source(families):
     """families contains (base, pair, triple) glyph names, not Unicode strings."""
     lines = ['languagesystem DFLT dflt;']
     for i, (base, pair, triple) in enumerate(families):
@@ -40,7 +39,7 @@ def feature_source(families, fixed_bases=()):
         # Five remaining items permit either choice without a leftover single.
         # The four-item tail forces 2+2; three and two finish exactly.
         tail = ' '.join([base] * 4)
-        for oldest in (() if base in fixed_bases else (0, 1)):
+        for oldest in (0, 1):
             for next_oldest in (0, 1):
                 a, b = (pair, triple)[oldest], (pair, triple)[next_oldest]
                 choice = ('pair', 'triple')[oldest ^ next_oldest]
@@ -122,8 +121,7 @@ def _add_cluster_ligatures(font):
 
     temp = TTFont()
     temp.setGlyphOrder(font.getGlyphOrder())
-    fixed_bases = {cmap[cp] for cp in FIXED_CLUSTER_CODEPOINTS if cp in cmap}
-    addOpenTypeFeaturesFromString(temp, feature_source(families, fixed_bases), tables=['GSUB'])
+    addOpenTypeFeaturesFromString(temp, feature_source(families), tables=['GSUB'])
     extra = temp['GSUB'].table
     offset = len(gsub.LookupList.Lookup)
     new_lookups = deepcopy(extra.LookupList.Lookup)

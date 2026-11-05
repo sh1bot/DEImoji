@@ -176,9 +176,10 @@ all five source buckets, in both TTFs and WOFF2. The report records this coverag
 
 ## Fixed decorative clusters
 
-Plain 🪦, 🎆, 🎉 and 🔥 have one pair and one trio each. Their grouping uses
-trios with a 2+2 tail for four remaining inputs; these families do not use the
-binary grouping register or diversity generators. Headstones mix arched,
+Plain 🪦, 🎆, 🎉 and 🔥 have one artwork choice for pairs and one for trios.
+They use the same period-15 binary LFSR grouping as zombies, sunflowers and
+poop, with short tails adjusted to avoid singletons. They do not use the
+base-3/base-5 diversity generators. Headstones mix arched,
 rounded, bevelled and cross shapes, shuffled inscriptions and smaller rear
 stones. Fireworks share a panoramic sky and show opening, full-bloom and
 falling-spark stages. Middle poppers/flames are mirrored; streamers and confetti

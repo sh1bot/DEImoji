@@ -148,15 +148,12 @@ def check_font_package(site):
         for cp in FIXED_FAMILIES.values():
             base=cmap[cp]
             text='';expected=[];plain=[]
-            for n in (1,2,3,4,5,6,7,8,15,80):
+            for n in (1,2,3,4,5,6,7,8,15,36,80,160):
                 text+=chr(cp)*n+' '
                 plain.extend([base]*n+[cmap[32]])
-                remain=n
-                while remain:
-                    size=2 if remain==4 else min(3,remain)
-                    expected.append(base if size==1 else outputs[cp,size]);remain-=size
+                expected.extend(base if size==1 else outputs[cp,size] for size in reference(n))
                 expected.append(cmap[32])
-            assert shape(font,text)==expected, ('fixed grouping',name,cp)
+            assert shape(font,text)==expected, ('decorative LFSR grouping',name,cp)
             assert shape(font,text,calt=False)==plain
         for entry in fixed['entries']:
             glyph=order[entry['gid']]
@@ -176,7 +173,7 @@ def check_font_package(site):
                 gender_seed_buckets_checked=[0,1,2,3,4],
                 gender_states_in_first_four_repeats=3,
                 distant_noneligible_noise_checked=True,
-                fixed_cluster_artwork_checked=8, fixed_cluster_grouping='greedy-trios-with-pair-tails',
+                fixed_cluster_artwork_checked=8, fixed_cluster_grouping='binary-lfsr-period-15',
                 zombie_compositions_checked=10, zombie_grouping_input_length=4000,
                 zombie_artwork_bundle=verify_zombies(),
                 older_person_genders_checked=True,

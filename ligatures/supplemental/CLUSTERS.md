@@ -6,7 +6,9 @@ full-bloom and falling-spark stages. Poppers vary paper colours/positions and
 reverse the middle cone; each of the five poppers has a distinct permutation
 of three streamer shapes across the same outward-facing slots. Cone stripes
 and shading are unchanged. The middle flame also curls the opposite way. The native singleton is
-unchanged. These families use fixed grouping rather than an LFSR.
+unchanged. These families use the existing period-15 binary LFSR to mix pairs and trios,
+with one fixed artwork choice for each size. The diversity generators do not
+select extra variants.
 
 The source SVGs are pinned in `clusters/source/` (see `clusters/manifest.json` for the commit).
 `clusters/svg/` contains editable compositions; `clusters/png/128/` and `clusters/Clusters-COLRv1.ttf`

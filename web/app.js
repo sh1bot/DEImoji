@@ -117,7 +117,7 @@ async function initialize() {
     const rules = metadata.modifiers?.['DEImoji-COLRv1.ttf'];
     const art = metadata.artwork?.['DEImoji-COLRv1.ttf'];
     $('build-details').textContent = [
-      art?.clusters ? 'Headstones, fireworks, poppers and fire: fixed pairs + trios' : '',
+      art?.clusters ? 'Headstones, fireworks, poppers and fire: mixed pairs + trios' : '',
       art?.zombies ? 'Zombies: five pairs + five trios' : '',
       art?.style === 'noto-white-smile-v2' ? 'Poop heaps: white-smile artwork' : 'Poop heaps: original artwork',
       rules?.state_periods ? `Variation periods: ${rules.state_periods.join(' × ')} = ${rules.combined_period.toLocaleString()}` : '',

@@ -779,8 +779,8 @@ class ZombieVariantTests(unittest.TestCase):
 
 
 
-class FixedClusterTests(unittest.TestCase):
-    def test_fixed_families_and_recovery(self):
+class DecorativeClusterTests(unittest.TestCase):
+    def test_decorative_families_and_recovery(self):
         from cluster_ligatures import feature_source, _add_cluster_ligatures
         from fixed_cluster_artwork import FAMILIES, ART, NAMES, verify_bundle
         font=make_font(with_poop=True)
@@ -803,13 +803,10 @@ class FixedClusterTests(unittest.TestCase):
         for base,cp in FAMILIES.items():
             for n in range(1,101):
                 with self.subTest(base=base,n=n):
-                    remain=n; expected=[]
-                    while remain:
-                        size=2 if remain==4 else min(3,remain)
-                        expected.append(base+(str(size) if size>1 else ''))
-                        remain-=size
+                    expected=[base+(str(size) if size>1 else '') for size in reference(n)]
                     self.assertEqual(shape(font,chr(cp)*n),expected)
                     self.assertEqual(shape(font,chr(cp)*n,calt=False),[base]*n)
+            self.assertEqual(set(shape(font,chr(cp)*36)),{base+'2',base+'3'})
         mixed='🪦🪦🔥🔥🔥🎉🎉🎉🎉🎆🎆'
         self.assertEqual(shape(font,mixed),['headstone2','fire3','popper2','popper2','fireworks2'])
         data=BytesIO();font.save(data);font=TTFont(BytesIO(data.getvalue()))
