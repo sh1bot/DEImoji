@@ -46,6 +46,18 @@
     "plain_text": {
       "unit": "Lorem ipsum dolor sit amet. ",
       "repeat": 100
+    },
+    "unaffected_short": {
+      "unit": "🐈🚗🍎📚",
+      "repeat": 9
+    },
+    "unaffected_long": {
+      "unit": "🐈🚗🍎📚",
+      "repeat": 800
+    },
+    "unaffected_repeat": {
+      "unit": "🐈",
+      "repeat": 3200
     }
   },
   "fonts": [
@@ -60,24 +72,24 @@
       "gsub_bytes": 53880,
       "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
       "fonttools_directory_open": {
-        "median_ms": 0.0371,
-        "min_batch_ms": 0.0345,
-        "max_batch_ms": 0.0921
+        "median_ms": 0.0378,
+        "min_batch_ms": 0.0326,
+        "max_batch_ms": 0.0987
       },
       "fonttools_layout_decode": {
-        "median_ms": 32.2143,
-        "min_batch_ms": 30.9108,
-        "max_batch_ms": 43.6156
+        "median_ms": 31.6562,
+        "min_batch_ms": 29.5738,
+        "max_batch_ms": 40.9055
       },
       "harfbuzz_setup": {
-        "median_ms": 0.5883,
-        "min_batch_ms": 0.4628,
-        "max_batch_ms": 4.1206
+        "median_ms": 0.5598,
+        "min_batch_ms": 0.4056,
+        "max_batch_ms": 4.2977
       },
       "harfbuzz_cold_first_shape": {
-        "median_ms": 0.4163,
-        "min_batch_ms": 0.3832,
-        "max_batch_ms": 0.6164
+        "median_ms": 0.4639,
+        "min_batch_ms": 0.4065,
+        "max_batch_ms": 0.5653
       },
       "shaping": {
         "short_clusters": {
@@ -85,85 +97,100 @@
           "utf8_bytes": 52,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.003,
+            "median_ms": 0.0029,
             "min_batch_ms": 0.0029,
             "max_batch_ms": 0.0033,
             "output_glyphs": 13
           },
           "calt_on": {
-            "median_ms": 0.003,
+            "median_ms": 0.0029,
             "min_batch_ms": 0.0029,
-            "max_batch_ms": 0.003,
+            "max_batch_ms": 0.0104,
             "output_glyphs": 13
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "cluster_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.1317,
-            "min_batch_ms": 0.1265,
-            "max_batch_ms": 0.1346,
+            "median_ms": 0.1274,
+            "min_batch_ms": 0.1261,
+            "max_batch_ms": 0.142,
             "output_glyphs": 3200
           },
           "calt_on": {
-            "median_ms": 0.1319,
-            "min_batch_ms": 0.1255,
-            "max_batch_ms": 0.1576,
+            "median_ms": 0.1304,
+            "min_batch_ms": 0.1263,
+            "max_batch_ms": 0.1342,
             "output_glyphs": 3200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "short_diversity": {
           "codepoints": 36,
           "utf8_bytes": 144,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.0055,
-            "min_batch_ms": 0.0054,
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0053,
             "max_batch_ms": 0.0055,
             "output_glyphs": 36
           },
           "calt_on": {
             "median_ms": 0.0054,
             "min_batch_ms": 0.0053,
-            "max_batch_ms": 0.0513,
+            "max_batch_ms": 0.0055,
             "output_glyphs": 36
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "diversity_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.2447,
-            "min_batch_ms": 0.2363,
-            "max_batch_ms": 0.2623,
+            "median_ms": 0.2613,
+            "min_batch_ms": 0.2354,
+            "max_batch_ms": 0.2784,
             "output_glyphs": 3200
           },
           "calt_on": {
-            "median_ms": 0.2457,
-            "min_batch_ms": 0.235,
-            "max_batch_ms": 0.261,
+            "median_ms": 0.2408,
+            "min_batch_ms": 0.2399,
+            "max_batch_ms": 0.2458,
             "output_glyphs": 3200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "mixed_run": {
           "codepoints": 2200,
           "utf8_bytes": 8200,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.1859,
-            "min_batch_ms": 0.173,
-            "max_batch_ms": 0.2063,
+            "median_ms": 0.1858,
+            "min_batch_ms": 0.1735,
+            "max_batch_ms": 0.1976,
             "output_glyphs": 2200
           },
           "calt_on": {
-            "median_ms": 0.2039,
-            "min_batch_ms": 0.1731,
-            "max_batch_ms": 0.2147,
+            "median_ms": 0.1779,
+            "min_batch_ms": 0.1736,
+            "max_batch_ms": 0.1909,
             "output_glyphs": 2200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "explicit_sequences": {
           "codepoints": 1800,
@@ -172,17 +199,20 @@
             "FE0F"
           ],
           "calt_off": {
-            "median_ms": 0.2963,
-            "min_batch_ms": 0.2847,
-            "max_batch_ms": 0.3351,
+            "median_ms": 0.2934,
+            "min_batch_ms": 0.2894,
+            "max_batch_ms": 0.3126,
             "output_glyphs": 840
           },
           "calt_on": {
-            "median_ms": 0.3184,
-            "min_batch_ms": 0.2958,
-            "max_batch_ms": 0.3332,
+            "median_ms": 0.2952,
+            "min_batch_ms": 0.2893,
+            "max_batch_ms": 0.3128,
             "output_glyphs": 840
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "plain_text": {
           "codepoints": 2800,
@@ -204,17 +234,80 @@
             "0075"
           ],
           "calt_off": {
-            "median_ms": 0.1212,
-            "min_batch_ms": 0.1205,
-            "max_batch_ms": 0.1346,
+            "median_ms": 0.1222,
+            "min_batch_ms": 0.1219,
+            "max_batch_ms": 0.1269,
             "output_glyphs": 2800
           },
           "calt_on": {
-            "median_ms": 0.1485,
-            "min_batch_ms": 0.136,
-            "max_batch_ms": 0.1663,
+            "median_ms": 0.123,
+            "min_batch_ms": 0.1217,
+            "max_batch_ms": 0.1267,
             "output_glyphs": 2800
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "unaffected_short": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0037,
+            "min_batch_ms": 0.0036,
+            "max_batch_ms": 0.0037,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.0036,
+            "min_batch_ms": 0.0035,
+            "max_batch_ms": 0.0036,
+            "output_glyphs": 36
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_long": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1023,
+            "min_batch_ms": 0.102,
+            "max_batch_ms": 0.1067,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.1081,
+            "min_batch_ms": 0.1025,
+            "max_batch_ms": 0.1261,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_repeat": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.153,
+            "min_batch_ms": 0.1465,
+            "max_batch_ms": 0.167,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.1504,
+            "min_batch_ms": 0.1458,
+            "max_batch_ms": 0.1685,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
         }
       }
     },
@@ -229,24 +322,24 @@
       "gsub_bytes": 53922,
       "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
       "fonttools_directory_open": {
-        "median_ms": 0.0381,
-        "min_batch_ms": 0.0317,
-        "max_batch_ms": 0.1501
+        "median_ms": 0.0357,
+        "min_batch_ms": 0.0324,
+        "max_batch_ms": 0.0924
       },
       "fonttools_layout_decode": {
-        "median_ms": 33.3132,
-        "min_batch_ms": 30.877,
-        "max_batch_ms": 47.4126
+        "median_ms": 30.6364,
+        "min_batch_ms": 30.2785,
+        "max_batch_ms": 44.0284
       },
       "harfbuzz_setup": {
-        "median_ms": 1.6772,
-        "min_batch_ms": 1.5347,
-        "max_batch_ms": 10.4507
+        "median_ms": 2.24,
+        "min_batch_ms": 2.0869,
+        "max_batch_ms": 9.791
       },
       "harfbuzz_cold_first_shape": {
-        "median_ms": 1.2846,
-        "min_batch_ms": 1.2541,
-        "max_batch_ms": 1.5292
+        "median_ms": 2.1066,
+        "min_batch_ms": 1.7078,
+        "max_batch_ms": 2.258
       },
       "shaping": {
         "short_clusters": {
@@ -254,85 +347,100 @@
           "utf8_bytes": 52,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.0031,
+            "median_ms": 0.003,
             "min_batch_ms": 0.0029,
-            "max_batch_ms": 0.0032,
+            "max_batch_ms": 0.0034,
             "output_glyphs": 12
           },
           "calt_on": {
-            "median_ms": 0.003,
+            "median_ms": 0.0031,
             "min_batch_ms": 0.0029,
-            "max_batch_ms": 0.0215,
+            "max_batch_ms": 0.0097,
             "output_glyphs": 12
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "cluster_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.1332,
+            "median_ms": 0.1793,
             "min_batch_ms": 0.1314,
-            "max_batch_ms": 0.162,
+            "max_batch_ms": 0.2421,
             "output_glyphs": 2670
           },
           "calt_on": {
-            "median_ms": 0.1428,
-            "min_batch_ms": 0.1308,
-            "max_batch_ms": 0.2631,
+            "median_ms": 0.1512,
+            "min_batch_ms": 0.138,
+            "max_batch_ms": 0.1808,
             "output_glyphs": 2670
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "short_diversity": {
           "codepoints": 36,
           "utf8_bytes": 144,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.0054,
-            "min_batch_ms": 0.0053,
-            "max_batch_ms": 0.0055,
+            "median_ms": 0.0056,
+            "min_batch_ms": 0.0054,
+            "max_batch_ms": 0.0153,
             "output_glyphs": 36
           },
           "calt_on": {
             "median_ms": 0.0054,
             "min_batch_ms": 0.0053,
-            "max_batch_ms": 0.0054,
+            "max_batch_ms": 0.0087,
             "output_glyphs": 36
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "diversity_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.2393,
-            "min_batch_ms": 0.2345,
-            "max_batch_ms": 0.3426,
+            "median_ms": 0.25,
+            "min_batch_ms": 0.2364,
+            "max_batch_ms": 0.2909,
             "output_glyphs": 3200
           },
           "calt_on": {
-            "median_ms": 0.2703,
-            "min_batch_ms": 0.2356,
-            "max_batch_ms": 0.2884,
+            "median_ms": 0.2525,
+            "min_batch_ms": 0.2414,
+            "max_batch_ms": 0.2662,
             "output_glyphs": 3200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "mixed_run": {
           "codepoints": 2200,
           "utf8_bytes": 8200,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.2233,
-            "min_batch_ms": 0.1908,
-            "max_batch_ms": 0.2907,
+            "median_ms": 0.185,
+            "min_batch_ms": 0.1811,
+            "max_batch_ms": 0.2208,
             "output_glyphs": 2200
           },
           "calt_on": {
-            "median_ms": 0.191,
-            "min_batch_ms": 0.1801,
-            "max_batch_ms": 0.2469,
+            "median_ms": 0.1855,
+            "min_batch_ms": 0.1804,
+            "max_batch_ms": 0.2116,
             "output_glyphs": 2200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "explicit_sequences": {
           "codepoints": 1800,
@@ -341,17 +449,20 @@
             "FE0F"
           ],
           "calt_off": {
-            "median_ms": 0.295,
-            "min_batch_ms": 0.2849,
-            "max_batch_ms": 0.3779,
+            "median_ms": 0.3187,
+            "min_batch_ms": 0.3161,
+            "max_batch_ms": 0.3515,
             "output_glyphs": 840
           },
           "calt_on": {
-            "median_ms": 0.3126,
-            "min_batch_ms": 0.2992,
-            "max_batch_ms": 0.3259,
+            "median_ms": 0.2951,
+            "min_batch_ms": 0.29,
+            "max_batch_ms": 0.3233,
             "output_glyphs": 840
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "plain_text": {
           "codepoints": 2800,
@@ -373,49 +484,112 @@
             "0075"
           ],
           "calt_off": {
-            "median_ms": 0.1269,
-            "min_batch_ms": 0.1204,
-            "max_batch_ms": 0.1474,
+            "median_ms": 0.1337,
+            "min_batch_ms": 0.1283,
+            "max_batch_ms": 0.1414,
             "output_glyphs": 2800
           },
           "calt_on": {
-            "median_ms": 0.1338,
-            "min_batch_ms": 0.1286,
-            "max_batch_ms": 0.1619,
+            "median_ms": 0.1248,
+            "min_batch_ms": 0.1218,
+            "max_batch_ms": 0.1283,
             "output_glyphs": 2800
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "unaffected_short": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0036,
+            "min_batch_ms": 0.0035,
+            "max_batch_ms": 0.0071,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.0047,
+            "min_batch_ms": 0.0035,
+            "max_batch_ms": 0.0119,
+            "output_glyphs": 36
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_long": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.109,
+            "min_batch_ms": 0.1018,
+            "max_batch_ms": 0.1383,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.1024,
+            "min_batch_ms": 0.1019,
+            "max_batch_ms": 0.1064,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_repeat": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.147,
+            "min_batch_ms": 0.1455,
+            "max_batch_ms": 0.1567,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.1497,
+            "min_batch_ms": 0.1453,
+            "max_batch_ms": 0.236,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
         }
       }
     },
     {
       "label": "deimoji-cbdt",
-      "path": "build/history-fonts/NotoColorEmoji.ttf",
-      "sha256": "f391b9f7f6b0ee572b06062e9dd8adf7ddb51f3bd6ba2e3426014c986c9f9eff",
-      "file_bytes": 26411996,
+      "path": "build/rear-cross-live/fonts/DEImoji-CBDT.ttf",
+      "sha256": "db8ea9790e2bcf37ebe66a32b48ef95c30c3f21b7b5ad1d189f43c04e9f46651",
+      "file_bytes": 26411832,
       "format": "CBDT",
       "glyphs": 4078,
       "mapped_codepoints": 1510,
       "gsub_bytes": 271476,
       "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
       "fonttools_directory_open": {
-        "median_ms": 0.0437,
-        "min_batch_ms": 0.037,
-        "max_batch_ms": 0.0864
+        "median_ms": 0.0386,
+        "min_batch_ms": 0.0349,
+        "max_batch_ms": 0.0975
       },
       "fonttools_layout_decode": {
-        "median_ms": 269.1391,
-        "min_batch_ms": 212.7784,
-        "max_batch_ms": 287.4822
+        "median_ms": 234.1158,
+        "min_batch_ms": 221.2221,
+        "max_batch_ms": 404.2499
       },
       "harfbuzz_setup": {
-        "median_ms": 1.9867,
-        "min_batch_ms": 1.7723,
-        "max_batch_ms": 10.8101
+        "median_ms": 2.4773,
+        "min_batch_ms": 2.3026,
+        "max_batch_ms": 12.7916
       },
       "harfbuzz_cold_first_shape": {
-        "median_ms": 1.6021,
-        "min_batch_ms": 1.5028,
-        "max_batch_ms": 2.0011
+        "median_ms": 2.1664,
+        "min_batch_ms": 2.1071,
+        "max_batch_ms": 2.4175
       },
       "shaping": {
         "short_clusters": {
@@ -423,85 +597,100 @@
           "utf8_bytes": 52,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.0034,
-            "min_batch_ms": 0.0033,
-            "max_batch_ms": 0.0039,
+            "median_ms": 0.0033,
+            "min_batch_ms": 0.0032,
+            "max_batch_ms": 0.0037,
             "output_glyphs": 13
           },
           "calt_on": {
-            "median_ms": 0.0339,
-            "min_batch_ms": 0.0335,
-            "max_batch_ms": 0.034,
+            "median_ms": 0.0341,
+            "min_batch_ms": 0.0337,
+            "max_batch_ms": 0.0895,
             "output_glyphs": 5
-          }
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": false,
+          "expected_unaffected": false
         },
         "cluster_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.242,
-            "min_batch_ms": 0.2061,
-            "max_batch_ms": 0.353,
+            "median_ms": 0.2244,
+            "min_batch_ms": 0.2063,
+            "max_batch_ms": 0.4121,
             "output_glyphs": 3200
           },
           "calt_on": {
-            "median_ms": 8.592,
-            "min_batch_ms": 8.2837,
-            "max_batch_ms": 8.8329,
+            "median_ms": 8.7432,
+            "min_batch_ms": 8.1117,
+            "max_batch_ms": 9.852,
             "output_glyphs": 1280
-          }
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": false,
+          "expected_unaffected": false
         },
         "short_diversity": {
           "codepoints": 36,
           "utf8_bytes": 144,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.0055,
-            "min_batch_ms": 0.0054,
-            "max_batch_ms": 0.0059,
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0053,
+            "max_batch_ms": 0.006,
             "output_glyphs": 36
           },
           "calt_on": {
-            "median_ms": 0.2367,
-            "min_batch_ms": 0.197,
-            "max_batch_ms": 0.2531,
+            "median_ms": 0.2064,
+            "min_batch_ms": 0.1945,
+            "max_batch_ms": 0.2729,
             "output_glyphs": 36
-          }
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "diversity_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.2394,
-            "min_batch_ms": 0.2355,
-            "max_batch_ms": 0.2672,
+            "median_ms": 0.2681,
+            "min_batch_ms": 0.246,
+            "max_batch_ms": 0.498,
             "output_glyphs": 3200
           },
           "calt_on": {
-            "median_ms": 19.166,
-            "min_batch_ms": 18.8576,
-            "max_batch_ms": 19.7151,
+            "median_ms": 19.1137,
+            "min_batch_ms": 18.5915,
+            "max_batch_ms": 20.4656,
             "output_glyphs": 3200
-          }
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "mixed_run": {
           "codepoints": 2200,
           "utf8_bytes": 8200,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.2098,
-            "min_batch_ms": 0.2039,
-            "max_batch_ms": 0.2445,
+            "median_ms": 0.2795,
+            "min_batch_ms": 0.2096,
+            "max_batch_ms": 0.3254,
             "output_glyphs": 2200
           },
           "calt_on": {
-            "median_ms": 12.6076,
-            "min_batch_ms": 12.1898,
-            "max_batch_ms": 12.8695,
+            "median_ms": 13.1302,
+            "min_batch_ms": 12.5859,
+            "max_batch_ms": 13.6637,
             "output_glyphs": 2200
-          }
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "explicit_sequences": {
           "codepoints": 1800,
@@ -510,17 +699,20 @@
             "FE0F"
           ],
           "calt_off": {
-            "median_ms": 0.3041,
-            "min_batch_ms": 0.285,
-            "max_batch_ms": 0.4387,
+            "median_ms": 0.2891,
+            "min_batch_ms": 0.289,
+            "max_batch_ms": 0.3158,
             "output_glyphs": 840
           },
           "calt_on": {
-            "median_ms": 4.0621,
-            "min_batch_ms": 3.9345,
-            "max_batch_ms": 4.1674,
+            "median_ms": 4.4841,
+            "min_batch_ms": 4.2454,
+            "max_batch_ms": 5.7259,
             "output_glyphs": 600
-          }
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": false,
+          "expected_unaffected": false
         },
         "plain_text": {
           "codepoints": 2800,
@@ -542,17 +734,80 @@
             "0075"
           ],
           "calt_off": {
-            "median_ms": 0.1221,
-            "min_batch_ms": 0.1207,
-            "max_batch_ms": 0.1314,
+            "median_ms": 0.1233,
+            "min_batch_ms": 0.1222,
+            "max_batch_ms": 0.1587,
             "output_glyphs": 2800
           },
           "calt_on": {
-            "median_ms": 2.9193,
-            "min_batch_ms": 2.8426,
-            "max_batch_ms": 3.1451,
+            "median_ms": 3.2248,
+            "min_batch_ms": 3.1158,
+            "max_batch_ms": 3.4208,
             "output_glyphs": 2800
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "unaffected_short": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0038,
+            "min_batch_ms": 0.0037,
+            "max_batch_ms": 0.0043,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.1703,
+            "min_batch_ms": 0.1661,
+            "max_batch_ms": 0.1748,
+            "output_glyphs": 36
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_long": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1255,
+            "min_batch_ms": 0.1132,
+            "max_batch_ms": 0.1599,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 16.7885,
+            "min_batch_ms": 16.5731,
+            "max_batch_ms": 20.2836,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_repeat": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1608,
+            "min_batch_ms": 0.1473,
+            "max_batch_ms": 0.1983,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 15.605,
+            "min_batch_ms": 15.3425,
+            "max_batch_ms": 17.8231,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
         }
       }
     },
@@ -567,24 +822,24 @@
       "gsub_bytes": 31384,
       "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
       "fonttools_directory_open": {
-        "median_ms": 0.0387,
-        "min_batch_ms": 0.0362,
-        "max_batch_ms": 0.0783
+        "median_ms": 0.0412,
+        "min_batch_ms": 0.0379,
+        "max_batch_ms": 0.0932
       },
       "fonttools_layout_decode": {
-        "median_ms": 45.094,
-        "min_batch_ms": 41.8504,
-        "max_batch_ms": 78.4997
+        "median_ms": 62.2896,
+        "min_batch_ms": 40.3371,
+        "max_batch_ms": 87.4556
       },
       "harfbuzz_setup": {
-        "median_ms": 0.1401,
-        "min_batch_ms": 0.1224,
-        "max_batch_ms": 0.4131
+        "median_ms": 0.1399,
+        "min_batch_ms": 0.1231,
+        "max_batch_ms": 0.5119
       },
       "harfbuzz_cold_first_shape": {
-        "median_ms": 0.1446,
-        "min_batch_ms": 0.1395,
-        "max_batch_ms": 0.2218
+        "median_ms": 0.1615,
+        "min_batch_ms": 0.1557,
+        "max_batch_ms": 0.2834
       },
       "shaping": {
         "short_clusters": {
@@ -592,34 +847,40 @@
           "utf8_bytes": 52,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.0031,
-            "min_batch_ms": 0.0029,
-            "max_batch_ms": 0.0032,
+            "median_ms": 0.003,
+            "min_batch_ms": 0.0028,
+            "max_batch_ms": 0.0031,
             "output_glyphs": 13
           },
           "calt_on": {
             "median_ms": 0.0029,
             "min_batch_ms": 0.0028,
-            "max_batch_ms": 0.0087,
+            "max_batch_ms": 0.0029,
             "output_glyphs": 13
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "cluster_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.1147,
-            "min_batch_ms": 0.1098,
-            "max_batch_ms": 0.271,
+            "median_ms": 0.1206,
+            "min_batch_ms": 0.1088,
+            "max_batch_ms": 0.239,
             "output_glyphs": 3200
           },
           "calt_on": {
-            "median_ms": 0.1141,
-            "min_batch_ms": 0.1085,
-            "max_batch_ms": 0.2007,
+            "median_ms": 0.1174,
+            "min_batch_ms": 0.1095,
+            "max_batch_ms": 0.1399,
             "output_glyphs": 3200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "short_diversity": {
           "codepoints": 36,
@@ -627,8 +888,8 @@
           "unmapped_unique_codepoints": [],
           "calt_off": {
             "median_ms": 0.0054,
-            "min_batch_ms": 0.0054,
-            "max_batch_ms": 0.0056,
+            "min_batch_ms": 0.0053,
+            "max_batch_ms": 0.0061,
             "output_glyphs": 36
           },
           "calt_on": {
@@ -636,41 +897,50 @@
             "min_batch_ms": 0.0053,
             "max_batch_ms": 0.0054,
             "output_glyphs": 36
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "diversity_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.2574,
-            "min_batch_ms": 0.2361,
-            "max_batch_ms": 0.3466,
+            "median_ms": 0.2544,
+            "min_batch_ms": 0.236,
+            "max_batch_ms": 0.2901,
             "output_glyphs": 3200
           },
           "calt_on": {
-            "median_ms": 0.2459,
-            "min_batch_ms": 0.2345,
-            "max_batch_ms": 0.2768,
+            "median_ms": 0.2681,
+            "min_batch_ms": 0.2358,
+            "max_batch_ms": 0.9879,
             "output_glyphs": 3200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "mixed_run": {
           "codepoints": 2200,
           "utf8_bytes": 8200,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.1857,
-            "min_batch_ms": 0.1515,
-            "max_batch_ms": 0.2879,
+            "median_ms": 0.1619,
+            "min_batch_ms": 0.1518,
+            "max_batch_ms": 0.192,
             "output_glyphs": 2200
           },
           "calt_on": {
-            "median_ms": 0.1736,
-            "min_batch_ms": 0.1517,
-            "max_batch_ms": 0.1853,
+            "median_ms": 0.2404,
+            "min_batch_ms": 0.1737,
+            "max_batch_ms": 0.9099,
             "output_glyphs": 2200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "explicit_sequences": {
           "codepoints": 1800,
@@ -679,17 +949,20 @@
             "FE0F"
           ],
           "calt_off": {
-            "median_ms": 0.2709,
-            "min_batch_ms": 0.2565,
-            "max_batch_ms": 0.3257,
+            "median_ms": 0.2619,
+            "min_batch_ms": 0.2541,
+            "max_batch_ms": 0.3143,
             "output_glyphs": 840
           },
           "calt_on": {
-            "median_ms": 0.2566,
-            "min_batch_ms": 0.2422,
-            "max_batch_ms": 0.279,
+            "median_ms": 0.2506,
+            "min_batch_ms": 0.2407,
+            "max_batch_ms": 0.3352,
             "output_glyphs": 840
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "plain_text": {
           "codepoints": 2800,
@@ -711,17 +984,80 @@
             "0075"
           ],
           "calt_off": {
-            "median_ms": 0.1677,
-            "min_batch_ms": 0.156,
-            "max_batch_ms": 0.2362,
+            "median_ms": 0.1667,
+            "min_batch_ms": 0.1554,
+            "max_batch_ms": 0.7961,
             "output_glyphs": 2800
           },
           "calt_on": {
-            "median_ms": 0.1599,
-            "min_batch_ms": 0.1557,
-            "max_batch_ms": 0.2469,
+            "median_ms": 0.178,
+            "min_batch_ms": 0.1558,
+            "max_batch_ms": 0.2518,
             "output_glyphs": 2800
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "unaffected_short": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0038,
+            "min_batch_ms": 0.0037,
+            "max_batch_ms": 0.0042,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.0037,
+            "min_batch_ms": 0.0037,
+            "max_batch_ms": 0.0038,
+            "output_glyphs": 36
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_long": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1318,
+            "min_batch_ms": 0.1197,
+            "max_batch_ms": 0.1669,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.1414,
+            "min_batch_ms": 0.1192,
+            "max_batch_ms": 0.1784,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_repeat": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1758,
+            "min_batch_ms": 0.1445,
+            "max_batch_ms": 0.2505,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.1749,
+            "min_batch_ms": 0.1459,
+            "max_batch_ms": 0.2696,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
         }
       }
     },
@@ -736,24 +1072,24 @@
       "gsub_bytes": 31426,
       "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
       "fonttools_directory_open": {
-        "median_ms": 0.0502,
-        "min_batch_ms": 0.0392,
-        "max_batch_ms": 0.3124
+        "median_ms": 0.0387,
+        "min_batch_ms": 0.036,
+        "max_batch_ms": 0.089
       },
       "fonttools_layout_decode": {
-        "median_ms": 64.7837,
-        "min_batch_ms": 41.513,
-        "max_batch_ms": 89.3321
+        "median_ms": 83.3943,
+        "min_batch_ms": 50.5695,
+        "max_batch_ms": 92.9689
       },
       "harfbuzz_setup": {
-        "median_ms": 0.2146,
-        "min_batch_ms": 0.1362,
-        "max_batch_ms": 0.7296
+        "median_ms": 0.4131,
+        "min_batch_ms": 0.1492,
+        "max_batch_ms": 0.5582
       },
       "harfbuzz_cold_first_shape": {
-        "median_ms": 0.145,
-        "min_batch_ms": 0.1408,
-        "max_batch_ms": 0.2861
+        "median_ms": 0.212,
+        "min_batch_ms": 0.1437,
+        "max_batch_ms": 0.2274
       },
       "shaping": {
         "short_clusters": {
@@ -761,203 +1097,40 @@
           "utf8_bytes": 52,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.003,
+            "median_ms": 0.0031,
             "min_batch_ms": 0.0029,
-            "max_batch_ms": 0.0032,
+            "max_batch_ms": 0.0035,
             "output_glyphs": 12
           },
           "calt_on": {
             "median_ms": 0.0029,
             "min_batch_ms": 0.0029,
-            "max_batch_ms": 0.0128,
+            "max_batch_ms": 0.0194,
             "output_glyphs": 12
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "cluster_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.1237,
-            "min_batch_ms": 0.1146,
-            "max_batch_ms": 0.2138,
+            "median_ms": 0.1262,
+            "min_batch_ms": 0.1139,
+            "max_batch_ms": 0.4573,
             "output_glyphs": 2670
           },
           "calt_on": {
-            "median_ms": 0.1407,
-            "min_batch_ms": 0.114,
-            "max_batch_ms": 0.1614,
+            "median_ms": 0.1307,
+            "min_batch_ms": 0.115,
+            "max_batch_ms": 0.7063,
             "output_glyphs": 2670
-          }
-        },
-        "short_diversity": {
-          "codepoints": 36,
-          "utf8_bytes": 144,
-          "unmapped_unique_codepoints": [],
-          "calt_off": {
-            "median_ms": 0.0054,
-            "min_batch_ms": 0.0054,
-            "max_batch_ms": 0.0056,
-            "output_glyphs": 36
           },
-          "calt_on": {
-            "median_ms": 0.0054,
-            "min_batch_ms": 0.0054,
-            "max_batch_ms": 0.0058,
-            "output_glyphs": 36
-          }
-        },
-        "diversity_run": {
-          "codepoints": 3200,
-          "utf8_bytes": 12800,
-          "unmapped_unique_codepoints": [],
-          "calt_off": {
-            "median_ms": 0.2622,
-            "min_batch_ms": 0.243,
-            "max_batch_ms": 0.3056,
-            "output_glyphs": 3200
-          },
-          "calt_on": {
-            "median_ms": 0.347,
-            "min_batch_ms": 0.2711,
-            "max_batch_ms": 0.5091,
-            "output_glyphs": 3200
-          }
-        },
-        "mixed_run": {
-          "codepoints": 2200,
-          "utf8_bytes": 8200,
-          "unmapped_unique_codepoints": [],
-          "calt_off": {
-            "median_ms": 0.1702,
-            "min_batch_ms": 0.1567,
-            "max_batch_ms": 0.2206,
-            "output_glyphs": 2200
-          },
-          "calt_on": {
-            "median_ms": 0.1858,
-            "min_batch_ms": 0.1573,
-            "max_batch_ms": 0.2669,
-            "output_glyphs": 2200
-          }
-        },
-        "explicit_sequences": {
-          "codepoints": 1800,
-          "utf8_bytes": 6120,
-          "unmapped_unique_codepoints": [
-            "FE0F"
-          ],
-          "calt_off": {
-            "median_ms": 0.2708,
-            "min_batch_ms": 0.2641,
-            "max_batch_ms": 0.3103,
-            "output_glyphs": 840
-          },
-          "calt_on": {
-            "median_ms": 0.2662,
-            "min_batch_ms": 0.2527,
-            "max_batch_ms": 0.3476,
-            "output_glyphs": 840
-          }
-        },
-        "plain_text": {
-          "codepoints": 2800,
-          "utf8_bytes": 2800,
-          "unmapped_unique_codepoints": [
-            "002E",
-            "004C",
-            "0061",
-            "0064",
-            "0065",
-            "0069",
-            "006C",
-            "006D",
-            "006F",
-            "0070",
-            "0072",
-            "0073",
-            "0074",
-            "0075"
-          ],
-          "calt_off": {
-            "median_ms": 0.1564,
-            "min_batch_ms": 0.1472,
-            "max_batch_ms": 0.1665,
-            "output_glyphs": 2800
-          },
-          "calt_on": {
-            "median_ms": 0.135,
-            "min_batch_ms": 0.129,
-            "max_batch_ms": 0.1882,
-            "output_glyphs": 2800
-          }
-        }
-      }
-    },
-    {
-      "label": "deimoji-colr",
-      "path": "build/history-fonts/Noto-COLRv1.ttf",
-      "sha256": "bdf20d658781bb623ba2b465533ab73afe6d46aa00efaff66f8e51e29db334f3",
-      "file_bytes": 5454820,
-      "format": "COLRv1",
-      "glyphs": 42975,
-      "mapped_codepoints": 1508,
-      "gsub_bytes": 255592,
-      "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
-      "fonttools_directory_open": {
-        "median_ms": 0.0498,
-        "min_batch_ms": 0.0377,
-        "max_batch_ms": 0.1552
-      },
-      "fonttools_layout_decode": {
-        "median_ms": 391.1931,
-        "min_batch_ms": 376.1147,
-        "max_batch_ms": 408.3542
-      },
-      "harfbuzz_setup": {
-        "median_ms": 0.3649,
-        "min_batch_ms": 0.1517,
-        "max_batch_ms": 0.5217
-      },
-      "harfbuzz_cold_first_shape": {
-        "median_ms": 0.2575,
-        "min_batch_ms": 0.2392,
-        "max_batch_ms": 0.4493
-      },
-      "shaping": {
-        "short_clusters": {
-          "codepoints": 13,
-          "utf8_bytes": 52,
-          "unmapped_unique_codepoints": [],
-          "calt_off": {
-            "median_ms": 0.0033,
-            "min_batch_ms": 0.0032,
-            "max_batch_ms": 0.0036,
-            "output_glyphs": 13
-          },
-          "calt_on": {
-            "median_ms": 0.0362,
-            "min_batch_ms": 0.0333,
-            "max_batch_ms": 0.0803,
-            "output_glyphs": 5
-          }
-        },
-        "cluster_run": {
-          "codepoints": 3200,
-          "utf8_bytes": 12800,
-          "unmapped_unique_codepoints": [],
-          "calt_off": {
-            "median_ms": 0.244,
-            "min_batch_ms": 0.2023,
-            "max_batch_ms": 0.2762,
-            "output_glyphs": 3200
-          },
-          "calt_on": {
-            "median_ms": 9.0146,
-            "min_batch_ms": 8.8122,
-            "max_batch_ms": 9.381,
-            "output_glyphs": 1280
-          }
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "short_diversity": {
           "codepoints": 36,
@@ -966,49 +1139,58 @@
           "calt_off": {
             "median_ms": 0.0055,
             "min_batch_ms": 0.0054,
-            "max_batch_ms": 0.0059,
+            "max_batch_ms": 0.0061,
             "output_glyphs": 36
           },
           "calt_on": {
-            "median_ms": 0.2024,
-            "min_batch_ms": 0.1987,
-            "max_batch_ms": 0.2644,
+            "median_ms": 0.0054,
+            "min_batch_ms": 0.0053,
+            "max_batch_ms": 0.0057,
             "output_glyphs": 36
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "diversity_run": {
           "codepoints": 3200,
           "utf8_bytes": 12800,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.268,
-            "min_batch_ms": 0.2437,
-            "max_batch_ms": 0.2763,
+            "median_ms": 0.4308,
+            "min_batch_ms": 0.2474,
+            "max_batch_ms": 0.6237,
             "output_glyphs": 3200
           },
           "calt_on": {
-            "median_ms": 19.4648,
-            "min_batch_ms": 18.527,
-            "max_batch_ms": 19.9163,
+            "median_ms": 0.3673,
+            "min_batch_ms": 0.2491,
+            "max_batch_ms": 0.522,
             "output_glyphs": 3200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "mixed_run": {
           "codepoints": 2200,
           "utf8_bytes": 8200,
           "unmapped_unique_codepoints": [],
           "calt_off": {
-            "median_ms": 0.2008,
-            "min_batch_ms": 0.194,
-            "max_batch_ms": 0.2211,
+            "median_ms": 0.4334,
+            "min_batch_ms": 0.1584,
+            "max_batch_ms": 0.8356,
             "output_glyphs": 2200
           },
           "calt_on": {
-            "median_ms": 13.7005,
-            "min_batch_ms": 12.6023,
-            "max_batch_ms": 13.9158,
+            "median_ms": 0.1592,
+            "min_batch_ms": 0.1568,
+            "max_batch_ms": 0.1697,
             "output_glyphs": 2200
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "explicit_sequences": {
           "codepoints": 1800,
@@ -1017,17 +1199,20 @@
             "FE0F"
           ],
           "calt_off": {
-            "median_ms": 0.2528,
-            "min_batch_ms": 0.2414,
-            "max_batch_ms": 0.2765,
+            "median_ms": 0.2555,
+            "min_batch_ms": 0.2454,
+            "max_batch_ms": 0.9498,
             "output_glyphs": 840
           },
           "calt_on": {
-            "median_ms": 4.0554,
-            "min_batch_ms": 3.7841,
-            "max_batch_ms": 4.1803,
-            "output_glyphs": 600
-          }
+            "median_ms": 0.3398,
+            "min_batch_ms": 0.2668,
+            "max_batch_ms": 1.1618,
+            "output_glyphs": 840
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
         },
         "plain_text": {
           "codepoints": 2800,
@@ -1049,17 +1234,330 @@
             "0075"
           ],
           "calt_off": {
-            "median_ms": 0.1346,
-            "min_batch_ms": 0.1294,
-            "max_batch_ms": 0.1611,
+            "median_ms": 0.1356,
+            "min_batch_ms": 0.131,
+            "max_batch_ms": 0.183,
             "output_glyphs": 2800
           },
           "calt_on": {
-            "median_ms": 2.9744,
-            "min_batch_ms": 2.7821,
-            "max_batch_ms": 3.1474,
+            "median_ms": 0.1353,
+            "min_batch_ms": 0.1284,
+            "max_batch_ms": 0.1594,
             "output_glyphs": 2800
-          }
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "unaffected_short": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0039,
+            "min_batch_ms": 0.0038,
+            "max_batch_ms": 0.0043,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.0037,
+            "min_batch_ms": 0.0037,
+            "max_batch_ms": 0.0168,
+            "output_glyphs": 36
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_long": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1314,
+            "min_batch_ms": 0.1193,
+            "max_batch_ms": 0.1844,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.133,
+            "min_batch_ms": 0.1193,
+            "max_batch_ms": 0.2542,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_repeat": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2224,
+            "min_batch_ms": 0.144,
+            "max_batch_ms": 0.3305,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 0.184,
+            "min_batch_ms": 0.1577,
+            "max_batch_ms": 0.3792,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        }
+      }
+    },
+    {
+      "label": "deimoji-colr",
+      "path": "build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+      "sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63",
+      "file_bytes": 5457296,
+      "format": "COLRv1",
+      "glyphs": 42992,
+      "mapped_codepoints": 1508,
+      "gsub_bytes": 255592,
+      "version": "Version 2.057;GOOG;noto-emoji:20260911:fc4ca365e7c20e78278ae702aa20434bfe704c8f",
+      "fonttools_directory_open": {
+        "median_ms": 0.0924,
+        "min_batch_ms": 0.0466,
+        "max_batch_ms": 0.4838
+      },
+      "fonttools_layout_decode": {
+        "median_ms": 469.4316,
+        "min_batch_ms": 423.3583,
+        "max_batch_ms": 529.5691
+      },
+      "harfbuzz_setup": {
+        "median_ms": 0.3171,
+        "min_batch_ms": 0.1527,
+        "max_batch_ms": 0.9312
+      },
+      "harfbuzz_cold_first_shape": {
+        "median_ms": 0.9727,
+        "min_batch_ms": 0.269,
+        "max_batch_ms": 2.0356
+      },
+      "shaping": {
+        "short_clusters": {
+          "codepoints": 13,
+          "utf8_bytes": 52,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0032,
+            "min_batch_ms": 0.0031,
+            "max_batch_ms": 0.0038,
+            "output_glyphs": 13
+          },
+          "calt_on": {
+            "median_ms": 0.0327,
+            "min_batch_ms": 0.0323,
+            "max_batch_ms": 0.0469,
+            "output_glyphs": 5
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": false,
+          "expected_unaffected": false
+        },
+        "cluster_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2614,
+            "min_batch_ms": 0.1933,
+            "max_batch_ms": 0.4135,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 12.0168,
+            "min_batch_ms": 11.1604,
+            "max_batch_ms": 12.5547,
+            "output_glyphs": 1280
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": false,
+          "expected_unaffected": false
+        },
+        "short_diversity": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0055,
+            "min_batch_ms": 0.0053,
+            "max_batch_ms": 0.0062,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.3217,
+            "min_batch_ms": 0.2165,
+            "max_batch_ms": 0.3768,
+            "output_glyphs": 36
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "diversity_run": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.2616,
+            "min_batch_ms": 0.2395,
+            "max_batch_ms": 0.5028,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 23.7527,
+            "min_batch_ms": 20.6214,
+            "max_batch_ms": 29.6269,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "mixed_run": {
+          "codepoints": 2200,
+          "utf8_bytes": 8200,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1856,
+            "min_batch_ms": 0.1816,
+            "max_batch_ms": 0.2319,
+            "output_glyphs": 2200
+          },
+          "calt_on": {
+            "median_ms": 15.3227,
+            "min_batch_ms": 13.963,
+            "max_batch_ms": 16.1522,
+            "output_glyphs": 2200
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "explicit_sequences": {
+          "codepoints": 1800,
+          "utf8_bytes": 6120,
+          "unmapped_unique_codepoints": [
+            "FE0F"
+          ],
+          "calt_off": {
+            "median_ms": 0.2498,
+            "min_batch_ms": 0.2493,
+            "max_batch_ms": 0.2522,
+            "output_glyphs": 840
+          },
+          "calt_on": {
+            "median_ms": 4.0384,
+            "min_batch_ms": 3.7938,
+            "max_batch_ms": 5.0478,
+            "output_glyphs": 600
+          },
+          "glyphs_and_positions_identical": false,
+          "clusters_identical": false,
+          "expected_unaffected": false
+        },
+        "plain_text": {
+          "codepoints": 2800,
+          "utf8_bytes": 2800,
+          "unmapped_unique_codepoints": [
+            "002E",
+            "004C",
+            "0061",
+            "0064",
+            "0065",
+            "0069",
+            "006C",
+            "006D",
+            "006F",
+            "0070",
+            "0072",
+            "0073",
+            "0074",
+            "0075"
+          ],
+          "calt_off": {
+            "median_ms": 0.1369,
+            "min_batch_ms": 0.1286,
+            "max_batch_ms": 0.172,
+            "output_glyphs": 2800
+          },
+          "calt_on": {
+            "median_ms": 3.6371,
+            "min_batch_ms": 2.7944,
+            "max_batch_ms": 4.4024,
+            "output_glyphs": 2800
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": false
+        },
+        "unaffected_short": {
+          "codepoints": 36,
+          "utf8_bytes": 144,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.0039,
+            "min_batch_ms": 0.0038,
+            "max_batch_ms": 0.0045,
+            "output_glyphs": 36
+          },
+          "calt_on": {
+            "median_ms": 0.1776,
+            "min_batch_ms": 0.1635,
+            "max_batch_ms": 0.2218,
+            "output_glyphs": 36
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_long": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1277,
+            "min_batch_ms": 0.1199,
+            "max_batch_ms": 0.1729,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 15.7855,
+            "min_batch_ms": 15.4852,
+            "max_batch_ms": 17.7764,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
+        },
+        "unaffected_repeat": {
+          "codepoints": 3200,
+          "utf8_bytes": 12800,
+          "unmapped_unique_codepoints": [],
+          "calt_off": {
+            "median_ms": 0.1522,
+            "min_batch_ms": 0.1451,
+            "max_batch_ms": 0.1537,
+            "output_glyphs": 3200
+          },
+          "calt_on": {
+            "median_ms": 16.5066,
+            "min_batch_ms": 16.2218,
+            "max_batch_ms": 27.7167,
+            "output_glyphs": 3200
+          },
+          "glyphs_and_positions_identical": true,
+          "clusters_identical": true,
+          "expected_unaffected": true
         }
       }
     }

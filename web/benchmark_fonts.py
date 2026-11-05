@@ -27,7 +27,21 @@ CASES = {
     'mixed_run': ('🏃🌻💩🧟🪦🎉🔥🧑🧓👍 ', 200),
     'explicit_sequences': ('🏃🏽\u200d♀️👍🏿🧑🏻\u200d♂️👵🏿 ', 120),
     'plain_text': ('Lorem ipsum dolor sit amet. ', 100),
+    'unaffected_short': ('🐈🚗🍎📚', 9),
+    'unaffected_long': ('🐈🚗🍎📚', 800),
+    'unaffected_repeat': ('🐈', 3200),
 }
+
+
+UNAFFECTED_CASES = {'unaffected_short','unaffected_long','unaffected_repeat'}
+
+
+class GlyphInfo(C.Structure):
+    _fields_=[(k,C.c_uint32) for k in ('codepoint','mask','cluster','var1','var2')]
+
+
+class GlyphPosition(C.Structure):
+    _fields_=[(k,C.c_int32) for k in ('x_advance','y_advance','x_offset','y_offset')]+[('var',C.c_uint32)]
 
 
 class Feature(C.Structure):
@@ -50,6 +64,8 @@ class HarfBuzz:
             ('hb_buffer_guess_segment_properties',None,[ptr]),
             ('hb_shape',None,[ptr,ptr,C.POINTER(Feature),C.c_uint]),
             ('hb_buffer_get_length',C.c_uint,[ptr]),
+            ('hb_buffer_get_glyph_infos',C.POINTER(GlyphInfo),[ptr,C.POINTER(C.c_uint)]),
+            ('hb_buffer_get_glyph_positions',C.POINTER(GlyphPosition),[ptr,C.POINTER(C.c_uint)]),
         ]
         declarations += [('hb_'+kind+'_destroy',None,[ptr]) for kind in ('buffer','font','face','blob')]
         for name,result,args in declarations:
@@ -77,6 +93,16 @@ class Shaper:
         feature=Feature(int.from_bytes(b'calt','big'),int(calt),0,0xFFFFFFFF)
         hb.hb_shape(self.font,self.buffer,C.byref(feature),1)
         return hb.hb_buffer_get_length(self.buffer)
+
+    def signature(self,data,calt):
+        self.shape(data,calt)
+        count=C.c_uint()
+        infos=self.hb.hb_buffer_get_glyph_infos(self.buffer,C.byref(count))
+        positions=self.hb.hb_buffer_get_glyph_positions(self.buffer,C.byref(count))
+        glyphs=[(infos[i].codepoint,positions[i].x_advance,positions[i].y_advance,
+                 positions[i].x_offset,positions[i].y_offset) for i in range(count.value)]
+        clusters=[infos[i].cluster for i in range(count.value)]
+        return glyphs,clusters
 
     def close(self):
         for kind in ('buffer','font','face','blob'):
@@ -134,6 +160,16 @@ def measure(label,path,hb,batches,iterations):
                 result['calt_on' if calt else 'calt_off']={
                     **timing(lambda:font.shape(utf8,calt),batches,iterations),
                     'output_glyphs':font.shape(utf8,calt)}
+            off,off_clusters=font.signature(utf8,False)
+            on,on_clusters=font.signature(utf8,True)
+            result['glyphs_and_positions_identical']=on==off
+            result['clusters_identical']=on_clusters==off_clusters
+            result['expected_unaffected']=name in UNAFFECTED_CASES
+            if name in UNAFFECTED_CASES:
+                if result['unmapped_unique_codepoints']:
+                    raise AssertionError(f'{label}/{name}: unaffected test contains missing glyphs')
+                if on!=off:
+                    raise AssertionError(f'{label}/{name}: calt changed the purportedly unaffected output')
             info['shaping'][name]=result
     finally:font.close()
     return info

@@ -34,22 +34,42 @@ unmapped characters rather than pretending system-font fallback was measured.
 `calt` on/off measurements help separate the cost of contextual features from
 ordinary shaping. Font directory/layout parsing is independent of that switch.
 
+## Unaffected glyph checks
+
+The added diagnostics use mapped emoji with no diversity or clustering rules:
+36 and 3,200 glyphs from `🐈🚗🍎📚`, plus 3,200 repeated `🐈`. For each
+unaffected case the runner requires zero missing codepoints and identical
+glyph IDs and positions with `calt=0` and `calt=1`. It records cluster-map
+equality too. These checks are outside the timed portions.
+
 ## Recorded run
 
-See [`latest.json`](latest.json) for full precision and provenance. Times below are
-local medians in milliseconds. Python eagerly decodes all layout tables;
-HarfBuzz loads tables on demand. The two measurements describe different work.
+See [`latest.json`](latest.json) for full precision, hashes and provenance. The
+DEImoji inputs in this report are the published build `15efc48`, with the cross
+behind in the pair. Times below are local medians in milliseconds. Python
+eagerly decodes all layout tables; HarfBuzz loads tables on demand.
 
 | Font | Python layout decode | HB cold first shape | 36 runners | 3,200 runners |
 | --- | ---: | ---: | ---: | ---: |
-| upstream-cbdt | 32.214 | 0.416 | 0.005 | 0.246 |
-| native-cbdt | 33.313 | 1.285 | 0.005 | 0.270 |
-| deimoji-cbdt | 269.139 | 1.602 | 0.237 | 19.166 |
-| upstream-colr | 45.094 | 0.145 | 0.005 | 0.246 |
-| native-colr | 64.784 | 0.145 | 0.005 | 0.347 |
-| deimoji-colr | 391.193 | 0.258 | 0.202 | 19.465 |
+| upstream-cbdt | 31.656 | 0.464 | 0.005 | 0.241 |
+| native-cbdt | 30.636 | 2.107 | 0.005 | 0.253 |
+| deimoji-cbdt | 234.116 | 2.166 | 0.206 | 19.114 |
+| upstream-colr | 62.290 | 0.162 | 0.005 | 0.268 |
+| native-colr | 83.394 | 0.212 | 0.005 | 0.367 |
+| deimoji-colr | 469.432 | 0.973 | 0.322 | 23.753 |
 
-Shaping columns use `calt=1`. The JSON also records `calt=0`, long cluster runs,
+Shaping columns above use `calt=1`. The unaffected cases isolate the overhead
+when the visible result does not change:
+
+| Font | 36 unaffected, off | 36 unaffected, on | 3,200 unaffected, off | 3,200 unaffected, on |
+| --- | ---: | ---: | ---: | ---: |
+| upstream-cbdt | 0.0037 | 0.0036 | 0.1023 | 0.1081 |
+| deimoji-cbdt | 0.0038 | 0.1703 | 0.1255 | 16.7885 |
+| upstream-colr | 0.0038 | 0.0037 | 0.1318 | 0.1414 |
+| deimoji-colr | 0.0039 | 0.1776 | 0.1277 | 15.7855 |
+
+All unaffected tests preserved glyphs, positions and cluster maps. The JSON
+also records the native-cache baseline, repeated-cat runs, long cluster runs,
 mixed runs, explicit modifiers and plain-text diagnostics. Native-cache bitmap
 files retain unoptimized PNGs, so cold blob-copy cost differs from the compressed
 upstream release. No PNG decoding or colour painting is timed.
