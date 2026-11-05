@@ -289,3 +289,50 @@ across a line boundary; it would need a separate break-safety measurement.
 python web/benchmark_buffer.py --font build/pass-seeding/colr-diagnostic.ttf \
   --output benchmarks/buffer.json --trials 25
 ```
+
+### Bounded lookahead seeding
+
+[`bounded.json`](bounded.json) tests windows of 1, 2, 4 and 8 original source
+glyphs, including the current source. Window 1 is the local control. Each stage
+reads one original future source bucket, never that position's accumulated
+state. The hash starts at `-current_bucket mod 5` and folds each available future
+bucket with `h = (2*h + bucket + 1) mod 5`; short suffixes use what is available.
+Stages execute at the original hash position, before downstream LFSR passes.
+
+This keeps rule count linear in the window: 5 initialization rules plus 25 per
+additional source, rather than enumerating every possible source combination.
+It uses more hash lookups as the window grows, so the experiment measures this
+implementation rather than a theoretical lower bound for bounded hashing.
+
+| Seeding | COLRv1 wrapped | CBDT wrapped | Unsafe glyphs |
+| --- | ---: | ---: | ---: |
+| upstream | 1.5 ms | 1.4 ms | — |
+| original recursive RTL | 819.6 ms | 882.3 ms | — |
+| window 1, full pipeline | 17.5 ms | 17.8 ms | 0 |
+| window 2, full pipeline | 811.5 ms | 892.6 ms | 3199 |
+| window 4, full pipeline | 870.4 ms | 933.8 ms | 3199 |
+| window 8, full pipeline | 1070.0 ms | 1106.1 ms | 3199 |
+
+Even two-source lookahead leaves 3,199 unsafe glyphs and retains the wrapping
+penalty. Bounded semantic dependence does not imply isolated safe line-break
+boundaries: the contextual matches overlap across the input. This disproves the
+hope that limiting the hash radius alone would fix this layout workload. It
+does not trace the browser's individual reshape calls.
+
+With only expansion/hash/sweep enabled, window 2 wraps in 64–67 ms, window 4
+in 123 ms, and window 8 in 278–350 ms. With the full pipeline active, the tone
+feedback cost amplifies the slowdown. All full-pipeline one-line cases remain
+around 16–24 ms.
+
+Every seeder matches an independent expected-state calculation, including short
+suffixes. Each full pipeline also shapes 40 runners into 12–15 distinct glyphs
+and removes every private state glyph. Unaffected glyph/position signatures
+and browser pixels match rules-off output. These are diagnostic fonts only;
+the published font and its seeding policy are unchanged.
+
+```sh
+python web/benchmark_passes.py --site build/rear-cross-live \
+  --upstream build/upstream-fonts --work build/pass-bounded \
+  --config-set bounded --chromium /usr/bin/chromium --trials 3 \
+  --output benchmarks/bounded.json
+```

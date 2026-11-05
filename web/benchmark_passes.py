@@ -86,8 +86,65 @@ def offset_references(value,offset):
             else:offset_references(child,offset)
 
 
+def bounded_variant(diagnostic,info,markers,window,target):
+    """Hash at most window original sources; never read a neighbor's state."""
+    font=TTFont(diagnostic,recalcBBoxes=False,recalcTimestamp=False)
+    order=font.getGlyphOrder();tones=[order[g] for g in markers['tone_marker_gids']]
+    genders=[order[g] for g in markers['gender_marker_gids']]
+    table=font['GSUB'].table;lookups=table.LookupList.Lookup
+    sources={g for t in actual_subtables(lookups[info['roots']['expansion']['lookup']]) for g in t.mapping}
+    lines=['languagesystem DFLT dflt;',
+           '@source = ['+' '.join(sorted(sources,key=font.getGlyphID))+'];',
+           '@tone = ['+' '.join(tones)+'];','@gender = ['+' '.join(genders)+'];']
+    for bucket in range(5):
+        lines.append(f'@b{bucket} = ['+' '.join(g for g in order if g in sources and font.getGlyphID(g)%5==bucket)+'];')
+    for value,marker in enumerate(tones):
+        lines.append(f'lookup set{value} {{ sub @tone by {marker}; }} set{value};')
+    lines.append('lookup initialize useExtension {')
+    for bucket in range(5):
+        lines.append(f"sub @b{bucket} @tone' lookup set{(-bucket)%5};")
+    lines.append('} initialize;')
+    for distance in range(1,window):
+        lines.append(f'lookup step{distance} useExtension {{')
+        gap='@source @tone @gender '* (distance-1)
+        for previous in range(5):
+            for bucket in range(5):
+                result=(2*previous+bucket+1)%5
+                lines.append(f"sub {tones[previous]}' lookup set{result} @gender {gap}@b{bucket};")
+        lines.append(f'}} step{distance};')
+    lines.append('feature ZZZZ { lookup initialize; '+''.join(f'lookup step{d}; ' for d in range(1,window))+'} ZZZZ;')
+    temp=TTFont();temp.setGlyphOrder(order)
+    addOpenTypeFeaturesFromString(temp,'\n'.join(lines),tables=['GSUB'])
+    extra=deepcopy(temp['GSUB'].table.LookupList.Lookup)
+    stages=temp['GSUB'].table.FeatureList.FeatureRecord[0].Feature.LookupListIndex
+    root=info['roots']['suffix_hash']['lookup'];delta=len(extra)-1
+    def remap(value):
+        if isinstance(value,list):
+            for child in value:remap(child)
+        elif isinstance(value,BaseTable):
+            for name,child in vars(value).items():
+                if name=='LookupListIndex':
+                    if child==root:raise ValueError('Unexpected nested reference to hash root')
+                    setattr(value,name,child+delta if child>root else child)
+                else:remap(child)
+    for lookup in lookups:remap(lookup)
+    for record in table.FeatureList.FeatureRecord:
+        indices=[]
+        for index in record.Feature.LookupListIndex:
+            indices.extend([root+stage for stage in stages] if index==root else [index+delta if index>root else index])
+        record.Feature.LookupListIndex=indices;record.Feature.LookupCount=len(indices)
+    for lookup in extra:offset_references(lookup,root)
+    lookups[root:root+1]=extra;table.LookupList.LookupCount=len(lookups)
+    font.save(target)
+    return dict(path=str(target),sha256=sha256(target.read_bytes()).hexdigest(),
+                policy='bounded original-source lookahead; current source included',window_sources=window,
+                contextual_rule_count=5+25*(window-1),hash_stages=window)
+
+
 def seed_variant(diagnostic,info,markers,mode,target):
     """Replace only the hash lookup at its original stage, retaining all others."""
+    if mode.startswith('bounded'):
+        return bounded_variant(diagnostic,info,markers,int(mode[7:]),target)
     font=TTFont(diagnostic,recalcBBoxes=False,recalcTimestamp=False)
     order=font.getGlyphOrder();tones=[order[g] for g in markers['tone_marker_gids']]
     genders=[order[g] for g in markers['gender_marker_gids']]
@@ -132,13 +189,27 @@ def seeder_proof(hb,path,markers,mode):
     expected=[]
     for bucket in buckets:
         expected.append((-bucket)%5 if mode=='local' or not expected else (2*expected[-1]+bucket+1)%5)
+    if mode.startswith('bounded'):
+        window=int(mode[7:]);expected=[]
+        for index,bucket in enumerate(buckets):
+            value=(-bucket)%5
+            for following in buckets[index+1:index+window]:value=(2*value+following+1)%5
+            expected.append(value)
     shaper=hb.open(path.read_bytes())
     try:glyphs,_=shaper.signature(text.encode(),False,settings({'expansion','suffix_hash'}))
     finally:shaper.close()
     values={gid:i for i,gid in enumerate(markers['tone_marker_gids'])}
     actual=[values[g[0]] for g in glyphs if g[0] in values]
     if actual!=expected:raise AssertionError('Replacement seeder did not implement '+mode)
-    return dict(text=text,source_buckets=buckets,expected_states=expected,actual_states=actual)
+    shaper=hb.open(path.read_bytes())
+    try:finished,_=shaper.signature(('🏃'*40).encode(),False,settings(TAGS))
+    finally:shaper.close()
+    marker_ids=set(markers['tone_marker_gids']+markers['gender_marker_gids'])
+    distinct=len({g[0] for g in finished})
+    if any(g[0] in marker_ids for g in finished) or distinct<=5:
+        raise AssertionError('Replacement failed downstream diversity/cleanup: '+mode)
+    return dict(text=text,source_buckets=buckets,expected_states=expected,actual_states=actual,
+                full_pipeline_runner_check=dict(input_count=40,distinct_output_glyphs=distinct,private_markers_remaining=0))
 
 
 def feedback_proof(hb,data,markers):
@@ -165,7 +236,8 @@ def configurations(config_set):
     for name in ('suffix_hash','gender_seed','tone_feedback','gender_feedback','folding','assembly'):
         result.append(dict(name='expansion_'+name+'_sweep',enabled=['expansion',name,'sweep']))
     seeders=[dict(name='seed_'+mode+'_'+scope,enabled=sorted(names) if scope=='full' else ['expansion','suffix_hash','sweep'],font_role='seed_'+mode) for mode in ('ltr','local') for scope in ('full','hash_only')]
-    return seeders if config_set=='seeders' else result if config_set=='ablation' else result+seeders
+    bounded=[dict(name='seed_bounded'+str(window)+'_'+scope,enabled=sorted(names) if scope=='full' else ['expansion','suffix_hash','sweep'],font_role='seed_bounded'+str(window)) for window in (1,2,4,8) for scope in ('full','hash_only')]
+    return bounded if config_set=='bounded' else seeders if config_set=='seeders' else result if config_set=='ablation' else result+seeders+bounded
 
 
 def hb_diagnostics(hb,data,text,features,marker_ids):
@@ -195,7 +267,7 @@ def main():
     p.add_argument('--work',type=Path,default=Path('build/pass-ablation'))
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--chromium');p.add_argument('--trials',type=int,default=3)
-    p.add_argument('--config-set',choices=('all','ablation','seeders'),default='all')
+    p.add_argument('--config-set',choices=('all','ablation','seeders','bounded'),default='all')
     args=p.parse_args()
     if args.trials<1:p.error('Trials must be positive')
     metadata=json.loads((args.site/'build.json').read_text());hb=hbbench.HarfBuzz()
@@ -207,7 +279,7 @@ def main():
                             dependencies='Removing expansion makes marker-dependent passes inapplicable. Minimal expansion+pass+sweep cases test them independently.',
                             cleanup='without_sweep intentionally retains private zero-advance glyphs: invalid final output, diagnostic only',
                             visibility='Wrapped samples entirely visible; nowrap is layout-only; glyph caches warm',
-                            seeders='LTR and local replacements preserve valid slots but deliberately change seeding policy; each is installed at the original hash stage',
+                            seeders='Replacement seeders preserve valid slots but deliberately change seeding policy; installed at original hash stage. Bounded windows include current source and only read original future source classes.',
                             flags='unsafe_to_break counts from HarfBuzz default buffer flags, before signature/timing calls'),fonts=[])
     files={};plans=[]
     for fmt,published,upstream in [('colr','DEImoji-COLRv1.ttf','Noto-COLRv1.ttf'),('cbdt','DEImoji-CBDT.ttf','NotoColorEmoji.ttf')]:
@@ -225,7 +297,8 @@ def main():
         markers=metadata['modifiers'][published]
         seeding={}
         paths=dict(upstream=args.upstream/upstream,original=original,diagnostic=diagnostic)
-        for mode in ('ltr','local'):
+        modes=('bounded1','bounded2','bounded4','bounded8') if args.config_set=='bounded' else ('ltr','local') + (('bounded1','bounded2','bounded4','bounded8') if args.config_set=='all' else ())
+        for mode in modes:
             target=args.work/(fmt+'-'+mode+'.ttf')
             seeding[mode]=seed_variant(diagnostic,info,markers,mode,target)
             paths['seed_'+mode]=target

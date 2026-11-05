@@ -1,0 +1,2993 @@
+{
+  "schema": 1,
+  "source_commit": "15efc48a752231c48c22181c0d80f16bbc144b7e",
+  "passes": {
+    "clustering": "DCLT",
+    "expansion": "DEXP",
+    "suffix_hash": "DHSH",
+    "gender_seed": "DGSD",
+    "tone_feedback": "DTFB",
+    "gender_feedback": "DGFB",
+    "folding": "DFLD",
+    "sweep": "DSWP",
+    "assembly": "DASM"
+  },
+  "config_set": "bounded",
+  "environment": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "harfbuzz": "10.2.0"
+  },
+  "method": {
+    "count": 3200,
+    "trials": 3,
+    "font_size_px": 32,
+    "control": "Upstream, original on/off, and partitioned off/full; lookup tables are retained",
+    "features": "Each root is exposed as a separate private feature, in original lookup order",
+    "dependencies": "Removing expansion makes marker-dependent passes inapplicable. Minimal expansion+pass+sweep cases test them independently.",
+    "cleanup": "without_sweep intentionally retains private zero-advance glyphs: invalid final output, diagnostic only",
+    "visibility": "Wrapped samples entirely visible; nowrap is layout-only; glyph caches warm",
+    "seeders": "Bounded windows include current source; read original future source classes, never neighboring hash states. Each distance is a separate bounded contextual stage at original hash position.",
+    "flags": "unsafe_to_break counts from HarfBuzz default buffer flags, before signature/timing calls"
+  },
+  "fonts": [
+    {
+      "format": "colr",
+      "source": "build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+      "source_sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63",
+      "diagnostic": "build/pass-bounded/colr-diagnostic.ttf",
+      "diagnostic_sha256": "4c3a3c8681ab3c3117603ae295a1024bafa14e16dbf69a73f1d58532f1462da4",
+      "roots": {
+        "clustering": {
+          "tag": "DCLT",
+          "lookup": 21
+        },
+        "expansion": {
+          "tag": "DEXP",
+          "lookup": 22
+        },
+        "suffix_hash": {
+          "tag": "DHSH",
+          "lookup": 23
+        },
+        "gender_seed": {
+          "tag": "DGSD",
+          "lookup": 24
+        },
+        "tone_feedback": {
+          "tag": "DTFB",
+          "lookup": 30
+        },
+        "gender_feedback": {
+          "tag": "DGFB",
+          "lookup": 34
+        },
+        "folding": {
+          "tag": "DFLD",
+          "lookup": 36
+        },
+        "sweep": {
+          "tag": "DSWP",
+          "lookup": 37
+        },
+        "assembly": {
+          "tag": "DASM",
+          "lookup": 38
+        }
+      },
+      "font_inputs": {
+        "upstream": {
+          "path": "build/upstream-fonts/Noto-COLRv1.ttf",
+          "sha256": "b8e25ea68db82f9e4d0aee921f4420be2be39887bd5c893a2ad98710531f9d0c"
+        },
+        "original": {
+          "path": "build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+          "sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63"
+        },
+        "diagnostic": {
+          "path": "build/pass-bounded/colr-diagnostic.ttf",
+          "sha256": "4c3a3c8681ab3c3117603ae295a1024bafa14e16dbf69a73f1d58532f1462da4"
+        },
+        "seed_bounded1": {
+          "path": "build/pass-bounded/colr-bounded1.ttf",
+          "sha256": "b4876d29736d26135e183e156ade81720e18447776de5e4c6fe0ec33fd809a72"
+        },
+        "seed_bounded2": {
+          "path": "build/pass-bounded/colr-bounded2.ttf",
+          "sha256": "e79fc02939afb9516a2d11d95383d864fed7a5629b9263633c114d48f92c7468"
+        },
+        "seed_bounded4": {
+          "path": "build/pass-bounded/colr-bounded4.ttf",
+          "sha256": "671b70c5f7705b2bf52a031e679ac56b24646cef8087c75372589e60e8b2603e"
+        },
+        "seed_bounded8": {
+          "path": "build/pass-bounded/colr-bounded8.ttf",
+          "sha256": "2f68153f6164fcf31314b0b015d737338571f411ea34fb4a43e466849f750883"
+        }
+      },
+      "all_on_matches_original": true,
+      "feedback_without_rtl": {
+        "enabled": [
+          "expansion",
+          "tone_feedback",
+          "gender_feedback"
+        ],
+        "tone_states": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          2,
+          1,
+          4,
+          2,
+          4
+        ],
+        "gender_states": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          2
+        ],
+        "interpretation": "No RTL or gender seeding: feedback changes the fifth state; fold/sweep disabled only to inspect private slots"
+      },
+      "seeding_variants": {
+        "bounded1": {
+          "path": "build/pass-bounded/colr-bounded1.ttf",
+          "sha256": "b4876d29736d26135e183e156ade81720e18447776de5e4c6fe0ec33fd809a72",
+          "policy": "bounded original-source lookahead; current source included",
+          "window_sources": 1,
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2,
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2
+            ],
+            "expected_states": [
+              1,
+              0,
+              0,
+              0,
+              2,
+              1,
+              1,
+              3,
+              1,
+              0,
+              0,
+              0,
+              2,
+              1,
+              1,
+              3
+            ],
+            "actual_states": [
+              1,
+              0,
+              0,
+              0,
+              2,
+              1,
+              1,
+              3,
+              1,
+              0,
+              0,
+              0,
+              2,
+              1,
+              1,
+              3
+            ],
+            "full_pipeline_runner_check": {
+              "input_count": 40,
+              "distinct_output_glyphs": 12,
+              "private_markers_remaining": 0
+            }
+          },
+          "contextual_rule_count": 5,
+          "hash_stages": 1
+        },
+        "bounded2": {
+          "path": "build/pass-bounded/colr-bounded2.ttf",
+          "sha256": "e79fc02939afb9516a2d11d95383d864fed7a5629b9263633c114d48f92c7468",
+          "policy": "bounded original-source lookahead; current source included",
+          "window_sources": 2,
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2,
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2
+            ],
+            "expected_states": [
+              3,
+              1,
+              1,
+              4,
+              4,
+              2,
+              0,
+              1,
+              3,
+              1,
+              1,
+              4,
+              4,
+              2,
+              0,
+              3
+            ],
+            "actual_states": [
+              3,
+              1,
+              1,
+              4,
+              4,
+              2,
+              0,
+              1,
+              3,
+              1,
+              1,
+              4,
+              4,
+              2,
+              0,
+              3
+            ],
+            "full_pipeline_runner_check": {
+              "input_count": 40,
+              "distinct_output_glyphs": 15,
+              "private_markers_remaining": 0
+            }
+          },
+          "contextual_rule_count": 30,
+          "hash_stages": 2
+        },
+        "bounded4": {
+          "path": "build/pass-bounded/colr-bounded4.ttf",
+          "sha256": "671b70c5f7705b2bf52a031e679ac56b24646cef8087c75372589e60e8b2603e",
+          "policy": "bounded original-source lookahead; current source included",
+          "window_sources": 4,
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2,
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2
+            ],
+            "expected_states": [
+              0,
+              0,
+              2,
+              1,
+              4,
+              4,
+              1,
+              2,
+              0,
+              0,
+              2,
+              1,
+              4,
+              2,
+              0,
+              3
+            ],
+            "actual_states": [
+              0,
+              0,
+              2,
+              1,
+              4,
+              4,
+              1,
+              2,
+              0,
+              0,
+              2,
+              1,
+              4,
+              2,
+              0,
+              3
+            ],
+            "full_pipeline_runner_check": {
+              "input_count": 40,
+              "distinct_output_glyphs": 13,
+              "private_markers_remaining": 0
+            }
+          },
+          "contextual_rule_count": 80,
+          "hash_stages": 4
+        },
+        "bounded8": {
+          "path": "build/pass-bounded/colr-bounded8.ttf",
+          "sha256": "2f68153f6164fcf31314b0b015d737338571f411ea34fb4a43e466849f750883",
+          "policy": "bounded original-source lookahead; current source included",
+          "window_sources": 8,
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2,
+              4,
+              0,
+              0,
+              0,
+              3,
+              4,
+              4,
+              2
+            ],
+            "expected_states": [
+              0,
+              1,
+              0,
+              3,
+              1,
+              2,
+              1,
+              1,
+              0,
+              3,
+              1,
+              0,
+              4,
+              2,
+              0,
+              3
+            ],
+            "actual_states": [
+              0,
+              1,
+              0,
+              3,
+              1,
+              2,
+              1,
+              1,
+              0,
+              3,
+              1,
+              0,
+              4,
+              2,
+              0,
+              3
+            ],
+            "full_pipeline_runner_check": {
+              "input_count": 40,
+              "distinct_output_glyphs": 13,
+              "private_markers_remaining": 0
+            }
+          },
+          "contextual_rule_count": 180,
+          "hash_stages": 8
+        }
+      },
+      "harfbuzz_cases": [
+        {
+          "name": "seed_bounded1_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_bounded1",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 14.5692,
+            "min_batch_ms": 14.1008,
+            "max_batch_ms": 14.7372,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded1_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_bounded1",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.6585,
+            "min_batch_ms": 0.6555,
+            "max_batch_ms": 0.6777,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded2_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_bounded2",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 16.5699,
+            "min_batch_ms": 14.8594,
+            "max_batch_ms": 17.5047,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded2_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_bounded2",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 1.0639,
+            "min_batch_ms": 1.0638,
+            "max_batch_ms": 1.095,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded4_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_bounded4",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 19.0423,
+            "min_batch_ms": 15.9134,
+            "max_batch_ms": 26.3542,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded4_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_bounded4",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 2.2544,
+            "min_batch_ms": 2.2148,
+            "max_batch_ms": 2.5093,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded8_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_bounded8",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 20.7448,
+            "min_batch_ms": 20.6756,
+            "max_batch_ms": 23.1009,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded8_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_bounded8",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 6.4319,
+            "min_batch_ms": 6.2303,
+            "max_batch_ms": 6.5974,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        }
+      ],
+      "browser_cases": [
+        {
+          "name": "upstream",
+          "role": "upstream",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5999999940395355,
+                  "two_raf_latency_ms": 24.799999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 1
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 37.6000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 2
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 37.900000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 3
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 16.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1025
+                },
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 8.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1026
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 10.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1027
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_off",
+          "role": "original",
+          "features": {
+            "calt": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5999999940395355,
+                  "two_raf_latency_ms": 10.099999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 17
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 9,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 18
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 32.19999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 19
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 10.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1041
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 4.9000000059604645,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1042
+                },
+                {
+                  "forced_layout_ms": 1.1000000089406967,
+                  "two_raf_latency_ms": 15.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1043
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_on",
+          "role": "original",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 819.6,
+              "samples": [
+                {
+                  "forced_layout_ms": 828.3999999910593,
+                  "two_raf_latency_ms": 830.6999999880791,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 33
+                },
+                {
+                  "forced_layout_ms": 800.7000000029802,
+                  "two_raf_latency_ms": 801.7000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 34
+                },
+                {
+                  "forced_layout_ms": 819.5999999940395,
+                  "two_raf_latency_ms": 820.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 35
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 16.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 15.700000002980232,
+                  "two_raf_latency_ms": 16.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1057
+                },
+                {
+                  "forced_layout_ms": 16.799999997019768,
+                  "two_raf_latency_ms": 17.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1058
+                },
+                {
+                  "forced_layout_ms": 16.799999997019768,
+                  "two_raf_latency_ms": 17.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1059
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded1_full",
+          "role": "seed_bounded1",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 17.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 18,
+                  "two_raf_latency_ms": 19.200000002980232,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 49
+                },
+                {
+                  "forced_layout_ms": 16.80000001192093,
+                  "two_raf_latency_ms": 18.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 50
+                },
+                {
+                  "forced_layout_ms": 17.5,
+                  "two_raf_latency_ms": 18.19999998807907,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 51
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 15.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 16,
+                  "two_raf_latency_ms": 16.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1073
+                },
+                {
+                  "forced_layout_ms": 15.200000002980232,
+                  "two_raf_latency_ms": 16,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1074
+                },
+                {
+                  "forced_layout_ms": 15.5,
+                  "two_raf_latency_ms": 20.80000001192093,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1075
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded1_hash_only",
+          "role": "seed_bounded1",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 10.900000005960464,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 65
+                },
+                {
+                  "forced_layout_ms": 2,
+                  "two_raf_latency_ms": 2.7000000029802322,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 66
+                },
+                {
+                  "forced_layout_ms": 1.9000000059604645,
+                  "two_raf_latency_ms": 8.300000011920929,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 67
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.6,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 27.30000001192093,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1089
+                },
+                {
+                  "forced_layout_ms": 1.800000011920929,
+                  "two_raf_latency_ms": 12.300000011920929,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1090
+                },
+                {
+                  "forced_layout_ms": 1.6000000089406967,
+                  "two_raf_latency_ms": 11.600000008940697,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1091
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded2_full",
+          "role": "seed_bounded2",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 811.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 811.5,
+                  "two_raf_latency_ms": 812.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 81
+                },
+                {
+                  "forced_layout_ms": 789.2999999970198,
+                  "two_raf_latency_ms": 790.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 82
+                },
+                {
+                  "forced_layout_ms": 838.2000000029802,
+                  "two_raf_latency_ms": 839.2999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 83
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 17.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.099999994039536,
+                  "two_raf_latency_ms": 19.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1105
+                },
+                {
+                  "forced_layout_ms": 20.400000005960464,
+                  "two_raf_latency_ms": 21,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1106
+                },
+                {
+                  "forced_layout_ms": 15.5,
+                  "two_raf_latency_ms": 16.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1107
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded2_hash_only",
+          "role": "seed_bounded2",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 67.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 62.5,
+                  "two_raf_latency_ms": 63.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 97
+                },
+                {
+                  "forced_layout_ms": 67.29999999701977,
+                  "two_raf_latency_ms": 68.29999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 98
+                },
+                {
+                  "forced_layout_ms": 69.40000000596046,
+                  "two_raf_latency_ms": 71.09999999403954,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 99
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 2.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.8999999910593033,
+                  "two_raf_latency_ms": 14.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1121
+                },
+                {
+                  "forced_layout_ms": 2.3999999910593033,
+                  "two_raf_latency_ms": 7.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1122
+                },
+                {
+                  "forced_layout_ms": 2.0999999940395355,
+                  "two_raf_latency_ms": 9.199999988079071,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1123
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded4_full",
+          "role": "seed_bounded4",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 870.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 892.5999999940395,
+                  "two_raf_latency_ms": 893.7999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 113
+                },
+                {
+                  "forced_layout_ms": 858.6000000089407,
+                  "two_raf_latency_ms": 860,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 114
+                },
+                {
+                  "forced_layout_ms": 870.4000000059605,
+                  "two_raf_latency_ms": 871.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 115
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 17.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.69999998807907,
+                  "two_raf_latency_ms": 18.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1137
+                },
+                {
+                  "forced_layout_ms": 17,
+                  "two_raf_latency_ms": 21,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1138
+                },
+                {
+                  "forced_layout_ms": 18.30000001192093,
+                  "two_raf_latency_ms": 19,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1139
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded4_hash_only",
+          "role": "seed_bounded4",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 122.7,
+              "samples": [
+                {
+                  "forced_layout_ms": 122.70000000298023,
+                  "two_raf_latency_ms": 123.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 129
+                },
+                {
+                  "forced_layout_ms": 119.90000000596046,
+                  "two_raf_latency_ms": 120.79999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 130
+                },
+                {
+                  "forced_layout_ms": 125.79999999701977,
+                  "two_raf_latency_ms": 126.79999999701977,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 131
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 3.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 3.4000000059604645,
+                  "two_raf_latency_ms": 12.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1153
+                },
+                {
+                  "forced_layout_ms": 3.2999999970197678,
+                  "two_raf_latency_ms": 9,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1154
+                },
+                {
+                  "forced_layout_ms": 3.1000000089406967,
+                  "two_raf_latency_ms": 7.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1155
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded8_full",
+          "role": "seed_bounded8",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1070,
+              "samples": [
+                {
+                  "forced_layout_ms": 1025.5999999940395,
+                  "two_raf_latency_ms": 1026.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 145
+                },
+                {
+                  "forced_layout_ms": 1070,
+                  "two_raf_latency_ms": 1071.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 146
+                },
+                {
+                  "forced_layout_ms": 1101.5,
+                  "two_raf_latency_ms": 1102.5999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 147
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 23.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 23.80000001192093,
+                  "two_raf_latency_ms": 24.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1169
+                },
+                {
+                  "forced_layout_ms": 21.599999994039536,
+                  "two_raf_latency_ms": 22.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1170
+                },
+                {
+                  "forced_layout_ms": 23.5,
+                  "two_raf_latency_ms": 24.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1171
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded8_hash_only",
+          "role": "seed_bounded8",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 350.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 350.40000000596046,
+                  "two_raf_latency_ms": 351.6000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 161
+                },
+                {
+                  "forced_layout_ms": 350.70000000298023,
+                  "two_raf_latency_ms": 351.70000000298023,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 162
+                },
+                {
+                  "forced_layout_ms": 346.29999999701977,
+                  "two_raf_latency_ms": 348,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 163
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 7.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 6.899999991059303,
+                  "two_raf_latency_ms": 9.5,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1185
+                },
+                {
+                  "forced_layout_ms": 7.399999991059303,
+                  "two_raf_latency_ms": 8.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1186
+                },
+                {
+                  "forced_layout_ms": 8.399999991059303,
+                  "two_raf_latency_ms": 15.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127500,
+                  "all_visible": false,
+                  "nonce": 1187
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "format": "cbdt",
+      "source": "build/rear-cross-live/fonts/DEImoji-CBDT.ttf",
+      "source_sha256": "db8ea9790e2bcf37ebe66a32b48ef95c30c3f21b7b5ad1d189f43c04e9f46651",
+      "diagnostic": "build/pass-bounded/cbdt-diagnostic.ttf",
+      "diagnostic_sha256": "1dd3b7132f89ea591776e73313f1619abcaaefdfcf8918614e6ae9fffdd80658",
+      "roots": {
+        "clustering": {
+          "tag": "DCLT",
+          "lookup": 21
+        },
+        "expansion": {
+          "tag": "DEXP",
+          "lookup": 22
+        },
+        "suffix_hash": {
+          "tag": "DHSH",
+          "lookup": 23
+        },
+        "gender_seed": {
+          "tag": "DGSD",
+          "lookup": 24
+        },
+        "tone_feedback": {
+          "tag": "DTFB",
+          "lookup": 30
+        },
+        "gender_feedback": {
+          "tag": "DGFB",
+          "lookup": 34
+        },
+        "folding": {
+          "tag": "DFLD",
+          "lookup": 36
+        },
+        "sweep": {
+          "tag": "DSWP",
+          "lookup": 37
+        },
+        "assembly": {
+          "tag": "DASM",
+          "lookup": 38
+        }
+      },
+      "font_inputs": {
+        "upstream": {
+          "path": "build/upstream-fonts/NotoColorEmoji.ttf",
+          "sha256": "15671215ab769fdc7162a045d56fd7d7e477c51b04e6b3c761d914d8fdd6cc44"
+        },
+        "original": {
+          "path": "build/rear-cross-live/fonts/DEImoji-CBDT.ttf",
+          "sha256": "db8ea9790e2bcf37ebe66a32b48ef95c30c3f21b7b5ad1d189f43c04e9f46651"
+        },
+        "diagnostic": {
+          "path": "build/pass-bounded/cbdt-diagnostic.ttf",
+          "sha256": "1dd3b7132f89ea591776e73313f1619abcaaefdfcf8918614e6ae9fffdd80658"
+        },
+        "seed_bounded1": {
+          "path": "build/pass-bounded/cbdt-bounded1.ttf",
+          "sha256": "31d1b976593247ede8c4d0a1d964e7c3fb1c3d910815f36f2002e724a22a5944"
+        },
+        "seed_bounded2": {
+          "path": "build/pass-bounded/cbdt-bounded2.ttf",
+          "sha256": "eef7b75da25401afc461a9e36153bf2636eb3a6838563e56a0c3f8e872020f0f"
+        },
+        "seed_bounded4": {
+          "path": "build/pass-bounded/cbdt-bounded4.ttf",
+          "sha256": "a9546ea1393a038290d7bc5eeda15d7b274b5129fe315efde3a91e3b0bdbc316"
+        },
+        "seed_bounded8": {
+          "path": "build/pass-bounded/cbdt-bounded8.ttf",
+          "sha256": "fbfd250c0ce1278f6c15fc544c1a909a8d195a76f3ba3116e4fc32ec129d2fdc"
+        }
+      },
+      "all_on_matches_original": true,
+      "feedback_without_rtl": {
+        "enabled": [
+          "expansion",
+          "tone_feedback",
+          "gender_feedback"
+        ],
+        "tone_states": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          2,
+          1,
+          4,
+          2,
+          4
+        ],
+        "gender_states": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          2
+        ],
+        "interpretation": "No RTL or gender seeding: feedback changes the fifth state; fold/sweep disabled only to inspect private slots"
+      },
+      "seeding_variants": {
+        "bounded1": {
+          "path": "build/pass-bounded/cbdt-bounded1.ttf",
+          "sha256": "31d1b976593247ede8c4d0a1d964e7c3fb1c3d910815f36f2002e724a22a5944",
+          "policy": "bounded original-source lookahead; current source included",
+          "window_sources": 1,
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3,
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3
+            ],
+            "expected_states": [
+              0,
+              4,
+              3,
+              0,
+              2,
+              2,
+              2,
+              2,
+              0,
+              4,
+              3,
+              0,
+              2,
+              2,
+              2,
+              2
+            ],
+            "actual_states": [
+              0,
+              4,
+              3,
+              0,
+              2,
+              2,
+              2,
+              2,
+              0,
+              4,
+              3,
+              0,
+              2,
+              2,
+              2,
+              2
+            ],
+            "full_pipeline_runner_check": {
+              "input_count": 40,
+              "distinct_output_glyphs": 14,
+              "private_markers_remaining": 0
+            }
+          },
+          "contextual_rule_count": 5,
+          "hash_stages": 1
+        },
+        "bounded2": {
+          "path": "build/pass-bounded/cbdt-bounded2.ttf",
+          "sha256": "eef7b75da25401afc461a9e36153bf2636eb3a6838563e56a0c3f8e872020f0f",
+          "policy": "bounded original-source lookahead; current source included",
+          "window_sources": 2,
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3,
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3
+            ],
+            "expected_states": [
+              2,
+              1,
+              2,
+              4,
+              3,
+              3,
+              3,
+              0,
+              2,
+              1,
+              2,
+              4,
+              3,
+              3,
+              3,
+              2
+            ],
+            "actual_states": [
+              2,
+              1,
+              2,
+              4,
+              3,
+              3,
+              3,
+              0,
+              2,
+              1,
+              2,
+              4,
+              3,
+              3,
+              3,
+              2
+            ],
+            "full_pipeline_runner_check": {
+              "input_count": 40,
+              "distinct_output_glyphs": 12,
+              "private_markers_remaining": 0
+            }
+          },
+          "contextual_rule_count": 30,
+          "hash_stages": 2
+        },
+        "bounded4": {
+          "path": "build/pass-bounded/cbdt-bounded4.ttf",
+          "sha256": "a9546ea1393a038290d7bc5eeda15d7b274b5129fe315efde3a91e3b0bdbc316",
+          "policy": "bounded original-source lookahead; current source included",
+          "window_sources": 4,
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3,
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3
+            ],
+            "expected_states": [
+              0,
+              0,
+              0,
+              3,
+              4,
+              1,
+              1,
+              2,
+              0,
+              0,
+              0,
+              3,
+              4,
+              0,
+              3,
+              2
+            ],
+            "actual_states": [
+              0,
+              0,
+              0,
+              3,
+              4,
+              1,
+              1,
+              2,
+              0,
+              0,
+              0,
+              3,
+              4,
+              0,
+              3,
+              2
+            ],
+            "full_pipeline_runner_check": {
+              "input_count": 40,
+              "distinct_output_glyphs": 15,
+              "private_markers_remaining": 0
+            }
+          },
+          "contextual_rule_count": 80,
+          "hash_stages": 4
+        },
+        "bounded8": {
+          "path": "build/pass-bounded/cbdt-bounded8.ttf",
+          "sha256": "fbfd250c0ce1278f6c15fc544c1a909a8d195a76f3ba3116e4fc32ec129d2fdc",
+          "policy": "bounded original-source lookahead; current source included",
+          "window_sources": 8,
+          "proof": {
+            "text": "🐈🚗🍎📚💡🐟🏠🚀🐈🚗🍎📚💡🐟🏠🚀",
+            "source_buckets": [
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3,
+              0,
+              1,
+              2,
+              0,
+              3,
+              3,
+              3,
+              3
+            ],
+            "expected_states": [
+              0,
+              2,
+              2,
+              1,
+              2,
+              0,
+              1,
+              3,
+              0,
+              3,
+              2,
+              0,
+              4,
+              0,
+              3,
+              2
+            ],
+            "actual_states": [
+              0,
+              2,
+              2,
+              1,
+              2,
+              0,
+              1,
+              3,
+              0,
+              3,
+              2,
+              0,
+              4,
+              0,
+              3,
+              2
+            ],
+            "full_pipeline_runner_check": {
+              "input_count": 40,
+              "distinct_output_glyphs": 15,
+              "private_markers_remaining": 0
+            }
+          },
+          "contextual_rule_count": 180,
+          "hash_stages": 8
+        }
+      },
+      "harfbuzz_cases": [
+        {
+          "name": "seed_bounded1_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_bounded1",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 16.545,
+            "min_batch_ms": 16.5352,
+            "max_batch_ms": 17.8483,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded1_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_bounded1",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.7576,
+            "min_batch_ms": 0.6762,
+            "max_batch_ms": 0.7664,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 0,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded2_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_bounded2",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 17.3928,
+            "min_batch_ms": 17.243,
+            "max_batch_ms": 25.4823,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded2_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_bounded2",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 0.9768,
+            "min_batch_ms": 0.9158,
+            "max_batch_ms": 0.9769,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded4_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_bounded4",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 17.5836,
+            "min_batch_ms": 16.9447,
+            "max_batch_ms": 17.8573,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded4_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_bounded4",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 1.9575,
+            "min_batch_ms": 1.9254,
+            "max_batch_ms": 1.9814,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded8_full",
+          "enabled": [
+            "assembly",
+            "clustering",
+            "expansion",
+            "folding",
+            "gender_feedback",
+            "gender_seed",
+            "suffix_hash",
+            "sweep",
+            "tone_feedback"
+          ],
+          "font_role": "seed_bounded8",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "harfbuzz": {
+            "median_ms": 19.8334,
+            "min_batch_ms": 19.436,
+            "max_batch_ms": 20.0225,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        },
+        {
+          "name": "seed_bounded8_hash_only",
+          "enabled": [
+            "expansion",
+            "suffix_hash",
+            "sweep"
+          ],
+          "font_role": "seed_bounded8",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "harfbuzz": {
+            "median_ms": 5.1744,
+            "min_batch_ms": 5.0427,
+            "max_batch_ms": 5.5192,
+            "glyphs": 3200,
+            "private_markers_remaining": 0,
+            "unsafe_to_break_glyphs": 3199,
+            "outputs_identical": true,
+            "valid_cleanup": true
+          }
+        }
+      ],
+      "browser_cases": [
+        {
+          "name": "upstream",
+          "role": "upstream",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.3999999910593033,
+                  "two_raf_latency_ms": 10.899999991059303,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 1
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 42.8999999910593,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 2
+                },
+                {
+                  "forced_layout_ms": 1.4000000059604645,
+                  "two_raf_latency_ms": 8.800000011920929,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 3
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 0.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 9,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1025
+                },
+                {
+                  "forced_layout_ms": 0.7999999970197678,
+                  "two_raf_latency_ms": 5.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1026
+                },
+                {
+                  "forced_layout_ms": 0.9000000059604645,
+                  "two_raf_latency_ms": 2.5999999940395355,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1027
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_off",
+          "role": "original",
+          "features": {
+            "calt": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.2000000029802322,
+                  "two_raf_latency_ms": 8.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 17
+                },
+                {
+                  "forced_layout_ms": 1.2999999970197678,
+                  "two_raf_latency_ms": 10.099999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 18
+                },
+                {
+                  "forced_layout_ms": 1.0999999940395355,
+                  "two_raf_latency_ms": 8.200000002980232,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 19
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 15.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1041
+                },
+                {
+                  "forced_layout_ms": 1.1000000089406967,
+                  "two_raf_latency_ms": 2.6000000089406967,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1042
+                },
+                {
+                  "forced_layout_ms": 1,
+                  "two_raf_latency_ms": 16.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1043
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "original_on",
+          "role": "original",
+          "features": {
+            "calt": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 882.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 866.7000000029802,
+                  "two_raf_latency_ms": 868.0999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 33
+                },
+                {
+                  "forced_layout_ms": 945.2000000029802,
+                  "two_raf_latency_ms": 950.2000000029802,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 34
+                },
+                {
+                  "forced_layout_ms": 882.3000000119209,
+                  "two_raf_latency_ms": 883.6000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 35
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 17.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 17.099999994039536,
+                  "two_raf_latency_ms": 17.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1057
+                },
+                {
+                  "forced_layout_ms": 21.200000002980232,
+                  "two_raf_latency_ms": 22.200000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1058
+                },
+                {
+                  "forced_layout_ms": 16.100000008940697,
+                  "two_raf_latency_ms": 16.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1059
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded1_full",
+          "role": "seed_bounded1",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 17.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 18.099999994039536,
+                  "two_raf_latency_ms": 19.099999994039536,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 49
+                },
+                {
+                  "forced_layout_ms": 17.799999997019768,
+                  "two_raf_latency_ms": 20.700000002980232,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 50
+                },
+                {
+                  "forced_layout_ms": 17.599999994039536,
+                  "two_raf_latency_ms": 25.299999997019768,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 51
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 20.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 20.099999994039536,
+                  "two_raf_latency_ms": 21,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1073
+                },
+                {
+                  "forced_layout_ms": 29.30000001192093,
+                  "two_raf_latency_ms": 30,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1074
+                },
+                {
+                  "forced_layout_ms": 17,
+                  "two_raf_latency_ms": 17.900000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1075
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded1_hash_only",
+          "role": "seed_bounded1",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.8999999910593033,
+                  "two_raf_latency_ms": 13.899999991059303,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 65
+                },
+                {
+                  "forced_layout_ms": 2.2000000029802322,
+                  "two_raf_latency_ms": 9.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 66
+                },
+                {
+                  "forced_layout_ms": 1.7000000029802322,
+                  "two_raf_latency_ms": 37,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 67
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.5,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 18.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1089
+                },
+                {
+                  "forced_layout_ms": 1.5999999940395355,
+                  "two_raf_latency_ms": 17.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1090
+                },
+                {
+                  "forced_layout_ms": 1.5,
+                  "two_raf_latency_ms": 10.899999991059303,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1091
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded2_full",
+          "role": "seed_bounded2",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 892.6,
+              "samples": [
+                {
+                  "forced_layout_ms": 999.5999999940395,
+                  "two_raf_latency_ms": 1000.7999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 81
+                },
+                {
+                  "forced_layout_ms": 892.6000000089407,
+                  "two_raf_latency_ms": 893.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 82
+                },
+                {
+                  "forced_layout_ms": 876.0999999940395,
+                  "two_raf_latency_ms": 877.0999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 83
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 21.3,
+              "samples": [
+                {
+                  "forced_layout_ms": 24.799999997019768,
+                  "two_raf_latency_ms": 25.599999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1105
+                },
+                {
+                  "forced_layout_ms": 18.700000002980232,
+                  "two_raf_latency_ms": 19.80000001192093,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1106
+                },
+                {
+                  "forced_layout_ms": 21.299999997019768,
+                  "two_raf_latency_ms": 22.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1107
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded2_hash_only",
+          "role": "seed_bounded2",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 63.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 76.5,
+                  "two_raf_latency_ms": 77.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 97
+                },
+                {
+                  "forced_layout_ms": 63.900000005960464,
+                  "two_raf_latency_ms": 64.70000000298023,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 98
+                },
+                {
+                  "forced_layout_ms": 58.70000000298023,
+                  "two_raf_latency_ms": 60,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 99
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 1.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 1.7000000029802322,
+                  "two_raf_latency_ms": 12.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1121
+                },
+                {
+                  "forced_layout_ms": 1.9000000059604645,
+                  "two_raf_latency_ms": 8.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1122
+                },
+                {
+                  "forced_layout_ms": 1.7999999970197678,
+                  "two_raf_latency_ms": 13.400000005960464,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1123
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded4_full",
+          "role": "seed_bounded4",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 933.8,
+              "samples": [
+                {
+                  "forced_layout_ms": 885.6999999880791,
+                  "two_raf_latency_ms": 887.0999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 113
+                },
+                {
+                  "forced_layout_ms": 933.7999999970198,
+                  "two_raf_latency_ms": 935.0999999940395,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 114
+                },
+                {
+                  "forced_layout_ms": 1073.2000000029802,
+                  "two_raf_latency_ms": 1074.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 115
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 19.9,
+              "samples": [
+                {
+                  "forced_layout_ms": 21.5,
+                  "two_raf_latency_ms": 22.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1137
+                },
+                {
+                  "forced_layout_ms": 19.900000005960464,
+                  "two_raf_latency_ms": 20.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1138
+                },
+                {
+                  "forced_layout_ms": 19.5,
+                  "two_raf_latency_ms": 20.30000001192093,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1139
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded4_hash_only",
+          "role": "seed_bounded4",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 123,
+              "samples": [
+                {
+                  "forced_layout_ms": 136.8999999910593,
+                  "two_raf_latency_ms": 138.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 129
+                },
+                {
+                  "forced_layout_ms": 116.29999999701977,
+                  "two_raf_latency_ms": 117.3999999910593,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 130
+                },
+                {
+                  "forced_layout_ms": 123,
+                  "two_raf_latency_ms": 124,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 131
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 3.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 2.7000000029802322,
+                  "two_raf_latency_ms": 3.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1153
+                },
+                {
+                  "forced_layout_ms": 3.199999988079071,
+                  "two_raf_latency_ms": 8.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1154
+                },
+                {
+                  "forced_layout_ms": 3.300000011920929,
+                  "two_raf_latency_ms": 3.800000011920929,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1155
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded8_full",
+          "role": "seed_bounded8",
+          "features": {
+            "calt": 0,
+            "DCLT": 1,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 1,
+            "DTFB": 1,
+            "DGFB": 1,
+            "DFLD": 1,
+            "DSWP": 1,
+            "DASM": 1
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 1106.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 1041.3999999910593,
+                  "two_raf_latency_ms": 1042.699999988079,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 145
+                },
+                {
+                  "forced_layout_ms": 1117.8999999910593,
+                  "two_raf_latency_ms": 1119.2999999970198,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 146
+                },
+                {
+                  "forced_layout_ms": 1106.1000000089407,
+                  "two_raf_latency_ms": 1107.1000000089407,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 147
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 22.4,
+              "samples": [
+                {
+                  "forced_layout_ms": 22.400000005960464,
+                  "two_raf_latency_ms": 23.799999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1169
+                },
+                {
+                  "forced_layout_ms": 36.599999994039536,
+                  "two_raf_latency_ms": 37.099999994039536,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1170
+                },
+                {
+                  "forced_layout_ms": 22,
+                  "two_raf_latency_ms": 22.5,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1171
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "seed_bounded8_hash_only",
+          "role": "seed_bounded8",
+          "features": {
+            "calt": 0,
+            "DCLT": 0,
+            "DEXP": 1,
+            "DHSH": 1,
+            "DGSD": 0,
+            "DTFB": 0,
+            "DGFB": 0,
+            "DFLD": 0,
+            "DSWP": 1,
+            "DASM": 0
+          },
+          "measurements": {
+            "wrapped": {
+              "median_layout_ms": 278.1,
+              "samples": [
+                {
+                  "forced_layout_ms": 295.59999999403954,
+                  "two_raf_latency_ms": 296.5,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 161
+                },
+                {
+                  "forced_layout_ms": 278.1000000089407,
+                  "two_raf_latency_ms": 279.40000000596046,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 162
+                },
+                {
+                  "forced_layout_ms": 273,
+                  "two_raf_latency_ms": 274.20000000298023,
+                  "height": 4000,
+                  "scroll_width": 1280,
+                  "all_visible": true,
+                  "nonce": 163
+                }
+              ]
+            },
+            "nowrap": {
+              "median_layout_ms": 6.2,
+              "samples": [
+                {
+                  "forced_layout_ms": 6.5,
+                  "two_raf_latency_ms": 9.399999991059303,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1185
+                },
+                {
+                  "forced_layout_ms": 6.200000002980232,
+                  "two_raf_latency_ms": 6.700000002980232,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1186
+                },
+                {
+                  "forced_layout_ms": 6.199999988079071,
+                  "two_raf_latency_ms": 12.299999997019768,
+                  "height": 40,
+                  "scroll_width": 127765,
+                  "all_visible": false,
+                  "nonce": 1187
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "chromium": "154.0.8037.57"
+}
