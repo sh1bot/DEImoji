@@ -12,16 +12,17 @@
     <header>
       <a class="eyebrow" href="https://github.com/sh1bot/DEImoji">DEImoji / font playground ↗</a>
       <h1>A little more life<br>in the line.</h1>
-      <p class="intro">Zombie hordes. Sunflower patches. Poop heaps. Varied runners. Try the latest font, right here.</p>
+      <p class="intro">Zombie hordes. Sunflower patches. Poop heaps. Headstones. Fireworks, poppers and fire. Varied runners. Try the latest font, right here.</p>
       <p id="build" class="muted">Reading build information…</p>
       <p id="build-details" class="muted"></p>
       <a id="zombie-gallery" href="zombie-proof-colr.png">See all 10 zombie crowds ↗</a>
+      <a id="cluster-gallery" href="cluster-proof-colr.png">See the 8 new clusters ↗</a>
       <a id="checks" href="checks.json" hidden>Verified build report ↗</a>
     </header>
 
     <section class="controls" aria-label="Font controls">
       <label>Start with
-        <select id="preset"><option value="zombies">Zombies</option><option value="flowers">Sunflowers</option><option value="poop">Poop heaps</option><option value="runners">Runners</option><option value="person">People</option><option value="old">Old people</option></select>
+        <select id="preset"><option value="zombies">Zombies</option><option value="flowers">Sunflowers</option><option value="poop">Poop heaps</option><option value="headstones">Headstones</option><option value="fireworks">Fireworks</option><option value="poppers">Party poppers</option><option value="fire">Fire</option><option value="runners">Runners</option><option value="person">People</option><option value="old">Old people</option></select>
       </label>
       <label>Emoji count <output id="count-value">36</output>
         <input id="count" type="range" min="1" max="80" value="36">
@@ -34,10 +35,10 @@
       </label>
     </section>
 
-    <p id="palette" aria-label="Base emoji to copy and paste">☝⛹✊✋✌✍🎅🏂🏃🏄🏇🏊🏋🏌👂👃👆👇👈👉👊👋👌👍👎👏👐👦👧👨👩👫👬👭👮👯👰👱👲👳👴👵👶👷👸👼💁💂💃💅💆💇💏💑💪🕴🕵🕺🖐🖕🖖🙅🙆🙇🙋🙌🙍🙎🙏🚣🚴🚵🚶🛀🛌🤌🤏🤘🤙🤚🤛🤜🤝🤞🤟🤦🤰🤱🤲🤳🤴🤵🤶🤷🤸🤹🤼🤽🤾🥷🦵🦶🦸🦹🦻🧍🧎🧏🧑🧒🧓🧔🧕🧖🧗🧘🧙🧚🧛🧜🧝🫃🫄🫅🫰🫱🫲🫳🫴🫵🫶🫷🫸🫹🫺🧟🌻💩</p>
+    <p id="palette" aria-label="Base emoji to copy and paste">☝⛹✊✋✌✍🎅🏂🏃🏄🏇🏊🏋🏌👂👃👆👇👈👉👊👋👌👍👎👏👐👦👧👨👩👫👬👭👮👯👰👱👲👳👴👵👶👷👸👼💁💂💃💅💆💇💏💑💪🕴🕵🕺🖐🖕🖖🙅🙆🙇🙋🙌🙍🙎🙏🚣🚴🚵🚶🛀🛌🤌🤏🤘🤙🤚🤛🤜🤝🤞🤟🤦🤰🤱🤲🤳🤴🤵🤶🤷🤸🤹🤼🤽🤾🥷🦵🦶🦸🦹🦻🧍🧎🧏🧑🧒🧓🧔🧕🧖🧗🧘🧙🧚🧛🧜🧝🫃🫄🫅🫰🫱🫲🫳🫴🫵🫶🫷🫸🫹🫺🧟🌻💩🪦🎆🎉🔥</p>
     <label class="input-label" for="text">Or type your own sequence</label>
     <textarea id="text" rows="3" spellcheck="false" aria-describedby="scope"></textarea>
-    <p class="muted" id="scope">Plain 🧟, 🌻 and 💩 form clusters. Compatible plain emoji such as 🏃 vary in skin tone and gender. Explicit modifiers stay as typed; spaces restart the variation.</p>
+    <p class="muted" id="scope">Plain 🧟, 🌻, 💩, 🪦, 🎆, 🎉 and 🔥 form clusters. Compatible plain emoji such as 🏃 vary in skin tone and gender. Explicit modifiers stay as typed; spaces restart the variation.</p>
     <details class="debug" open>
       <summary>Input codepoints</summary>
       <output id="codepoints" aria-label="Input Unicode codepoints"></output>
@@ -52,8 +53,8 @@
       <div class="sample-heading"><h2 id="off-title">Individual emoji</h2><span>calt = 0 · same font</span></div>
       <div id="individual" class="emoji off waiting" aria-label="The same text with contextual variation disabled"></div>
     </section>
-    <p class="explanation">In a long run, group sizes repeat <strong>3 · 3 · 3 · 3 · 2 · 2 · 2 · 3 · 2 · 2 · 3 · 3 · 2 · 3 · 2</strong>.
-      Short tails adjust to avoid leaving one emoji behind. Scroll sideways through long samples; each line stays unwrapped so line breaking does not change the grouping.</p>
+    <p class="explanation">For zombies, sunflowers and poop, group sizes repeat <strong>3 · 3 · 3 · 3 · 2 · 2 · 2 · 3 · 2 · 2 · 3 · 3 · 2 · 3 · 2</strong>.
+      Headstones, fireworks, party poppers and fire use fixed trios, with pairs for short tails. Short tails adjust to avoid leaving one emoji behind. Scroll sideways through long samples; each line stays unwrapped so line breaking does not change the grouping.</p>
 
     <footer>
       <h2>Take the font with you.</h2>

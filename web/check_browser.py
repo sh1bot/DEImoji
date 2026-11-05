@@ -43,7 +43,7 @@ def main():
             page.wait_for_function(loaded)
             assert 'white-smile artwork' in page.locator('#build-details').inner_text()
             assert 'reverse sweep' in page.locator('#build-details').inner_text()
-            for family in ('🧟', '🌻', '💩'):
+            for family in ('🧟', '🌻', '💩', '🪦', '🎆', '🎉', '🔥'):
                 page.locator('#text').fill(family * 4)
                 for fmt in ('colr', 'cbdt'):
                     page.select_option('#format', fmt)
@@ -72,7 +72,7 @@ def main():
                         return [after - before, parseFloat(getComputedStyle(node).fontSize)];
                     }""")
                     # Chromium versions differ in fractional glyph-advance rounding.
-                    assert abs(overlap[0] - overlap[1] * {'🧟': .22, '🌻': .35, '💩': .04}[family]) < .6, (family, fmt, overlap)
+                    assert abs(overlap[0] - overlap[1] * {'🧟': .22, '🌻': .35, '💩': .04, '🪦':.28, '🎆':.025, '🎉':.08, '🔥':.22}[family]) < .6, (family, fmt, overlap)
                     if family == '💩':
                         for n in (2, 3):
                             page.locator('#text').fill('💩' * n)
@@ -114,6 +114,35 @@ def main():
                 assert len(set(pictures[:5]))==5 and len(set(pictures[5:]))==5, ('duplicate zombie art',fmt)
                 page.locator('#zombie-proof').screenshot(path=str(args.site/f'zombie-proof-{fmt}.png'))
                 page.locator('#zombie-proof').evaluate('node => node.remove()')
+            # Paint every fixed pair/trio from the actual downloadable fonts.
+            for fmt in ('colr','cbdt'):
+                proof=zombie_proof_font(args.site,fmt,fixed=True)
+                page.evaluate("""async ({url,fmt}) => {
+                    const face=new FontFace('ClusterProof'+fmt, `url("${url}")`);
+                    await face.load();document.fonts.add(face);
+                    const box=document.createElement('div');box.id='cluster-proof';
+                    Object.assign(box.style,{position:'absolute',left:'0',top:'0',
+                        display:'grid',gridTemplateColumns:'repeat(2,max-content)',
+                        gap:'12px',background:'white',padding:'12px',zIndex:'1000',
+                        fontFamily:'ClusterProof'+fmt,fontSize:'96px',lineHeight:'1.5'});
+                    for(let i=0;i<8;i++) {
+                        const span=document.createElement('span');span.textContent=String.fromCharCode(65+i);
+                        box.append(span);
+                    }
+                    document.body.append(box);
+                }""",dict(url=proof,fmt=fmt))
+                pictures=[]
+                for span in page.locator('#cluster-proof span').all():
+                    data=span.screenshot();pictures.append(data)
+                    pixels=Image.open(BytesIO(data)).convert('RGB')
+                    ink=sum(min(r,g,b)<220 for r,g,b in pixels.getdata())
+                    assert ink>500,('missing fixed artwork',fmt,ink)
+                assert len(set(pictures))==8,('duplicate fixed artwork',fmt)
+                page.locator('#cluster-proof').screenshot(path=str(args.site/f'cluster-proof-{fmt}.png'))
+                page.locator('#cluster-proof').evaluate('node => node.remove()')
+            for preset,emoji in (('headstones','🪦'),('fireworks','🎆'),('poppers','🎉'),('fire','🔥')):
+                page.select_option('#preset',preset)
+                assert page.locator('#text').input_value()==emoji*36
             page.select_option('#preset', 'poop')
             assert page.locator('#text').input_value() == '💩' * 36
             page.select_option('#preset', 'old')

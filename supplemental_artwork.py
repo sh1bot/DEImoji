@@ -216,13 +216,15 @@ def add_supplemental_artwork(font):
     info['glyph_count'] = len(font.getGlyphOrder()) - info['original_glyph_count']
     from zombie_artwork import add_zombie_artwork, variant_mappings
     info['zombies'] = add_zombie_artwork(font)
+    from fixed_cluster_artwork import add_fixed_cluster_artwork, OVERLAP
+    info['clusters'] = add_fixed_cluster_artwork(font)
     variants = variant_mappings(font)
     # Native Noto has no GPOS. Keep any supplied positioning table untouched.
     # Family-specific kerning closes the measured gaps between visible silhouettes.
     if 'GPOS' not in font:
         from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
         families = []
-        for cp in (0x1F9DF, 0x1F33B, 0x1F4A9):
+        for cp in (0x1F9DF, 0x1F33B, 0x1F4A9, *OVERLAP):
             base = font.getBestCmap().get(cp)
             if base is None:
                 continue
@@ -231,8 +233,10 @@ def add_supplemental_artwork(font):
                 names.extend(lig.LigGlyph for lig in table.ligatures.get(base, [])
                              if tuple(lig.Component) in ((base,), (base, base)))
             names.extend(alt for cluster in list(names[1:]) for alt in variants.get(cluster, []))
+            if len(names) == 1:
+                continue
             families.append((list(dict.fromkeys(names)),
-                             {0x1F9DF: .22, 0x1F33B: .35, 0x1F4A9: .04}[cp]))
+                             {0x1F9DF: .22, 0x1F33B: .35, 0x1F4A9: .04, **OVERLAP}[cp]))
         lines = ['languagesystem DFLT dflt;']
         for i, (names, fraction) in enumerate(families):
             lines.append(f"@overlap{i} = [{' '.join(names)}];")
@@ -252,6 +256,9 @@ def add_supplemental_artwork(font):
 def remove_supplemental_artwork(font, info):
     if not info:
         return
+    if info.get('clusters'):
+        from fixed_cluster_artwork import remove_fixed_cluster_artwork
+        remove_fixed_cluster_artwork(font, info['clusters'])
     if info.get('zombies'):
         from zombie_artwork import remove_zombie_artwork
         remove_zombie_artwork(font, info['zombies'])

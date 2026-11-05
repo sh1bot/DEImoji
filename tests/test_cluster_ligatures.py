@@ -214,7 +214,7 @@ class ClusterTests(unittest.TestCase):
 
     def test_wide_artwork(self):
         root = Path(__file__).resolve().parents[1] / 'ligatures'
-        for name in CLUSTER_NAMES:
+        for name in (*NATIVE_CLUSTER_NAMES, 'emoji_u1f4a9_1f4a9', 'emoji_u1f4a9_1f4a9_1f4a9'):
             asset_root = root / 'supplemental/poop' if '1f4a9' in name else root
             svg = ET.parse(asset_root / 'svg' / (name + '.svg')).getroot()
             box = tuple(map(float, svg.attrib['viewBox'].split()))
@@ -777,6 +777,51 @@ class ZombieVariantTests(unittest.TestCase):
         self.assertTrue(set(NAMES).issubset(mini.getGlyphOrder()))
         self.assertFalse(set(NAMES).intersection(mini.getBestCmap().values()))
 
+
+
+class FixedClusterTests(unittest.TestCase):
+    def test_fixed_families_and_recovery(self):
+        from cluster_ligatures import feature_source, _add_cluster_ligatures
+        from fixed_cluster_artwork import FAMILIES, ART, NAMES, verify_bundle
+        font=make_font(with_poop=True)
+        bases=list(FAMILIES)
+        order=font.getGlyphOrder()+[g+suffix for g in bases for suffix in ('','2','3')]
+        font.setGlyphOrder(order)
+        for g in order:
+            font['glyf'].glyphs.setdefault(g,TTGlyphPen(None).glyph())
+            font['hmtx'].metrics.setdefault(g,(1000,0))
+        for table in font['cmap'].tables:
+            if table.isUnicode():
+                table.cmap.update({cp:g for g,cp in FAMILIES.items() if table.format==12 or cp<65536})
+        source=['languagesystem DFLT dflt;','feature ccmp {']
+        for g in ['z','f','p',*bases]:
+            source += [f'sub {g} {g} {g} by {g}3;',f'sub {g} {g} by {g}2;']
+        source+=['} ccmp;']
+        addOpenTypeFeaturesFromString(font,'\n'.join(source))
+        original=font['GSUB'].compile(font)
+        _add_cluster_ligatures(font)
+        for base,cp in FAMILIES.items():
+            for n in range(1,101):
+                with self.subTest(base=base,n=n):
+                    remain=n; expected=[]
+                    while remain:
+                        size=2 if remain==4 else min(3,remain)
+                        expected.append(base+(str(size) if size>1 else ''))
+                        remain-=size
+                    self.assertEqual(shape(font,chr(cp)*n),expected)
+                    self.assertEqual(shape(font,chr(cp)*n,calt=False),[base]*n)
+        mixed='🪦🪦🔥🔥🔥🎉🎉🎉🎉🎆🎆'
+        self.assertEqual(shape(font,mixed),['headstone2','fire3','popper2','popper2','fireworks2'])
+        data=BytesIO();font.save(data);font=TTFont(BytesIO(data.getvalue()))
+        remove_cluster_ligatures(font)
+        self.assertEqual(font['GSUB'].compile(font),original)
+        self.assertTrue(verify_bundle())
+        for name in NAMES:
+            svg=ET.parse(ART/'svg'/f'{name}.svg').getroot()
+            data=(ART/'png/128'/f'{name}.png').read_bytes()
+            w,h=struct.unpack('>II',data[16:24])
+            self.assertEqual(tuple(map(int,svg.get('viewBox').split())),(0,0,w,h))
+            self.assertTrue(136<w<=255 and h==128)
 
 if __name__ == '__main__':
     unittest.main()

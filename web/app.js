@@ -63,7 +63,7 @@ function updateText() {
 }
 
 function updatePreset() {
-  const emoji = { flowers: '🌻', zombies: '🧟', person: '🧑', old: '🧓', runners: '🏃', poop: '💩' }[$('preset').value];
+  const emoji = { flowers: '🌻', zombies: '🧟', person: '🧑', old: '🧓', runners: '🏃', poop: '💩', headstones: '🪦', fireworks: '🎆', poppers: '🎉', fire: '🔥' }[$('preset').value];
   $('text').value = emoji.repeat(Number($('count').value));
   $('count-value').textContent = $('count').value;
   updateText();
@@ -72,6 +72,7 @@ function updatePreset() {
 async function loadFont() {
   const current = ++requestNumber;
   $('zombie-gallery').href = `zombie-proof-${$('format').value === 'colr' ? 'colr' : 'cbdt'}.png?build=${encodeURIComponent(metadata.commit)}`;
+  $('cluster-gallery').href = `cluster-proof-${$('format').value === 'colr' ? 'colr' : 'cbdt'}.png?build=${encodeURIComponent(metadata.commit)}`;
   const file = $('format').value === 'colr' ? 'DEImoji-COLRv1.woff2' : 'DEImoji-CBDT.ttf';
   $('status').className = '';
   $('status').textContent = 'Loading the built font…';
@@ -116,6 +117,7 @@ async function initialize() {
     const rules = metadata.modifiers?.['DEImoji-COLRv1.ttf'];
     const art = metadata.artwork?.['DEImoji-COLRv1.ttf'];
     $('build-details').textContent = [
+      art?.clusters ? 'Headstones, fireworks, poppers and fire: fixed pairs + trios' : '',
       art?.zombies ? 'Zombies: five pairs + five trios' : '',
       art?.style === 'noto-white-smile-v2' ? 'Poop heaps: white-smile artwork' : 'Poop heaps: original artwork',
       rules?.state_periods ? `Variation periods: ${rules.state_periods.join(' × ')} = ${rules.combined_period.toLocaleString()}` : '',

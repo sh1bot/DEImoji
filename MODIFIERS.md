@@ -173,3 +173,16 @@ unchanged. Kerning covers the ten new outputs while preserving singleton pairs.
 Packaged-font verification pauses the actual GSUB pipeline after seed mapping
 and inspects the private gender slots for four repeated eligible glyphs in
 all five source buckets, in both TTFs and WOFF2. The report records this coverage.
+
+## Fixed decorative clusters
+
+Plain 🪦, 🎆, 🎉 and 🔥 have one pair and one trio each. Their grouping uses
+trios with a 2+2 tail for four remaining inputs; these families do not use the
+binary grouping register or diversity generators. Headstones mix arched,
+rounded and bevelled crowns. Fireworks share one panoramic sky per cluster.
+
+`ligatures/supplemental/build_clusters.py` composes the pinned Noto vectors and
+builds the checked-in unencoded bitmap/COLRv1 pack. `fixed_cluster_artwork.py`
+appends it after the zombie pack, preserving native glyph IDs and the native
+cache key. Recovery removes this tail before zombies and poop. Kerning applies
+only when a neighboring glyph is a cluster, preserving singleton pairs.

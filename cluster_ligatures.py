@@ -1,7 +1,8 @@
-"""Optional contextual pair/triple ligatures for plain zombies, sunflowers and poop.
+"""Optional contextual pair/triple ligatures for repeated plain emoji.
 
-The previous four output clusters are a degree-four LFSR register. Pair=0,
+For zombies, sunflowers and poop, four output clusters form an LFSR register. Pair=0,
 triple=1, with next = oldest XOR next-oldest and seed 1111 (period fifteen).
+Other decorative families use fixed trios with pair tails.
 """
 from copy import deepcopy
 
@@ -12,7 +13,8 @@ from fontTools.ttLib.tables.otBase import BaseTable
 
 
 NATIVE_CLUSTER_CODEPOINTS = (0x1F9DF, 0x1F33B)
-CLUSTER_CODEPOINTS = (*NATIVE_CLUSTER_CODEPOINTS, 0x1F4A9)
+FIXED_CLUSTER_CODEPOINTS = (0x1FAA6, 0x1F386, 0x1F389, 0x1F525)
+CLUSTER_CODEPOINTS = (*NATIVE_CLUSTER_CODEPOINTS, 0x1F4A9, *FIXED_CLUSTER_CODEPOINTS)
 CLUSTER_SEQUENCES = frozenset(
     (cp,) * count for cp in CLUSTER_CODEPOINTS for count in (2, 3)
 )
@@ -20,10 +22,11 @@ CLUSTER_NAMES = tuple(
     'emoji_u' + '_'.join(f'{cp:x}' for cp in sequence)
     for sequence in sorted(CLUSTER_SEQUENCES)
 )
-NATIVE_CLUSTER_NAMES = tuple(name for name in CLUSTER_NAMES if '1f4a9' not in name)
+NATIVE_CLUSTER_NAMES = tuple('emoji_u' + '_'.join([f'{cp:x}'] * n)
+                             for cp in sorted(NATIVE_CLUSTER_CODEPOINTS) for n in (2, 3))
 
 
-def feature_source(families):
+def feature_source(families, fixed_bases=()):
     """families contains (base, pair, triple) glyph names, not Unicode strings."""
     lines = ['languagesystem DFLT dflt;']
     for i, (base, pair, triple) in enumerate(families):
@@ -37,7 +40,7 @@ def feature_source(families):
         # Five remaining items permit either choice without a leftover single.
         # The four-item tail forces 2+2; three and two finish exactly.
         tail = ' '.join([base] * 4)
-        for oldest in (0, 1):
+        for oldest in (() if base in fixed_bases else (0, 1)):
             for next_oldest in (0, 1):
                 a, b = (pair, triple)[oldest], (pair, triple)[next_oldest]
                 choice = ('pair', 'triple')[oldest ^ next_oldest]
@@ -119,7 +122,8 @@ def _add_cluster_ligatures(font):
 
     temp = TTFont()
     temp.setGlyphOrder(font.getGlyphOrder())
-    addOpenTypeFeaturesFromString(temp, feature_source(families), tables=['GSUB'])
+    fixed_bases = {cmap[cp] for cp in FIXED_CLUSTER_CODEPOINTS if cp in cmap}
+    addOpenTypeFeaturesFromString(temp, feature_source(families, fixed_bases), tables=['GSUB'])
     extra = temp['GSUB'].table
     offset = len(gsub.LookupList.Lookup)
     new_lookups = deepcopy(extra.LookupList.Lookup)
@@ -183,8 +187,8 @@ def remove_cluster_ligatures(font):
     """Recover the native GSUB for a build cache from our known full-font format.
 
     This deliberately refuses unknown/pre-existing calt features rather than
-    removing arbitrary font behavior. Both the original two-family bundle and
-    the three-family supplemental-artwork bundle can recover a native cache.
+    removing arbitrary font behavior. Legacy and current artwork bundles can
+    recover a native cache.
     """
     gsub = font['GSUB'].table
     records = gsub.FeatureList.FeatureRecord
@@ -208,7 +212,7 @@ def remove_cluster_ligatures(font):
                   for s in lookups[-1].SubTable] if lookups else []
     if (len(calts) != 1 or start < 1 or not root_types or set(root_types) != {6}
             or references != set(range(start, len(lookups) - 1))
-            or len(references) not in (4, 6)
+            or len(references) not in range(2, 2 * len(CLUSTER_CODEPOINTS) + 1, 2)
             or calts[0][1].Feature.LookupListIndex != [len(lookups) - 1]):
         raise ValueError('Not a recognized DEImoji cluster feature bundle')
     if getattr(gsub, 'FeatureVariations', None):

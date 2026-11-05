@@ -2,9 +2,10 @@
 
 Typically build the CBDT then the COLRv1 as COLRv1 copies some information from CBDT.
 
-DEImoji's zombie/sunflower pair and triple ligatures are included in both builds.
+DEImoji's zombie, sunflower, poop, headstone, fireworks, party-popper and fire
+pair/triple ligatures are included in both builds.
 See [ligatures/README.md](ligatures/README.md) for artwork regeneration, the
-period-seven grouping policy, and shaping tests. Sources and output fonts live
+grouping policy, and shaping tests. Sources and output fonts live
 under `2D/`; custom wide artwork lives under `ligatures/`.
 
 GitHub Actions can build and publish matching downloadable fonts and a browser

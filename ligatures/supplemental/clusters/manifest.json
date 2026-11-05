@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "style": "noto-fixed-clusters-v1",
+  "source_commit": "585853a395a28317139d571038985d1e97388450",
+  "entries": [
+    {
+      "name": "headstone2",
+      "codepoint": 129702,
+      "size": 2
+    },
+    {
+      "name": "headstone3",
+      "codepoint": 129702,
+      "size": 3
+    },
+    {
+      "name": "fireworks2",
+      "codepoint": 127878,
+      "size": 2
+    },
+    {
+      "name": "fireworks3",
+      "codepoint": 127878,
+      "size": 3
+    },
+    {
+      "name": "popper2",
+      "codepoint": 127881,
+      "size": 2
+    },
+    {
+      "name": "popper3",
+      "codepoint": 127881,
+      "size": 3
+    },
+    {
+      "name": "fire2",
+      "codepoint": 128293,
+      "size": 2
+    },
+    {
+      "name": "fire3",
+      "codepoint": 128293,
+      "size": 3
+    }
+  ],
+  "files": {
+    "Clusters-COLRv1.ttf": "715d2be38ea0253732902e9e3a9c8ef3ce1898d5a94aadf5fd2e1d55ee60e82f",
+    "png/128/fire2.png": "1e038001139efeb4f17a4d347e8567be43efa5bf97362a896addf07614d71e6d",
+    "png/128/fire3.png": "1f919acb5d54d8c00ff9406220c66e6891cd2fa6095a0a3e76d02487fe68efa4",
+    "png/128/fireworks2.png": "6ac0ae95dfec460aaf0d1369d3d6625af8befe04e8d61b26ed67fa622a55733f",
+    "png/128/fireworks3.png": "a69d4d593c8a39269e9ae052ac431ef5a5457faa7a262454e04dd9ae4e0b15f7",
+    "png/128/headstone2.png": "9b4031ee9941dda5ffae1b4699a4bf9f54d449c910560d82d845889ce9fa383c",
+    "png/128/headstone3.png": "923e1afc0e20fcf666dcd78acacc755669808049f42e6dd7bb358a1c2f5590d5",
+    "png/128/popper2.png": "d840cb0fd4ab57f9f573c1be257cc30a1587c594875b95ae6504c4906531e3a0",
+    "png/128/popper3.png": "835e84c4e32638e29542f2d13eda6c92079ff6bb3b34fcaab7e6ae355287f3c7",
+    "preview.png": "dd5abd3e08221e83104b23a4e4f802c7f16f4900248f57fab955590cd308eccf",
+    "source/emoji_u1f386.svg": "b4c1ba902c69a69884c3dd2115d58375a3f1e703e557b687b6d0d7cda17f20d5",
+    "source/emoji_u1f389.svg": "4ab7ad6e03994f59b270eca28efc08e408d74a868aa025bb4d4576c195d1e522",
+    "source/emoji_u1f525.svg": "dbea451b6cba787df0bb9bc84ceec1bed96e499e8b876b80682ce323f83b1a1b",
+    "source/emoji_u1faa6.svg": "6dbac786e1cd68331876c79d782c9ddf450db6cbb70e88e5ebcdd10fd3f79b3f",
+    "svg/fire2.svg": "0b705fa206b027f74d2d8f71036085d024a4f635948b1aea7bb8a91a52649014",
+    "svg/fire3.svg": "a3ae99a8c2a8b9fd8635b57b5da172d6eb359db0c4c76e947566ef406f85fbdd",
+    "svg/fireworks2.svg": "92d370d7ca02b6b617245ea60fe7223a1f7da86156a83d14de96894d10f8c667",
+    "svg/fireworks3.svg": "7332698fd22d5e67f26640e4f2c4a4fc5755756ae85179c1d42b23da8b0fcf69",
+    "svg/headstone2.svg": "69d14b53d375c6eae4c719fceda01602008e4e38357ec47fddbdbd9e4bf57242",
+    "svg/headstone3.svg": "f46248010c8fcc813583cde2c191894fd9943ab740faaeebabbdf6c6f5472b69",
+    "svg/popper2.svg": "dfbefdff60b41511e2a0df590fb8881ce03fb0c64072588e1be34ba36bb7cbf9",
+    "svg/popper3.svg": "b4c7039faef007c126af7518b730642d9b30ef41216b4b8294271a7f6c41dd52"
+  }
+}

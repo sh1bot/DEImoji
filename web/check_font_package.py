@@ -16,6 +16,7 @@ from test_cluster_ligatures import shape, reference, reference_private_states, r
 from modifier_ligatures import discover
 from cluster_ligatures import _ligature_tables
 from supplemental_artwork import ART, NAMES, _verify_bundle
+from fixed_cluster_artwork import FAMILIES as FIXED_FAMILIES, ART as FIXED_ART, verify_bundle as verify_fixed
 from zombie_artwork import variant_mappings, verify_bundle as verify_zombies, ART as ZOMBIES, NAMES as ZOMBIE_NAMES
 
 
@@ -141,6 +142,28 @@ def check_font_package(site):
             for count, asset in zip((2, 3), NAMES):
                 assert font['CBDT'].strikeData[0][outputs[count]].imageData == (
                     ART / 'png/128' / (asset + '.png')).read_bytes(), ('embedded poop PNG', count)
+        fixed=metadata['artwork'][published]['clusters']
+        assert fixed['bundle']==verify_fixed(), ('stale fixed artwork',name)
+        outputs={(e['codepoint'],e['size']):order[e['gid']] for e in fixed['entries']}
+        for cp in FIXED_FAMILIES.values():
+            base=cmap[cp]
+            text='';expected=[];plain=[]
+            for n in (1,2,3,4,5,6,7,8,15,80):
+                text+=chr(cp)*n+' '
+                plain.extend([base]*n+[cmap[32]])
+                remain=n
+                while remain:
+                    size=2 if remain==4 else min(3,remain)
+                    expected.append(base if size==1 else outputs[cp,size]);remain-=size
+                expected.append(cmap[32])
+            assert shape(font,text)==expected, ('fixed grouping',name,cp)
+            assert shape(font,text,calt=False)==plain
+        for entry in fixed['entries']:
+            glyph=order[entry['gid']]
+            if 'CBDT' in font:
+                assert font['CBDT'].strikeData[0][glyph].imageData==(FIXED_ART/'png/128'/(entry['name']+'.png')).read_bytes()
+            else:
+                assert glyph in painted, ('missing fixed paint',name,entry)
         checked.append(name)
     return dict(commit=metadata['commit'], font_hashes=metadata['font_hashes'],
                 page_hashes=metadata['page_hashes'],
@@ -153,6 +176,7 @@ def check_font_package(site):
                 gender_seed_buckets_checked=[0,1,2,3,4],
                 gender_states_in_first_four_repeats=3,
                 distant_noneligible_noise_checked=True,
+                fixed_cluster_artwork_checked=8, fixed_cluster_grouping='greedy-trios-with-pair-tails',
                 zombie_compositions_checked=10, zombie_grouping_input_length=4000,
                 zombie_artwork_bundle=verify_zombies(),
                 older_person_genders_checked=True,
@@ -160,7 +184,7 @@ def check_font_package(site):
                 private_state_cleanup=True, bitmap_artwork_bytes_verified=True)
 
 
-def zombie_proof_font(site, fmt):
+def zombie_proof_font(site, fmt, fixed=False):
     """Test-only cmap for painting private glyphs individually. Never published."""
     import base64
     from io import BytesIO
@@ -169,7 +193,7 @@ def zombie_proof_font(site, fmt):
     filename = 'DEImoji-COLRv1.ttf' if fmt == 'colr' else 'DEImoji-CBDT.ttf'
     font = TTFont(site/'fonts'/filename, recalcBBoxes=False)
     metadata = json.loads((site/'build.json').read_text())
-    rows = metadata['artwork'][filename]['zombies']['variant_gids']
+    rows = ([e['gid'] for e in metadata['artwork'][filename]['clusters']['entries']],) if fixed else metadata['artwork'][filename]['zombies']['variant_gids']
     order = font.getGlyphOrder()
     table = CmapSubtable.newSubtable(12)
     table.platformID, table.platEncID, table.language = 3, 10, 0
