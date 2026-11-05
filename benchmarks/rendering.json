@@ -1,0 +1,2228 @@
+{
+  "schema": 1,
+  "environment": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "chromium": "154.0.8037.57",
+    "gpu_devices": [
+      {
+        "vendorId": 65535,
+        "deviceId": 65535,
+        "vendorString": "Google Inc. (Google)",
+        "deviceString": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+        "driverVendor": "SwANGLE",
+        "driverVersion": "5.0.0"
+      }
+    ]
+  },
+  "method": {
+    "font_size_px": 32,
+    "line_height_px": 40,
+    "text_width_px": 1280,
+    "word_break": "normal",
+    "viewport": {
+      "width": 1320,
+      "height": 4200
+    },
+    "device_scale_factor": 1,
+    "trials": 3,
+    "unit": "🐈🚗🍎📚",
+    "counts": [
+      36,
+      3200
+    ],
+    "baseline": "Compare upstream and DEImoji; calt off is an additional within-font diagnostic",
+    "warmup": "Font loading and initial glyph drawing excluded; identical fonts reused, unique text per trial",
+    "timing": "Forced DOM layout plus separately traced main-thread paint recording and raster-worker CPU",
+    "raster": "Raster CPU sums worker time and can overlap main-thread work; do not add columns as wall time",
+    "flush": "Screenshot ensures raster completion; PNG encoding, readback and transport are excluded from selected trace metrics",
+    "nowrap": "Layout-only diagnostic: overflowing glyphs outside the viewport are not painted",
+    "control": "Additional 3200-glyph calt-on layout samples without tracing, in both wrapping modes",
+    "limits": "Headless Chromium in this environment, not a physical display or universal browser result"
+  },
+  "fonts": [
+    {
+      "label": "upstream-colr",
+      "path": "/workspace/DEImoji/build/upstream-fonts/Noto-COLRv1.ttf",
+      "sha256": "b8e25ea68db82f9e4d0aee921f4420be2be39887bd5c893a2ad98710531f9d0c",
+      "family": "Bench0",
+      "cases": [
+        {
+          "count": 36,
+          "wrapped": true,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 0.8,
+              "two_raf_latency_ms": 4.4,
+              "layout_trace_ms": 0.346,
+              "style_trace_ms": 0.247,
+              "prepaint_trace_ms": 0.09,
+              "paint_record_ms": 0.09,
+              "raster_cpu_ms": 0.179
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.7999999970197678,
+                "two_raf_latency_ms": 4.299999997019768,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.346,
+                "style_trace_ms": 0.247,
+                "prepaint_trace_ms": 0.09,
+                "paint_record_ms": 0.098,
+                "raster_cpu_ms": 1.651,
+                "pixel_sha256": "5a74105a32faf15e1cf981fb18de131314b68535536902e5df74638914d7cfd3",
+                "nonce": 1,
+                "text_sha256": "3fa5135fbe7944ba795f828471fa762d0a830232a2893e9b40a22bf6e9d025e4"
+              },
+              {
+                "forced_layout_ms": 0.7000000029802322,
+                "two_raf_latency_ms": 4.399999991059303,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.364,
+                "style_trace_ms": 0.149,
+                "prepaint_trace_ms": 0.124,
+                "paint_record_ms": 0.09,
+                "raster_cpu_ms": 0.179,
+                "pixel_sha256": "474bc331dcddc02b26b41624f9befe39c50f35dffbffb2eb30dea6f57b467741",
+                "nonce": 2,
+                "text_sha256": "d8780b48655ae953f0b6e360e17622e874fa3b7767d974a39ec934668d653925"
+              },
+              {
+                "forced_layout_ms": 0.7999999970197678,
+                "two_raf_latency_ms": 8.299999997019768,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.17,
+                "style_trace_ms": 0.325,
+                "prepaint_trace_ms": 0.08,
+                "paint_record_ms": 0.05,
+                "raster_cpu_ms": 0.137,
+                "pixel_sha256": "80038f3617fda5bb9b20e1044f726fda3e0d17da9e13e16e7b095c230af96d2b",
+                "nonce": 3,
+                "text_sha256": "a6169bc1f35bbddbbcb993f50859a03ab25993f785d272302a716eacbf6e6b82"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 0.7,
+              "two_raf_latency_ms": 10.7,
+              "layout_trace_ms": 0.216,
+              "style_trace_ms": 0.186,
+              "prepaint_trace_ms": 0.094,
+              "paint_record_ms": 0.055,
+              "raster_cpu_ms": 0.162
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.699999988079071,
+                "two_raf_latency_ms": 10.699999988079071,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.18,
+                "style_trace_ms": 0.186,
+                "prepaint_trace_ms": 0.084,
+                "paint_record_ms": 0.055,
+                "raster_cpu_ms": 0.36,
+                "pixel_sha256": "5a74105a32faf15e1cf981fb18de131314b68535536902e5df74638914d7cfd3",
+                "nonce": 1,
+                "text_sha256": "3fa5135fbe7944ba795f828471fa762d0a830232a2893e9b40a22bf6e9d025e4"
+              },
+              {
+                "forced_layout_ms": 0.6000000089406967,
+                "two_raf_latency_ms": 13,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.216,
+                "style_trace_ms": 0.106,
+                "prepaint_trace_ms": 0.124,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.133,
+                "pixel_sha256": "474bc331dcddc02b26b41624f9befe39c50f35dffbffb2eb30dea6f57b467741",
+                "nonce": 2,
+                "text_sha256": "d8780b48655ae953f0b6e360e17622e874fa3b7767d974a39ec934668d653925"
+              },
+              {
+                "forced_layout_ms": 1.2000000029802322,
+                "two_raf_latency_ms": 8.900000005960464,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.338,
+                "style_trace_ms": 0.352,
+                "prepaint_trace_ms": 0.094,
+                "paint_record_ms": 0.075,
+                "raster_cpu_ms": 0.162,
+                "pixel_sha256": "80038f3617fda5bb9b20e1044f726fda3e0d17da9e13e16e7b095c230af96d2b",
+                "nonce": 3,
+                "text_sha256": "a6169bc1f35bbddbbcb993f50859a03ab25993f785d272302a716eacbf6e6b82"
+              }
+            ]
+          }
+        },
+        {
+          "count": 36,
+          "wrapped": false,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 0.6,
+              "two_raf_latency_ms": 7.4,
+              "layout_trace_ms": 0.197,
+              "style_trace_ms": 0.137,
+              "prepaint_trace_ms": 0.097,
+              "paint_record_ms": 0.051,
+              "raster_cpu_ms": 0.163
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.5999999940395355,
+                "two_raf_latency_ms": 8.699999988079071,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.212,
+                "style_trace_ms": 0.11,
+                "prepaint_trace_ms": 0.104,
+                "paint_record_ms": 0.058,
+                "raster_cpu_ms": 0.163,
+                "pixel_sha256": "f12358ce0ffd4898751b29199117cd234838f2c968ab2959b2b8237e6b6c1147",
+                "nonce": 65,
+                "text_sha256": "6cc3e06234abae1afe523012766ad99076728747a217d65e63194705e188e73c"
+              },
+              {
+                "forced_layout_ms": 0.699999988079071,
+                "two_raf_latency_ms": 7.399999991059303,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.167,
+                "style_trace_ms": 0.374,
+                "prepaint_trace_ms": 0.097,
+                "paint_record_ms": 0.05,
+                "raster_cpu_ms": 0.131,
+                "pixel_sha256": "e2387b6f95494331e3b6f84187f6e3814974160aa6b44e6f7d435c15fe4cec58",
+                "nonce": 66,
+                "text_sha256": "fc16a48d171520054b87b823b9991660248de8836deabdf6b202d1fba5444624"
+              },
+              {
+                "forced_layout_ms": 0.5999999940395355,
+                "two_raf_latency_ms": 4.200000002980232,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.197,
+                "style_trace_ms": 0.137,
+                "prepaint_trace_ms": 0.09,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.184,
+                "pixel_sha256": "ed4a173fb26d09537b6fc1b040849562a33b49750fab9ac6de421ff502350c0c",
+                "nonce": 67,
+                "text_sha256": "9a659a79961d102074ef9dcbfa1d2ae0660a8c0f25f99ece68dffd9ce63e858d"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 0.8,
+              "two_raf_latency_ms": 15.6,
+              "layout_trace_ms": 0.201,
+              "style_trace_ms": 0.213,
+              "prepaint_trace_ms": 0.106,
+              "paint_record_ms": 0.051,
+              "raster_cpu_ms": 0.3
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.9000000059604645,
+                "two_raf_latency_ms": 2.5999999940395355,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.333,
+                "style_trace_ms": 0.386,
+                "prepaint_trace_ms": 0.082,
+                "paint_record_ms": 0.055,
+                "raster_cpu_ms": 0.408,
+                "pixel_sha256": "f12358ce0ffd4898751b29199117cd234838f2c968ab2959b2b8237e6b6c1147",
+                "nonce": 65,
+                "text_sha256": "6cc3e06234abae1afe523012766ad99076728747a217d65e63194705e188e73c"
+              },
+              {
+                "forced_layout_ms": 0.7999999970197678,
+                "two_raf_latency_ms": 15.599999994039536,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.201,
+                "style_trace_ms": 0.213,
+                "prepaint_trace_ms": 0.705,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.3,
+                "pixel_sha256": "e2387b6f95494331e3b6f84187f6e3814974160aa6b44e6f7d435c15fe4cec58",
+                "nonce": 66,
+                "text_sha256": "fc16a48d171520054b87b823b9991660248de8836deabdf6b202d1fba5444624"
+              },
+              {
+                "forced_layout_ms": 0.7999999970197678,
+                "two_raf_latency_ms": 17.5,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.164,
+                "style_trace_ms": 0.117,
+                "prepaint_trace_ms": 0.106,
+                "paint_record_ms": 0.05,
+                "raster_cpu_ms": 0.12,
+                "pixel_sha256": "ed4a173fb26d09537b6fc1b040849562a33b49750fab9ac6de421ff502350c0c",
+                "nonce": 67,
+                "text_sha256": "9a659a79961d102074ef9dcbfa1d2ae0660a8c0f25f99ece68dffd9ce63e858d"
+              }
+            ]
+          }
+        },
+        {
+          "count": 3200,
+          "wrapped": true,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 1.5,
+              "two_raf_latency_ms": 17.4,
+              "layout_trace_ms": 1.037,
+              "style_trace_ms": 0.128,
+              "prepaint_trace_ms": 0.179,
+              "paint_record_ms": 0.173,
+              "raster_cpu_ms": 4.707
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.4000000059604645,
+                "two_raf_latency_ms": 17.400000005960464,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 1.037,
+                "style_trace_ms": 0.128,
+                "prepaint_trace_ms": 0.27,
+                "paint_record_ms": 0.215,
+                "raster_cpu_ms": 11.837,
+                "pixel_sha256": "6ef448ed3065a886bcf90ecb414333a3e9d2b30a580429d82cf9694f05aaeafa",
+                "nonce": 1,
+                "text_sha256": "a0aab9bd850b21b05b5ad6e4cdaf987e36eae392d5eb118b96fb9e8546a537bb"
+              },
+              {
+                "forced_layout_ms": 1.5,
+                "two_raf_latency_ms": 8.600000008940697,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 1.084,
+                "style_trace_ms": 0.161,
+                "prepaint_trace_ms": 0.179,
+                "paint_record_ms": 0.172,
+                "raster_cpu_ms": 4.489,
+                "pixel_sha256": "ec80620f7eb5b929bf66d6ec51cba7ce2fe68f13fac16c03479e1dfe5b088a6b",
+                "nonce": 2,
+                "text_sha256": "a1c15a08e357dc6107a905d3b2c55e7ebd1468e9c19a6e62adecd247491dd346"
+              },
+              {
+                "forced_layout_ms": 1.5999999940395355,
+                "two_raf_latency_ms": 34.400000005960464,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 1.026,
+                "style_trace_ms": 0.106,
+                "prepaint_trace_ms": 0.167,
+                "paint_record_ms": 0.173,
+                "raster_cpu_ms": 4.707,
+                "pixel_sha256": "eaa75704d258e0e17317030a681716585ab838edb9b1351d47059dc027299406",
+                "nonce": 3,
+                "text_sha256": "a6911fe4c4eaff4763b4858137eacc8b668958f0737645a5dbe423287f2397fc"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 1.6,
+              "two_raf_latency_ms": 35.5,
+              "layout_trace_ms": 0.944,
+              "style_trace_ms": 0.176,
+              "prepaint_trace_ms": 0.19,
+              "paint_record_ms": 0.183,
+              "raster_cpu_ms": 4.607
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.6000000089406967,
+                "two_raf_latency_ms": 20.600000008940697,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.944,
+                "style_trace_ms": 0.108,
+                "prepaint_trace_ms": 0.158,
+                "paint_record_ms": 0.174,
+                "raster_cpu_ms": 14.146,
+                "pixel_sha256": "6ef448ed3065a886bcf90ecb414333a3e9d2b30a580429d82cf9694f05aaeafa",
+                "nonce": 1,
+                "text_sha256": "a0aab9bd850b21b05b5ad6e4cdaf987e36eae392d5eb118b96fb9e8546a537bb"
+              },
+              {
+                "forced_layout_ms": 1.4000000059604645,
+                "two_raf_latency_ms": 36.29999999701977,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.89,
+                "style_trace_ms": 0.176,
+                "prepaint_trace_ms": 0.19,
+                "paint_record_ms": 0.183,
+                "raster_cpu_ms": 4.607,
+                "pixel_sha256": "ec80620f7eb5b929bf66d6ec51cba7ce2fe68f13fac16c03479e1dfe5b088a6b",
+                "nonce": 2,
+                "text_sha256": "a1c15a08e357dc6107a905d3b2c55e7ebd1468e9c19a6e62adecd247491dd346"
+              },
+              {
+                "forced_layout_ms": 1.8999999910593033,
+                "two_raf_latency_ms": 35.5,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 1.248,
+                "style_trace_ms": 0.386,
+                "prepaint_trace_ms": 0.381,
+                "paint_record_ms": 0.197,
+                "raster_cpu_ms": 4.507,
+                "pixel_sha256": "eaa75704d258e0e17317030a681716585ab838edb9b1351d47059dc027299406",
+                "nonce": 3,
+                "text_sha256": "a6911fe4c4eaff4763b4858137eacc8b668958f0737645a5dbe423287f2397fc"
+              }
+            ]
+          }
+        },
+        {
+          "count": 3200,
+          "wrapped": false,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 1.1,
+              "two_raf_latency_ms": 11.9,
+              "layout_trace_ms": 0.663,
+              "style_trace_ms": 0.109,
+              "prepaint_trace_ms": 0.126,
+              "paint_record_ms": 0.118,
+              "raster_cpu_ms": 0.809
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.3999999910593033,
+                "two_raf_latency_ms": 9.799999997019768,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.663,
+                "style_trace_ms": 0.115,
+                "prepaint_trace_ms": 0.194,
+                "paint_record_ms": 0.118,
+                "raster_cpu_ms": 1.024,
+                "pixel_sha256": "f12358ce0ffd4898751b29199117cd234838f2c968ab2959b2b8237e6b6c1147",
+                "nonce": 65,
+                "text_sha256": "49b9d56d4d9ab7c37fb1da35a754bfd05dc1714f279348589f0dd59794b5d579"
+              },
+              {
+                "forced_layout_ms": 1.1000000089406967,
+                "two_raf_latency_ms": 14.900000005960464,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.619,
+                "style_trace_ms": 0.109,
+                "prepaint_trace_ms": 0.126,
+                "paint_record_ms": 0.136,
+                "raster_cpu_ms": 0.746,
+                "pixel_sha256": "e2387b6f95494331e3b6f84187f6e3814974160aa6b44e6f7d435c15fe4cec58",
+                "nonce": 66,
+                "text_sha256": "def9647024ddd704eb09e367dd9072d4aedaf0d8796bd6d4fcc4ea1b5258e570"
+              },
+              {
+                "forced_layout_ms": 1,
+                "two_raf_latency_ms": 11.900000005960464,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.678,
+                "style_trace_ms": 0.108,
+                "prepaint_trace_ms": 0.114,
+                "paint_record_ms": 0.076,
+                "raster_cpu_ms": 0.809,
+                "pixel_sha256": "ed4a173fb26d09537b6fc1b040849562a33b49750fab9ac6de421ff502350c0c",
+                "nonce": 67,
+                "text_sha256": "abfa8a98d90c12a7dc767fe9990c722f4ad033d02be5f23772304e9e9fb0b23d"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 1.5,
+              "two_raf_latency_ms": 8.1,
+              "layout_trace_ms": 0.736,
+              "style_trace_ms": 0.137,
+              "prepaint_trace_ms": 0.14,
+              "paint_record_ms": 0.191,
+              "raster_cpu_ms": 0.81
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.5,
+                "two_raf_latency_ms": 9.100000008940697,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.879,
+                "style_trace_ms": 0.137,
+                "prepaint_trace_ms": 1.191,
+                "paint_record_ms": 0.112,
+                "raster_cpu_ms": 1.54,
+                "pixel_sha256": "f12358ce0ffd4898751b29199117cd234838f2c968ab2959b2b8237e6b6c1147",
+                "nonce": 65,
+                "text_sha256": "49b9d56d4d9ab7c37fb1da35a754bfd05dc1714f279348589f0dd59794b5d579"
+              },
+              {
+                "forced_layout_ms": 1.5,
+                "two_raf_latency_ms": 7.199999988079071,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.7,
+                "style_trace_ms": 0.114,
+                "prepaint_trace_ms": 0.14,
+                "paint_record_ms": 0.414,
+                "raster_cpu_ms": 0.81,
+                "pixel_sha256": "e2387b6f95494331e3b6f84187f6e3814974160aa6b44e6f7d435c15fe4cec58",
+                "nonce": 66,
+                "text_sha256": "def9647024ddd704eb09e367dd9072d4aedaf0d8796bd6d4fcc4ea1b5258e570"
+              },
+              {
+                "forced_layout_ms": 1.4000000059604645,
+                "two_raf_latency_ms": 8.099999994039536,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.736,
+                "style_trace_ms": 0.177,
+                "prepaint_trace_ms": 0.119,
+                "paint_record_ms": 0.191,
+                "raster_cpu_ms": 0.792,
+                "pixel_sha256": "ed4a173fb26d09537b6fc1b040849562a33b49750fab9ac6de421ff502350c0c",
+                "nonce": 67,
+                "text_sha256": "abfa8a98d90c12a7dc767fe9990c722f4ad033d02be5f23772304e9e9fb0b23d"
+              }
+            ]
+          }
+        }
+      ],
+      "untraced_layout_control": {
+        "wrapped": {
+          "median_layout_ms": 1.2,
+          "samples": [
+            {
+              "forced_layout_ms": 1.2999999970197678,
+              "two_raf_latency_ms": 39.20000000298023,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            },
+            {
+              "forced_layout_ms": 1.199999988079071,
+              "two_raf_latency_ms": 31.69999998807907,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            },
+            {
+              "forced_layout_ms": 1.2000000029802322,
+              "two_raf_latency_ms": 25.5,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            }
+          ]
+        },
+        "nowrap": {
+          "median_layout_ms": 1.4,
+          "samples": [
+            {
+              "forced_layout_ms": 1.0999999940395355,
+              "two_raf_latency_ms": 4.299999997019768,
+              "height": 40,
+              "scroll_width": 127500,
+              "all_visible": false
+            },
+            {
+              "forced_layout_ms": 1.8999999910593033,
+              "two_raf_latency_ms": 17.599999994039536,
+              "height": 40,
+              "scroll_width": 127500,
+              "all_visible": false
+            },
+            {
+              "forced_layout_ms": 1.4000000059604645,
+              "two_raf_latency_ms": 2.2999999970197678,
+              "height": 40,
+              "scroll_width": 127500,
+              "all_visible": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "deimoji-colr",
+      "path": "/workspace/DEImoji/build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+      "sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63",
+      "family": "Bench1",
+      "cases": [
+        {
+          "count": 36,
+          "wrapped": true,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 0.5,
+              "two_raf_latency_ms": 7.3,
+              "layout_trace_ms": 0.175,
+              "style_trace_ms": 0.123,
+              "prepaint_trace_ms": 0.082,
+              "paint_record_ms": 0.055,
+              "raster_cpu_ms": 0.175
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 7.5,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.171,
+                "style_trace_ms": 0.108,
+                "prepaint_trace_ms": 0.081,
+                "paint_record_ms": 0.055,
+                "raster_cpu_ms": 2.079,
+                "pixel_sha256": "5a74105a32faf15e1cf981fb18de131314b68535536902e5df74638914d7cfd3",
+                "nonce": 1,
+                "text_sha256": "3fa5135fbe7944ba795f828471fa762d0a830232a2893e9b40a22bf6e9d025e4"
+              },
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 4.299999997019768,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.175,
+                "style_trace_ms": 0.17,
+                "prepaint_trace_ms": 0.088,
+                "paint_record_ms": 0.06,
+                "raster_cpu_ms": 0.138,
+                "pixel_sha256": "474bc331dcddc02b26b41624f9befe39c50f35dffbffb2eb30dea6f57b467741",
+                "nonce": 2,
+                "text_sha256": "d8780b48655ae953f0b6e360e17622e874fa3b7767d974a39ec934668d653925"
+              },
+              {
+                "forced_layout_ms": 0.4000000059604645,
+                "two_raf_latency_ms": 7.299999997019768,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.178,
+                "style_trace_ms": 0.123,
+                "prepaint_trace_ms": 0.082,
+                "paint_record_ms": 0.053,
+                "raster_cpu_ms": 0.175,
+                "pixel_sha256": "80038f3617fda5bb9b20e1044f726fda3e0d17da9e13e16e7b095c230af96d2b",
+                "nonce": 3,
+                "text_sha256": "a6169bc1f35bbddbbcb993f50859a03ab25993f785d272302a716eacbf6e6b82"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 1.1,
+              "two_raf_latency_ms": 10.2,
+              "layout_trace_ms": 0.65,
+              "style_trace_ms": 0.207,
+              "prepaint_trace_ms": 0.08,
+              "paint_record_ms": 0.051,
+              "raster_cpu_ms": 0.138
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.0999999940395355,
+                "two_raf_latency_ms": 15.200000002980232,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.65,
+                "style_trace_ms": 0.207,
+                "prepaint_trace_ms": 0.108,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.137,
+                "pixel_sha256": "5a74105a32faf15e1cf981fb18de131314b68535536902e5df74638914d7cfd3",
+                "nonce": 1,
+                "text_sha256": "3fa5135fbe7944ba795f828471fa762d0a830232a2893e9b40a22bf6e9d025e4"
+              },
+              {
+                "forced_layout_ms": 0.9000000059604645,
+                "two_raf_latency_ms": 4.9000000059604645,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.613,
+                "style_trace_ms": 0.122,
+                "prepaint_trace_ms": 0.08,
+                "paint_record_ms": 0.057,
+                "raster_cpu_ms": 0.138,
+                "pixel_sha256": "474bc331dcddc02b26b41624f9befe39c50f35dffbffb2eb30dea6f57b467741",
+                "nonce": 2,
+                "text_sha256": "d8780b48655ae953f0b6e360e17622e874fa3b7767d974a39ec934668d653925"
+              },
+              {
+                "forced_layout_ms": 1.4000000059604645,
+                "two_raf_latency_ms": 10.200000002980232,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.656,
+                "style_trace_ms": 0.27,
+                "prepaint_trace_ms": 0.077,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.146,
+                "pixel_sha256": "80038f3617fda5bb9b20e1044f726fda3e0d17da9e13e16e7b095c230af96d2b",
+                "nonce": 3,
+                "text_sha256": "a6169bc1f35bbddbbcb993f50859a03ab25993f785d272302a716eacbf6e6b82"
+              }
+            ]
+          }
+        },
+        {
+          "count": 36,
+          "wrapped": false,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 0.6,
+              "two_raf_latency_ms": 11.3,
+              "layout_trace_ms": 0.183,
+              "style_trace_ms": 0.136,
+              "prepaint_trace_ms": 0.08,
+              "paint_record_ms": 0.056,
+              "raster_cpu_ms": 0.183
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.5999999940395355,
+                "two_raf_latency_ms": 16.099999994039536,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.167,
+                "style_trace_ms": 0.172,
+                "prepaint_trace_ms": 0.095,
+                "paint_record_ms": 0.055,
+                "raster_cpu_ms": 0.17,
+                "pixel_sha256": "f12358ce0ffd4898751b29199117cd234838f2c968ab2959b2b8237e6b6c1147",
+                "nonce": 65,
+                "text_sha256": "6cc3e06234abae1afe523012766ad99076728747a217d65e63194705e188e73c"
+              },
+              {
+                "forced_layout_ms": 0.5999999940395355,
+                "two_raf_latency_ms": 4.5999999940395355,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.212,
+                "style_trace_ms": 0.136,
+                "prepaint_trace_ms": 0.08,
+                "paint_record_ms": 0.056,
+                "raster_cpu_ms": 0.183,
+                "pixel_sha256": "e2387b6f95494331e3b6f84187f6e3814974160aa6b44e6f7d435c15fe4cec58",
+                "nonce": 66,
+                "text_sha256": "fc16a48d171520054b87b823b9991660248de8836deabdf6b202d1fba5444624"
+              },
+              {
+                "forced_layout_ms": 0.3999999910593033,
+                "two_raf_latency_ms": 11.299999997019768,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.183,
+                "style_trace_ms": 0.11,
+                "prepaint_trace_ms": 0.079,
+                "paint_record_ms": 0.071,
+                "raster_cpu_ms": 0.212,
+                "pixel_sha256": "ed4a173fb26d09537b6fc1b040849562a33b49750fab9ac6de421ff502350c0c",
+                "nonce": 67,
+                "text_sha256": "9a659a79961d102074ef9dcbfa1d2ae0660a8c0f25f99ece68dffd9ce63e858d"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 1,
+              "two_raf_latency_ms": 13.7,
+              "layout_trace_ms": 0.489,
+              "style_trace_ms": 0.117,
+              "prepaint_trace_ms": 0.083,
+              "paint_record_ms": 0.051,
+              "raster_cpu_ms": 0.139
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1,
+                "two_raf_latency_ms": 15,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.489,
+                "style_trace_ms": 0.106,
+                "prepaint_trace_ms": 0.083,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.219,
+                "pixel_sha256": "f12358ce0ffd4898751b29199117cd234838f2c968ab2959b2b8237e6b6c1147",
+                "nonce": 65,
+                "text_sha256": "6cc3e06234abae1afe523012766ad99076728747a217d65e63194705e188e73c"
+              },
+              {
+                "forced_layout_ms": 0.699999988079071,
+                "two_raf_latency_ms": 13.699999988079071,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.433,
+                "style_trace_ms": 0.117,
+                "prepaint_trace_ms": 0.081,
+                "paint_record_ms": 0.05,
+                "raster_cpu_ms": 0.139,
+                "pixel_sha256": "e2387b6f95494331e3b6f84187f6e3814974160aa6b44e6f7d435c15fe4cec58",
+                "nonce": 66,
+                "text_sha256": "fc16a48d171520054b87b823b9991660248de8836deabdf6b202d1fba5444624"
+              },
+              {
+                "forced_layout_ms": 1.2999999970197678,
+                "two_raf_latency_ms": 4.700000002980232,
+                "height": 40,
+                "scroll_width": 1434,
+                "all_visible": false,
+                "layout_trace_ms": 0.606,
+                "style_trace_ms": 0.291,
+                "prepaint_trace_ms": 0.099,
+                "paint_record_ms": 0.085,
+                "raster_cpu_ms": 0.124,
+                "pixel_sha256": "ed4a173fb26d09537b6fc1b040849562a33b49750fab9ac6de421ff502350c0c",
+                "nonce": 67,
+                "text_sha256": "9a659a79961d102074ef9dcbfa1d2ae0660a8c0f25f99ece68dffd9ce63e858d"
+              }
+            ]
+          }
+        },
+        {
+          "count": 3200,
+          "wrapped": true,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 1.7,
+              "two_raf_latency_ms": 10.4,
+              "layout_trace_ms": 0.945,
+              "style_trace_ms": 0.113,
+              "prepaint_trace_ms": 0.162,
+              "paint_record_ms": 0.181,
+              "raster_cpu_ms": 5.924
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.7999999970197678,
+                "two_raf_latency_ms": 10.400000005960464,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.945,
+                "style_trace_ms": 0.109,
+                "prepaint_trace_ms": 0.162,
+                "paint_record_ms": 0.26,
+                "raster_cpu_ms": 5.924,
+                "pixel_sha256": "6ef448ed3065a886bcf90ecb414333a3e9d2b30a580429d82cf9694f05aaeafa",
+                "nonce": 1,
+                "text_sha256": "a0aab9bd850b21b05b5ad6e4cdaf987e36eae392d5eb118b96fb9e8546a537bb"
+              },
+              {
+                "forced_layout_ms": 1.4000000059604645,
+                "two_raf_latency_ms": 8.900000005960464,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.992,
+                "style_trace_ms": 0.223,
+                "prepaint_trace_ms": 0.306,
+                "paint_record_ms": 0.175,
+                "raster_cpu_ms": 4.863,
+                "pixel_sha256": "ec80620f7eb5b929bf66d6ec51cba7ce2fe68f13fac16c03479e1dfe5b088a6b",
+                "nonce": 2,
+                "text_sha256": "a1c15a08e357dc6107a905d3b2c55e7ebd1468e9c19a6e62adecd247491dd346"
+              },
+              {
+                "forced_layout_ms": 1.7000000029802322,
+                "two_raf_latency_ms": 10.599999994039536,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.917,
+                "style_trace_ms": 0.113,
+                "prepaint_trace_ms": 0.153,
+                "paint_record_ms": 0.181,
+                "raster_cpu_ms": 6.167,
+                "pixel_sha256": "eaa75704d258e0e17317030a681716585ab838edb9b1351d47059dc027299406",
+                "nonce": 3,
+                "text_sha256": "a6911fe4c4eaff4763b4858137eacc8b668958f0737645a5dbe423287f2397fc"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 909.1,
+              "two_raf_latency_ms": 910.4,
+              "layout_trace_ms": 908.504,
+              "style_trace_ms": 0.165,
+              "prepaint_trace_ms": 0.226,
+              "paint_record_ms": 0.186,
+              "raster_cpu_ms": 6.39
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 909.1000000089407,
+                "two_raf_latency_ms": 910.4000000059605,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 908.504,
+                "style_trace_ms": 0.116,
+                "prepaint_trace_ms": 0.226,
+                "paint_record_ms": 0.184,
+                "raster_cpu_ms": 14.252,
+                "pixel_sha256": "6ef448ed3065a886bcf90ecb414333a3e9d2b30a580429d82cf9694f05aaeafa",
+                "nonce": 1,
+                "text_sha256": "a0aab9bd850b21b05b5ad6e4cdaf987e36eae392d5eb118b96fb9e8546a537bb"
+              },
+              {
+                "forced_layout_ms": 842.7000000029802,
+                "two_raf_latency_ms": 843.8000000119209,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 842.109,
+                "style_trace_ms": 0.192,
+                "prepaint_trace_ms": 0.18,
+                "paint_record_ms": 0.186,
+                "raster_cpu_ms": 5.877,
+                "pixel_sha256": "ec80620f7eb5b929bf66d6ec51cba7ce2fe68f13fac16c03479e1dfe5b088a6b",
+                "nonce": 2,
+                "text_sha256": "a1c15a08e357dc6107a905d3b2c55e7ebd1468e9c19a6e62adecd247491dd346"
+              },
+              {
+                "forced_layout_ms": 915.2000000029802,
+                "two_raf_latency_ms": 916.3999999910593,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 914.743,
+                "style_trace_ms": 0.165,
+                "prepaint_trace_ms": 0.434,
+                "paint_record_ms": 0.189,
+                "raster_cpu_ms": 6.39,
+                "pixel_sha256": "eaa75704d258e0e17317030a681716585ab838edb9b1351d47059dc027299406",
+                "nonce": 3,
+                "text_sha256": "a6911fe4c4eaff4763b4858137eacc8b668958f0737645a5dbe423287f2397fc"
+              }
+            ]
+          }
+        },
+        {
+          "count": 3200,
+          "wrapped": false,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 1.3,
+              "two_raf_latency_ms": 11.8,
+              "layout_trace_ms": 0.935,
+              "style_trace_ms": 0.113,
+              "prepaint_trace_ms": 0.154,
+              "paint_record_ms": 0.093,
+              "raster_cpu_ms": 1.071
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.5,
+                "two_raf_latency_ms": 17.400000005960464,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.935,
+                "style_trace_ms": 0.113,
+                "prepaint_trace_ms": 0.154,
+                "paint_record_ms": 0.093,
+                "raster_cpu_ms": 1.071,
+                "pixel_sha256": "f12358ce0ffd4898751b29199117cd234838f2c968ab2959b2b8237e6b6c1147",
+                "nonce": 65,
+                "text_sha256": "49b9d56d4d9ab7c37fb1da35a754bfd05dc1714f279348589f0dd59794b5d579"
+              },
+              {
+                "forced_layout_ms": 1.2000000029802322,
+                "two_raf_latency_ms": 11.799999997019768,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.616,
+                "style_trace_ms": 0.141,
+                "prepaint_trace_ms": 0.199,
+                "paint_record_ms": 0.077,
+                "raster_cpu_ms": 0.737,
+                "pixel_sha256": "e2387b6f95494331e3b6f84187f6e3814974160aa6b44e6f7d435c15fe4cec58",
+                "nonce": 66,
+                "text_sha256": "def9647024ddd704eb09e367dd9072d4aedaf0d8796bd6d4fcc4ea1b5258e570"
+              },
+              {
+                "forced_layout_ms": 1.2999999970197678,
+                "two_raf_latency_ms": 6,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 0.954,
+                "style_trace_ms": 0.107,
+                "prepaint_trace_ms": 0.11,
+                "paint_record_ms": 0.145,
+                "raster_cpu_ms": 1.102,
+                "pixel_sha256": "ed4a173fb26d09537b6fc1b040849562a33b49750fab9ac6de421ff502350c0c",
+                "nonce": 67,
+                "text_sha256": "abfa8a98d90c12a7dc767fe9990c722f4ad033d02be5f23772304e9e9fb0b23d"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 19.1,
+              "two_raf_latency_ms": 20.2,
+              "layout_trace_ms": 18.879,
+              "style_trace_ms": 0.107,
+              "prepaint_trace_ms": 0.13,
+              "paint_record_ms": 0.174,
+              "raster_cpu_ms": 1.043
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 20,
+                "two_raf_latency_ms": 20.799999997019768,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 19.555,
+                "style_trace_ms": 0.173,
+                "prepaint_trace_ms": 0.13,
+                "paint_record_ms": 0.088,
+                "raster_cpu_ms": 0.955,
+                "pixel_sha256": "f12358ce0ffd4898751b29199117cd234838f2c968ab2959b2b8237e6b6c1147",
+                "nonce": 65,
+                "text_sha256": "49b9d56d4d9ab7c37fb1da35a754bfd05dc1714f279348589f0dd59794b5d579"
+              },
+              {
+                "forced_layout_ms": 18.700000002980232,
+                "two_raf_latency_ms": 19.599999994039536,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 18.281,
+                "style_trace_ms": 0.107,
+                "prepaint_trace_ms": 0.123,
+                "paint_record_ms": 0.322,
+                "raster_cpu_ms": 1.164,
+                "pixel_sha256": "e2387b6f95494331e3b6f84187f6e3814974160aa6b44e6f7d435c15fe4cec58",
+                "nonce": 66,
+                "text_sha256": "def9647024ddd704eb09e367dd9072d4aedaf0d8796bd6d4fcc4ea1b5258e570"
+              },
+              {
+                "forced_layout_ms": 19.099999994039536,
+                "two_raf_latency_ms": 20.19999998807907,
+                "height": 40,
+                "scroll_width": 127500,
+                "all_visible": false,
+                "layout_trace_ms": 18.879,
+                "style_trace_ms": 0.105,
+                "prepaint_trace_ms": 0.234,
+                "paint_record_ms": 0.174,
+                "raster_cpu_ms": 1.043,
+                "pixel_sha256": "ed4a173fb26d09537b6fc1b040849562a33b49750fab9ac6de421ff502350c0c",
+                "nonce": 67,
+                "text_sha256": "abfa8a98d90c12a7dc767fe9990c722f4ad033d02be5f23772304e9e9fb0b23d"
+              }
+            ]
+          }
+        }
+      ],
+      "untraced_layout_control": {
+        "wrapped": {
+          "median_layout_ms": 835.9,
+          "samples": [
+            {
+              "forced_layout_ms": 860.6000000089407,
+              "two_raf_latency_ms": 861.9000000059605,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            },
+            {
+              "forced_layout_ms": 797.5,
+              "two_raf_latency_ms": 798.5999999940395,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            },
+            {
+              "forced_layout_ms": 835.8999999910593,
+              "two_raf_latency_ms": 836.8999999910593,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            }
+          ]
+        },
+        "nowrap": {
+          "median_layout_ms": 18.1,
+          "samples": [
+            {
+              "forced_layout_ms": 17,
+              "two_raf_latency_ms": 17.799999997019768,
+              "height": 40,
+              "scroll_width": 127500,
+              "all_visible": false
+            },
+            {
+              "forced_layout_ms": 18.299999997019768,
+              "two_raf_latency_ms": 19,
+              "height": 40,
+              "scroll_width": 127500,
+              "all_visible": false
+            },
+            {
+              "forced_layout_ms": 18.099999994039536,
+              "two_raf_latency_ms": 18.599999994039536,
+              "height": 40,
+              "scroll_width": 127500,
+              "all_visible": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "upstream-cbdt",
+      "path": "/workspace/DEImoji/build/upstream-fonts/NotoColorEmoji.ttf",
+      "sha256": "15671215ab769fdc7162a045d56fd7d7e477c51b04e6b3c761d914d8fdd6cc44",
+      "family": "Bench2",
+      "cases": [
+        {
+          "count": 36,
+          "wrapped": true,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 0.6,
+              "two_raf_latency_ms": 5.4,
+              "layout_trace_ms": 0.175,
+              "style_trace_ms": 0.206,
+              "prepaint_trace_ms": 0.08,
+              "paint_record_ms": 0.057,
+              "raster_cpu_ms": 0.188
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.6000000089406967,
+                "two_raf_latency_ms": 16.700000002980232,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.175,
+                "style_trace_ms": 0.12,
+                "prepaint_trace_ms": 0.099,
+                "paint_record_ms": 0.057,
+                "raster_cpu_ms": 1.441,
+                "pixel_sha256": "f8ef660bafc70d14e8b97b8373b1843dd3c8ffb1a80e086d5ef0481ae18b2b21",
+                "nonce": 1,
+                "text_sha256": "3fa5135fbe7944ba795f828471fa762d0a830232a2893e9b40a22bf6e9d025e4"
+              },
+              {
+                "forced_layout_ms": 0.5999999940395355,
+                "two_raf_latency_ms": 5.399999991059303,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.262,
+                "style_trace_ms": 0.306,
+                "prepaint_trace_ms": 0.08,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.171,
+                "pixel_sha256": "945a91d9479a63a66a017e84870ced636851d3fab9990f490e2e272636c4ec1a",
+                "nonce": 2,
+                "text_sha256": "d8780b48655ae953f0b6e360e17622e874fa3b7767d974a39ec934668d653925"
+              },
+              {
+                "forced_layout_ms": 0.5999999940395355,
+                "two_raf_latency_ms": 4.5999999940395355,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.173,
+                "style_trace_ms": 0.206,
+                "prepaint_trace_ms": 0.079,
+                "paint_record_ms": 0.173,
+                "raster_cpu_ms": 0.188,
+                "pixel_sha256": "c4942600d1dbd2f387eda86a67a06112348e4bf45b3c29cc4b700ac7ee635eaf",
+                "nonce": 3,
+                "text_sha256": "a6169bc1f35bbddbbcb993f50859a03ab25993f785d272302a716eacbf6e6b82"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 0.5,
+              "two_raf_latency_ms": 14.4,
+              "layout_trace_ms": 0.174,
+              "style_trace_ms": 0.127,
+              "prepaint_trace_ms": 0.085,
+              "paint_record_ms": 0.058,
+              "raster_cpu_ms": 0.202
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 14.399999991059303,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.175,
+                "style_trace_ms": 0.108,
+                "prepaint_trace_ms": 0.315,
+                "paint_record_ms": 0.123,
+                "raster_cpu_ms": 0.202,
+                "pixel_sha256": "f8ef660bafc70d14e8b97b8373b1843dd3c8ffb1a80e086d5ef0481ae18b2b21",
+                "nonce": 1,
+                "text_sha256": "3fa5135fbe7944ba795f828471fa762d0a830232a2893e9b40a22bf6e9d025e4"
+              },
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 15.599999994039536,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.171,
+                "style_trace_ms": 0.127,
+                "prepaint_trace_ms": 0.078,
+                "paint_record_ms": 0.058,
+                "raster_cpu_ms": 0.213,
+                "pixel_sha256": "945a91d9479a63a66a017e84870ced636851d3fab9990f490e2e272636c4ec1a",
+                "nonce": 2,
+                "text_sha256": "d8780b48655ae953f0b6e360e17622e874fa3b7767d974a39ec934668d653925"
+              },
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 5.200000002980232,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.174,
+                "style_trace_ms": 0.163,
+                "prepaint_trace_ms": 0.085,
+                "paint_record_ms": 0.054,
+                "raster_cpu_ms": 0.188,
+                "pixel_sha256": "c4942600d1dbd2f387eda86a67a06112348e4bf45b3c29cc4b700ac7ee635eaf",
+                "nonce": 3,
+                "text_sha256": "a6169bc1f35bbddbbcb993f50859a03ab25993f785d272302a716eacbf6e6b82"
+              }
+            ]
+          }
+        },
+        {
+          "count": 36,
+          "wrapped": false,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 0.6,
+              "two_raf_latency_ms": 15,
+              "layout_trace_ms": 0.206,
+              "style_trace_ms": 0.132,
+              "prepaint_trace_ms": 0.229,
+              "paint_record_ms": 0.057,
+              "raster_cpu_ms": 0.179
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.5999999940395355,
+                "two_raf_latency_ms": 15.599999994039536,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.216,
+                "style_trace_ms": 0.132,
+                "prepaint_trace_ms": 0.232,
+                "paint_record_ms": 0.057,
+                "raster_cpu_ms": 0.179,
+                "pixel_sha256": "3067a81c63c181b088388361f74be6645116e13e126ddacd88745fd6eb0a4cf7",
+                "nonce": 65,
+                "text_sha256": "6cc3e06234abae1afe523012766ad99076728747a217d65e63194705e188e73c"
+              },
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 8.600000008940697,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.184,
+                "style_trace_ms": 0.106,
+                "prepaint_trace_ms": 0.229,
+                "paint_record_ms": 0.122,
+                "raster_cpu_ms": 0.193,
+                "pixel_sha256": "48c9d2028dfc7fdf0e607a7a75e597ef6811b087fda6b148802aa96a2f5f18c6",
+                "nonce": 66,
+                "text_sha256": "fc16a48d171520054b87b823b9991660248de8836deabdf6b202d1fba5444624"
+              },
+              {
+                "forced_layout_ms": 0.5999999940395355,
+                "two_raf_latency_ms": 15,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.206,
+                "style_trace_ms": 0.153,
+                "prepaint_trace_ms": 0.097,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.13,
+                "pixel_sha256": "9c72230f2b12db48932b7bd5fb5ed722cbb1a886242fe3b6db5837d585c45920",
+                "nonce": 67,
+                "text_sha256": "9a659a79961d102074ef9dcbfa1d2ae0660a8c0f25f99ece68dffd9ce63e858d"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 0.5,
+              "two_raf_latency_ms": 10.6,
+              "layout_trace_ms": 0.161,
+              "style_trace_ms": 0.118,
+              "prepaint_trace_ms": 0.081,
+              "paint_record_ms": 0.05,
+              "raster_cpu_ms": 0.161
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.4000000059604645,
+                "two_raf_latency_ms": 4,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.161,
+                "style_trace_ms": 0.118,
+                "prepaint_trace_ms": 0.08,
+                "paint_record_ms": 0.05,
+                "raster_cpu_ms": 0.176,
+                "pixel_sha256": "3067a81c63c181b088388361f74be6645116e13e126ddacd88745fd6eb0a4cf7",
+                "nonce": 65,
+                "text_sha256": "6cc3e06234abae1afe523012766ad99076728747a217d65e63194705e188e73c"
+              },
+              {
+                "forced_layout_ms": 0.800000011920929,
+                "two_raf_latency_ms": 10.600000008940697,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.242,
+                "style_trace_ms": 0.304,
+                "prepaint_trace_ms": 0.097,
+                "paint_record_ms": 0.098,
+                "raster_cpu_ms": 0.161,
+                "pixel_sha256": "48c9d2028dfc7fdf0e607a7a75e597ef6811b087fda6b148802aa96a2f5f18c6",
+                "nonce": 66,
+                "text_sha256": "fc16a48d171520054b87b823b9991660248de8836deabdf6b202d1fba5444624"
+              },
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 13,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.153,
+                "style_trace_ms": 0.109,
+                "prepaint_trace_ms": 0.081,
+                "paint_record_ms": 0.049,
+                "raster_cpu_ms": 0.127,
+                "pixel_sha256": "9c72230f2b12db48932b7bd5fb5ed722cbb1a886242fe3b6db5837d585c45920",
+                "nonce": 67,
+                "text_sha256": "9a659a79961d102074ef9dcbfa1d2ae0660a8c0f25f99ece68dffd9ce63e858d"
+              }
+            ]
+          }
+        },
+        {
+          "count": 3200,
+          "wrapped": true,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 2.1,
+              "two_raf_latency_ms": 10.5,
+              "layout_trace_ms": 0.922,
+              "style_trace_ms": 0.116,
+              "prepaint_trace_ms": 0.176,
+              "paint_record_ms": 0.194,
+              "raster_cpu_ms": 5.66
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.4000000059604645,
+                "two_raf_latency_ms": 43.099999994039536,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.922,
+                "style_trace_ms": 0.112,
+                "prepaint_trace_ms": 0.176,
+                "paint_record_ms": 0.194,
+                "raster_cpu_ms": 5.66,
+                "pixel_sha256": "b30ba0c6bc6ac53760e8132eb2bca5cf2313eb8c5d55f8cf3b4dc2b04a0d6ffc",
+                "nonce": 1,
+                "text_sha256": "a0aab9bd850b21b05b5ad6e4cdaf987e36eae392d5eb118b96fb9e8546a537bb"
+              },
+              {
+                "forced_layout_ms": 3.800000011920929,
+                "two_raf_latency_ms": 6,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.898,
+                "style_trace_ms": 0.386,
+                "prepaint_trace_ms": 0.74,
+                "paint_record_ms": 0.443,
+                "raster_cpu_ms": 7.392,
+                "pixel_sha256": "6fc864d4d391b6387f30f60ed4363cb44315a00347228bbbbca11593165bd621",
+                "nonce": 2,
+                "text_sha256": "a1c15a08e357dc6107a905d3b2c55e7ebd1468e9c19a6e62adecd247491dd346"
+              },
+              {
+                "forced_layout_ms": 2.1000000089406967,
+                "two_raf_latency_ms": 10.5,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 1.592,
+                "style_trace_ms": 0.116,
+                "prepaint_trace_ms": 0.166,
+                "paint_record_ms": 0.186,
+                "raster_cpu_ms": 5.601,
+                "pixel_sha256": "7e9879249af220d6c751af486541416b956da305a0bab4cbd4acaf87fbd9b18c",
+                "nonce": 3,
+                "text_sha256": "a6911fe4c4eaff4763b4858137eacc8b668958f0737645a5dbe423287f2397fc"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 1.6,
+              "two_raf_latency_ms": 38.9,
+              "layout_trace_ms": 1.033,
+              "style_trace_ms": 0.11,
+              "prepaint_trace_ms": 0.166,
+              "paint_record_ms": 0.186,
+              "raster_cpu_ms": 5.107
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.2999999970197678,
+                "two_raf_latency_ms": 38.8999999910593,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 1.033,
+                "style_trace_ms": 0.109,
+                "prepaint_trace_ms": 0.166,
+                "paint_record_ms": 0.186,
+                "raster_cpu_ms": 4.674,
+                "pixel_sha256": "b30ba0c6bc6ac53760e8132eb2bca5cf2313eb8c5d55f8cf3b4dc2b04a0d6ffc",
+                "nonce": 1,
+                "text_sha256": "a0aab9bd850b21b05b5ad6e4cdaf987e36eae392d5eb118b96fb9e8546a537bb"
+              },
+              {
+                "forced_layout_ms": 1.5999999940395355,
+                "two_raf_latency_ms": 10.899999991059303,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.837,
+                "style_trace_ms": 0.11,
+                "prepaint_trace_ms": 0.155,
+                "paint_record_ms": 0.18,
+                "raster_cpu_ms": 5.107,
+                "pixel_sha256": "6fc864d4d391b6387f30f60ed4363cb44315a00347228bbbbca11593165bd621",
+                "nonce": 2,
+                "text_sha256": "a1c15a08e357dc6107a905d3b2c55e7ebd1468e9c19a6e62adecd247491dd346"
+              },
+              {
+                "forced_layout_ms": 2,
+                "two_raf_latency_ms": 49.5,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 1.32,
+                "style_trace_ms": 0.487,
+                "prepaint_trace_ms": 0.495,
+                "paint_record_ms": 0.339,
+                "raster_cpu_ms": 6.99,
+                "pixel_sha256": "7e9879249af220d6c751af486541416b956da305a0bab4cbd4acaf87fbd9b18c",
+                "nonce": 3,
+                "text_sha256": "a6911fe4c4eaff4763b4858137eacc8b668958f0737645a5dbe423287f2397fc"
+              }
+            ]
+          }
+        },
+        {
+          "count": 3200,
+          "wrapped": false,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 1.7,
+              "two_raf_latency_ms": 12.6,
+              "layout_trace_ms": 0.697,
+              "style_trace_ms": 0.391,
+              "prepaint_trace_ms": 0.174,
+              "paint_record_ms": 0.074,
+              "raster_cpu_ms": 0.936
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.2000000029802322,
+                "two_raf_latency_ms": 12.599999994039536,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 0.683,
+                "style_trace_ms": 0.391,
+                "prepaint_trace_ms": 0.174,
+                "paint_record_ms": 0.086,
+                "raster_cpu_ms": 0.936,
+                "pixel_sha256": "3067a81c63c181b088388361f74be6645116e13e126ddacd88745fd6eb0a4cf7",
+                "nonce": 65,
+                "text_sha256": "49b9d56d4d9ab7c37fb1da35a754bfd05dc1714f279348589f0dd59794b5d579"
+              },
+              {
+                "forced_layout_ms": 1.7000000029802322,
+                "two_raf_latency_ms": 14.700000002980232,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 1.169,
+                "style_trace_ms": 0.156,
+                "prepaint_trace_ms": 0.124,
+                "paint_record_ms": 0.073,
+                "raster_cpu_ms": 0.839,
+                "pixel_sha256": "48c9d2028dfc7fdf0e607a7a75e597ef6811b087fda6b148802aa96a2f5f18c6",
+                "nonce": 66,
+                "text_sha256": "def9647024ddd704eb09e367dd9072d4aedaf0d8796bd6d4fcc4ea1b5258e570"
+              },
+              {
+                "forced_layout_ms": 1.7999999970197678,
+                "two_raf_latency_ms": 10.399999991059303,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 0.697,
+                "style_trace_ms": 0.481,
+                "prepaint_trace_ms": 0.211,
+                "paint_record_ms": 0.074,
+                "raster_cpu_ms": 1.185,
+                "pixel_sha256": "9c72230f2b12db48932b7bd5fb5ed722cbb1a886242fe3b6db5837d585c45920",
+                "nonce": 67,
+                "text_sha256": "abfa8a98d90c12a7dc767fe9990c722f4ad033d02be5f23772304e9e9fb0b23d"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 1.5,
+              "two_raf_latency_ms": 9.1,
+              "layout_trace_ms": 1.021,
+              "style_trace_ms": 0.163,
+              "prepaint_trace_ms": 0.129,
+              "paint_record_ms": 0.08,
+              "raster_cpu_ms": 1.127
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 2.5,
+                "two_raf_latency_ms": 9.099999994039536,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 1.021,
+                "style_trace_ms": 0.773,
+                "prepaint_trace_ms": 0.129,
+                "paint_record_ms": 0.082,
+                "raster_cpu_ms": 3.304,
+                "pixel_sha256": "3067a81c63c181b088388361f74be6645116e13e126ddacd88745fd6eb0a4cf7",
+                "nonce": 65,
+                "text_sha256": "49b9d56d4d9ab7c37fb1da35a754bfd05dc1714f279348589f0dd59794b5d579"
+              },
+              {
+                "forced_layout_ms": 1.4000000059604645,
+                "two_raf_latency_ms": 5.600000008940697,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 0.652,
+                "style_trace_ms": 0.163,
+                "prepaint_trace_ms": 0.122,
+                "paint_record_ms": 0.073,
+                "raster_cpu_ms": 0.886,
+                "pixel_sha256": "48c9d2028dfc7fdf0e607a7a75e597ef6811b087fda6b148802aa96a2f5f18c6",
+                "nonce": 66,
+                "text_sha256": "def9647024ddd704eb09e367dd9072d4aedaf0d8796bd6d4fcc4ea1b5258e570"
+              },
+              {
+                "forced_layout_ms": 1.5,
+                "two_raf_latency_ms": 19,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 1.132,
+                "style_trace_ms": 0.111,
+                "prepaint_trace_ms": 0.132,
+                "paint_record_ms": 0.08,
+                "raster_cpu_ms": 1.127,
+                "pixel_sha256": "9c72230f2b12db48932b7bd5fb5ed722cbb1a886242fe3b6db5837d585c45920",
+                "nonce": 67,
+                "text_sha256": "abfa8a98d90c12a7dc767fe9990c722f4ad033d02be5f23772304e9e9fb0b23d"
+              }
+            ]
+          }
+        }
+      ],
+      "untraced_layout_control": {
+        "wrapped": {
+          "median_layout_ms": 1.3,
+          "samples": [
+            {
+              "forced_layout_ms": 1.300000011920929,
+              "two_raf_latency_ms": 38,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            },
+            {
+              "forced_layout_ms": 1.2000000029802322,
+              "two_raf_latency_ms": 10.099999994039536,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            },
+            {
+              "forced_layout_ms": 1.5,
+              "two_raf_latency_ms": 10.300000011920929,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            }
+          ]
+        },
+        "nowrap": {
+          "median_layout_ms": 1.1,
+          "samples": [
+            {
+              "forced_layout_ms": 1.0999999940395355,
+              "two_raf_latency_ms": 22.400000005960464,
+              "height": 40,
+              "scroll_width": 127765,
+              "all_visible": false
+            },
+            {
+              "forced_layout_ms": 1.0999999940395355,
+              "two_raf_latency_ms": 9.200000002980232,
+              "height": 40,
+              "scroll_width": 127765,
+              "all_visible": false
+            },
+            {
+              "forced_layout_ms": 0.8999999910593033,
+              "two_raf_latency_ms": 12.899999991059303,
+              "height": 40,
+              "scroll_width": 127765,
+              "all_visible": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "deimoji-cbdt",
+      "path": "/workspace/DEImoji/build/rear-cross-live/fonts/DEImoji-CBDT.ttf",
+      "sha256": "db8ea9790e2bcf37ebe66a32b48ef95c30c3f21b7b5ad1d189f43c04e9f46651",
+      "family": "Bench3",
+      "cases": [
+        {
+          "count": 36,
+          "wrapped": true,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 0.5,
+              "two_raf_latency_ms": 14.1,
+              "layout_trace_ms": 0.214,
+              "style_trace_ms": 0.108,
+              "prepaint_trace_ms": 0.19,
+              "paint_record_ms": 0.055,
+              "raster_cpu_ms": 0.427
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.9000000059604645,
+                "two_raf_latency_ms": 4.9000000059604645,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.275,
+                "style_trace_ms": 0.108,
+                "prepaint_trace_ms": 0.082,
+                "paint_record_ms": 0.062,
+                "raster_cpu_ms": 2.389,
+                "pixel_sha256": "48723bfd36491b0427d33b994fa333faa680639c4817a00dfbead4fcb666115e",
+                "nonce": 1,
+                "text_sha256": "3fa5135fbe7944ba795f828471fa762d0a830232a2893e9b40a22bf6e9d025e4"
+              },
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 18.5,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.214,
+                "style_trace_ms": 0.112,
+                "prepaint_trace_ms": 0.19,
+                "paint_record_ms": 0.055,
+                "raster_cpu_ms": 0.136,
+                "pixel_sha256": "f88a7295e4c207bacf70fc15f911447537bb3bec05622af2052b3bf8b27ab189",
+                "nonce": 2,
+                "text_sha256": "d8780b48655ae953f0b6e360e17622e874fa3b7767d974a39ec934668d653925"
+              },
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 14.099999994039536,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.212,
+                "style_trace_ms": 0.108,
+                "prepaint_trace_ms": 0.563,
+                "paint_record_ms": 0.054,
+                "raster_cpu_ms": 0.427,
+                "pixel_sha256": "be2fde276184ab868d75b40f60659a7bf861a3cf2bd6016791a5327e87395130",
+                "nonce": 3,
+                "text_sha256": "a6169bc1f35bbddbbcb993f50859a03ab25993f785d272302a716eacbf6e6b82"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 1.1,
+              "two_raf_latency_ms": 9.5,
+              "layout_trace_ms": 0.653,
+              "style_trace_ms": 0.21,
+              "prepaint_trace_ms": 0.079,
+              "paint_record_ms": 0.052,
+              "raster_cpu_ms": 0.208
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.1000000089406967,
+                "two_raf_latency_ms": 9.5,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.64,
+                "style_trace_ms": 0.196,
+                "prepaint_trace_ms": 0.079,
+                "paint_record_ms": 0.052,
+                "raster_cpu_ms": 0.208,
+                "pixel_sha256": "48723bfd36491b0427d33b994fa333faa680639c4817a00dfbead4fcb666115e",
+                "nonce": 1,
+                "text_sha256": "3fa5135fbe7944ba795f828471fa762d0a830232a2893e9b40a22bf6e9d025e4"
+              },
+              {
+                "forced_layout_ms": 1,
+                "two_raf_latency_ms": 8.299999997019768,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.653,
+                "style_trace_ms": 0.21,
+                "prepaint_trace_ms": 0.076,
+                "paint_record_ms": 0.051,
+                "raster_cpu_ms": 0.213,
+                "pixel_sha256": "f88a7295e4c207bacf70fc15f911447537bb3bec05622af2052b3bf8b27ab189",
+                "nonce": 2,
+                "text_sha256": "d8780b48655ae953f0b6e360e17622e874fa3b7767d974a39ec934668d653925"
+              },
+              {
+                "forced_layout_ms": 1.2999999970197678,
+                "two_raf_latency_ms": 16.599999994039536,
+                "height": 80,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.726,
+                "style_trace_ms": 0.228,
+                "prepaint_trace_ms": 0.087,
+                "paint_record_ms": 0.057,
+                "raster_cpu_ms": 0.14,
+                "pixel_sha256": "be2fde276184ab868d75b40f60659a7bf861a3cf2bd6016791a5327e87395130",
+                "nonce": 3,
+                "text_sha256": "a6169bc1f35bbddbbcb993f50859a03ab25993f785d272302a716eacbf6e6b82"
+              }
+            ]
+          }
+        },
+        {
+          "count": 36,
+          "wrapped": false,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 0.5,
+              "two_raf_latency_ms": 5.7,
+              "layout_trace_ms": 0.204,
+              "style_trace_ms": 0.11,
+              "prepaint_trace_ms": 0.081,
+              "paint_record_ms": 0.067,
+              "raster_cpu_ms": 0.196
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 10.199999988079071,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.163,
+                "style_trace_ms": 0.127,
+                "prepaint_trace_ms": 0.12,
+                "paint_record_ms": 0.128,
+                "raster_cpu_ms": 0.286,
+                "pixel_sha256": "bb4761e1054978390a149fff37d7cb08cfb1467ee0f946eb1c5dd3cd37868eeb",
+                "nonce": 65,
+                "text_sha256": "6cc3e06234abae1afe523012766ad99076728747a217d65e63194705e188e73c"
+              },
+              {
+                "forced_layout_ms": 0.7000000029802322,
+                "two_raf_latency_ms": 2.2000000029802322,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.281,
+                "style_trace_ms": 0.11,
+                "prepaint_trace_ms": 0.081,
+                "paint_record_ms": 0.049,
+                "raster_cpu_ms": 0.145,
+                "pixel_sha256": "a1b49f01ac4cf47f41ff9d4e05f9614d8b3406a8e10f49d49a6703262275beb0",
+                "nonce": 66,
+                "text_sha256": "fc16a48d171520054b87b823b9991660248de8836deabdf6b202d1fba5444624"
+              },
+              {
+                "forced_layout_ms": 0.5,
+                "two_raf_latency_ms": 5.700000002980232,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.204,
+                "style_trace_ms": 0.108,
+                "prepaint_trace_ms": 0.081,
+                "paint_record_ms": 0.067,
+                "raster_cpu_ms": 0.196,
+                "pixel_sha256": "4a251303b2fa60f2ac931c5a7f8a5900e96e2cd61998834b2af05e8670e2ef89",
+                "nonce": 67,
+                "text_sha256": "9a659a79961d102074ef9dcbfa1d2ae0660a8c0f25f99ece68dffd9ce63e858d"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 1.1,
+              "two_raf_latency_ms": 7.6,
+              "layout_trace_ms": 0.541,
+              "style_trace_ms": 0.214,
+              "prepaint_trace_ms": 0.082,
+              "paint_record_ms": 0.077,
+              "raster_cpu_ms": 0.171
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 0.7000000029802322,
+                "two_raf_latency_ms": 7.600000008940697,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.361,
+                "style_trace_ms": 0.113,
+                "prepaint_trace_ms": 0.079,
+                "paint_record_ms": 0.077,
+                "raster_cpu_ms": 0.171,
+                "pixel_sha256": "bb4761e1054978390a149fff37d7cb08cfb1467ee0f946eb1c5dd3cd37868eeb",
+                "nonce": 65,
+                "text_sha256": "6cc3e06234abae1afe523012766ad99076728747a217d65e63194705e188e73c"
+              },
+              {
+                "forced_layout_ms": 1.4000000059604645,
+                "two_raf_latency_ms": 17.799999997019768,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.6,
+                "style_trace_ms": 0.214,
+                "prepaint_trace_ms": 0.082,
+                "paint_record_ms": 0.127,
+                "raster_cpu_ms": 0.125,
+                "pixel_sha256": "a1b49f01ac4cf47f41ff9d4e05f9614d8b3406a8e10f49d49a6703262275beb0",
+                "nonce": 66,
+                "text_sha256": "fc16a48d171520054b87b823b9991660248de8836deabdf6b202d1fba5444624"
+              },
+              {
+                "forced_layout_ms": 1.0999999940395355,
+                "two_raf_latency_ms": 2.7999999970197678,
+                "height": 40,
+                "scroll_width": 1437,
+                "all_visible": false,
+                "layout_trace_ms": 0.541,
+                "style_trace_ms": 0.266,
+                "prepaint_trace_ms": 0.148,
+                "paint_record_ms": 0.053,
+                "raster_cpu_ms": 0.235,
+                "pixel_sha256": "4a251303b2fa60f2ac931c5a7f8a5900e96e2cd61998834b2af05e8670e2ef89",
+                "nonce": 67,
+                "text_sha256": "9a659a79961d102074ef9dcbfa1d2ae0660a8c0f25f99ece68dffd9ce63e858d"
+              }
+            ]
+          }
+        },
+        {
+          "count": 3200,
+          "wrapped": true,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 1.5,
+              "two_raf_latency_ms": 35.4,
+              "layout_trace_ms": 0.899,
+              "style_trace_ms": 0.115,
+              "prepaint_trace_ms": 0.164,
+              "paint_record_ms": 0.283,
+              "raster_cpu_ms": 4.814
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 2.2000000029802322,
+                "two_raf_latency_ms": 51.20000000298023,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 1.49,
+                "style_trace_ms": 0.115,
+                "prepaint_trace_ms": 0.164,
+                "paint_record_ms": 0.385,
+                "raster_cpu_ms": 5.245,
+                "pixel_sha256": "92a7c9a5035df190fb50beb1e15c20735656079c09a90d62173b3371ea9ff10c",
+                "nonce": 1,
+                "text_sha256": "a0aab9bd850b21b05b5ad6e4cdaf987e36eae392d5eb118b96fb9e8546a537bb"
+              },
+              {
+                "forced_layout_ms": 1.2999999970197678,
+                "two_raf_latency_ms": 10.899999991059303,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.899,
+                "style_trace_ms": 0.112,
+                "prepaint_trace_ms": 0.161,
+                "paint_record_ms": 0.283,
+                "raster_cpu_ms": 4.814,
+                "pixel_sha256": "769d7d761889a2a5ad96041242fd606ef47a28a82436b5fee79938a0cf38f0a7",
+                "nonce": 2,
+                "text_sha256": "a1c15a08e357dc6107a905d3b2c55e7ebd1468e9c19a6e62adecd247491dd346"
+              },
+              {
+                "forced_layout_ms": 1.5,
+                "two_raf_latency_ms": 35.3999999910593,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 0.893,
+                "style_trace_ms": 0.451,
+                "prepaint_trace_ms": 0.227,
+                "paint_record_ms": 0.185,
+                "raster_cpu_ms": 4.632,
+                "pixel_sha256": "8a8943d66fed2849ea3854f6a827ed5c883802eadda805e840dcdc8951bc0753",
+                "nonce": 3,
+                "text_sha256": "a6911fe4c4eaff4763b4858137eacc8b668958f0737645a5dbe423287f2397fc"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 862.4,
+              "two_raf_latency_ms": 864,
+              "layout_trace_ms": 861.749,
+              "style_trace_ms": 0.188,
+              "prepaint_trace_ms": 0.256,
+              "paint_record_ms": 0.228,
+              "raster_cpu_ms": 6.778
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 949.3000000119209,
+                "two_raf_latency_ms": 950.5,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 948.902,
+                "style_trace_ms": 0.155,
+                "prepaint_trace_ms": 0.256,
+                "paint_record_ms": 0.224,
+                "raster_cpu_ms": 14.277,
+                "pixel_sha256": "92a7c9a5035df190fb50beb1e15c20735656079c09a90d62173b3371ea9ff10c",
+                "nonce": 1,
+                "text_sha256": "a0aab9bd850b21b05b5ad6e4cdaf987e36eae392d5eb118b96fb9e8546a537bb"
+              },
+              {
+                "forced_layout_ms": 850.7000000029802,
+                "two_raf_latency_ms": 852.7999999970198,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 850.108,
+                "style_trace_ms": 0.188,
+                "prepaint_trace_ms": 1.01,
+                "paint_record_ms": 0.228,
+                "raster_cpu_ms": 6.778,
+                "pixel_sha256": "769d7d761889a2a5ad96041242fd606ef47a28a82436b5fee79938a0cf38f0a7",
+                "nonce": 2,
+                "text_sha256": "a1c15a08e357dc6107a905d3b2c55e7ebd1468e9c19a6e62adecd247491dd346"
+              },
+              {
+                "forced_layout_ms": 862.3999999910593,
+                "two_raf_latency_ms": 864,
+                "height": 4000,
+                "scroll_width": 1280,
+                "all_visible": true,
+                "layout_trace_ms": 861.749,
+                "style_trace_ms": 0.381,
+                "prepaint_trace_ms": 0.182,
+                "paint_record_ms": 0.262,
+                "raster_cpu_ms": 5.205,
+                "pixel_sha256": "8a8943d66fed2849ea3854f6a827ed5c883802eadda805e840dcdc8951bc0753",
+                "nonce": 3,
+                "text_sha256": "a6911fe4c4eaff4763b4858137eacc8b668958f0737645a5dbe423287f2397fc"
+              }
+            ]
+          }
+        },
+        {
+          "count": 3200,
+          "wrapped": false,
+          "pixels_identical": true,
+          "calt_off": {
+            "median": {
+              "forced_layout_ms": 1.3,
+              "two_raf_latency_ms": 16,
+              "layout_trace_ms": 0.847,
+              "style_trace_ms": 0.132,
+              "prepaint_trace_ms": 0.156,
+              "paint_record_ms": 0.09,
+              "raster_cpu_ms": 0.902
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 1.2999999970197678,
+                "two_raf_latency_ms": 10,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 0.612,
+                "style_trace_ms": 0.157,
+                "prepaint_trace_ms": 0.186,
+                "paint_record_ms": 0.09,
+                "raster_cpu_ms": 0.902,
+                "pixel_sha256": "bb4761e1054978390a149fff37d7cb08cfb1467ee0f946eb1c5dd3cd37868eeb",
+                "nonce": 65,
+                "text_sha256": "49b9d56d4d9ab7c37fb1da35a754bfd05dc1714f279348589f0dd59794b5d579"
+              },
+              {
+                "forced_layout_ms": 1.5,
+                "two_raf_latency_ms": 16,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 1.092,
+                "style_trace_ms": 0.132,
+                "prepaint_trace_ms": 0.124,
+                "paint_record_ms": 0.094,
+                "raster_cpu_ms": 0.875,
+                "pixel_sha256": "a1b49f01ac4cf47f41ff9d4e05f9614d8b3406a8e10f49d49a6703262275beb0",
+                "nonce": 66,
+                "text_sha256": "def9647024ddd704eb09e367dd9072d4aedaf0d8796bd6d4fcc4ea1b5258e570"
+              },
+              {
+                "forced_layout_ms": 1.2000000029802322,
+                "two_raf_latency_ms": 19.5,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 0.847,
+                "style_trace_ms": 0.128,
+                "prepaint_trace_ms": 0.156,
+                "paint_record_ms": 0.074,
+                "raster_cpu_ms": 1.105,
+                "pixel_sha256": "4a251303b2fa60f2ac931c5a7f8a5900e96e2cd61998834b2af05e8670e2ef89",
+                "nonce": 67,
+                "text_sha256": "abfa8a98d90c12a7dc767fe9990c722f4ad033d02be5f23772304e9e9fb0b23d"
+              }
+            ]
+          },
+          "calt_on": {
+            "median": {
+              "forced_layout_ms": 16.9,
+              "two_raf_latency_ms": 21,
+              "layout_trace_ms": 16.426,
+              "style_trace_ms": 0.126,
+              "prepaint_trace_ms": 0.125,
+              "paint_record_ms": 0.087,
+              "raster_cpu_ms": 0.948
+            },
+            "samples": [
+              {
+                "forced_layout_ms": 16.400000005960464,
+                "two_raf_latency_ms": 21,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 16.0,
+                "style_trace_ms": 0.169,
+                "prepaint_trace_ms": 0.121,
+                "paint_record_ms": 0.079,
+                "raster_cpu_ms": 0.825,
+                "pixel_sha256": "bb4761e1054978390a149fff37d7cb08cfb1467ee0f946eb1c5dd3cd37868eeb",
+                "nonce": 65,
+                "text_sha256": "49b9d56d4d9ab7c37fb1da35a754bfd05dc1714f279348589f0dd59794b5d579"
+              },
+              {
+                "forced_layout_ms": 16.900000005960464,
+                "two_raf_latency_ms": 17.700000002980232,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 16.426,
+                "style_trace_ms": 0.126,
+                "prepaint_trace_ms": 0.125,
+                "paint_record_ms": 0.141,
+                "raster_cpu_ms": 0.948,
+                "pixel_sha256": "a1b49f01ac4cf47f41ff9d4e05f9614d8b3406a8e10f49d49a6703262275beb0",
+                "nonce": 66,
+                "text_sha256": "def9647024ddd704eb09e367dd9072d4aedaf0d8796bd6d4fcc4ea1b5258e570"
+              },
+              {
+                "forced_layout_ms": 22.69999998807907,
+                "two_raf_latency_ms": 23.599999994039536,
+                "height": 40,
+                "scroll_width": 127765,
+                "all_visible": false,
+                "layout_trace_ms": 22.355,
+                "style_trace_ms": 0.11,
+                "prepaint_trace_ms": 0.131,
+                "paint_record_ms": 0.087,
+                "raster_cpu_ms": 1.29,
+                "pixel_sha256": "4a251303b2fa60f2ac931c5a7f8a5900e96e2cd61998834b2af05e8670e2ef89",
+                "nonce": 67,
+                "text_sha256": "abfa8a98d90c12a7dc767fe9990c722f4ad033d02be5f23772304e9e9fb0b23d"
+              }
+            ]
+          }
+        }
+      ],
+      "untraced_layout_control": {
+        "wrapped": {
+          "median_layout_ms": 883,
+          "samples": [
+            {
+              "forced_layout_ms": 920.5,
+              "two_raf_latency_ms": 921.9000000059605,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            },
+            {
+              "forced_layout_ms": 883,
+              "two_raf_latency_ms": 884.4000000059605,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            },
+            {
+              "forced_layout_ms": 809.5,
+              "two_raf_latency_ms": 810.5999999940395,
+              "height": 4000,
+              "scroll_width": 1280,
+              "all_visible": true
+            }
+          ]
+        },
+        "nowrap": {
+          "median_layout_ms": 18.2,
+          "samples": [
+            {
+              "forced_layout_ms": 17.200000002980232,
+              "two_raf_latency_ms": 17.900000005960464,
+              "height": 40,
+              "scroll_width": 127765,
+              "all_visible": false
+            },
+            {
+              "forced_layout_ms": 18.200000002980232,
+              "two_raf_latency_ms": 19.299999997019768,
+              "height": 40,
+              "scroll_width": 127765,
+              "all_visible": false
+            },
+            {
+              "forced_layout_ms": 18.30000001192093,
+              "two_raf_latency_ms": 18.80000001192093,
+              "height": 40,
+              "scroll_width": 127765,
+              "all_visible": false
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
