@@ -21,7 +21,7 @@ import benchmark_rendering as render
 from benchmark_passes import partition,settings,TAGS,offset_references,hb_diagnostics,seed_variant,css
 
 
-def build_prefix(source,info,markers,target):
+def build_prefix(source,info,markers,target,blocks=False):
     font=TTFont(source,recalcBBoxes=False,recalcTimestamp=False)
     order=list(font.getGlyphOrder());tones=[order[i] for i in markers['tone_marker_gids']]
     genders=[order[i] for i in markers['gender_marker_gids']]
@@ -39,15 +39,23 @@ def build_prefix(source,info,markers,target):
            '@source = ['+' '.join(g for g in order if g in sources)+'];',
            '@tone = ['+' '.join(tones)+'];','@gender = ['+' '.join(genders)+'];']
     for bucket in range(5):lines.append(f'@b{bucket} = ['+' '.join(g for g in order if g in sources and font.getGlyphID(g)%5==bucket)+'];')
-    lines+=['lookup markStart {', 'ignore sub @any @source @tone\';',f"sub @source @tone' by {start};",'} markStart;',
-            f'lookup dropAnchor {{ sub @tone by {anchor}; sub {start} by {anchor}; }} dropAnchor;',
-            'lookup chooseAnchor useExtension {']
-    for count in (16,8,4,2):
-        tokens=[start,'@gender']+['@source','@tone','@gender']*(count-2)+['@source','@tone']
-        lines.append('sub '+' '.join(token+"'" for token in tokens)+' lookup dropAnchor;')
-    lines += [f"sub {start}' lookup dropAnchor;",'} chooseAnchor;',
-              f'lookup resetStart {{ sub {start} by {tones[0]}; }} resetStart;',
-              'lookup collectRTL useExtension {']
+    if blocks:
+        lines += [f'lookup dropAnchor {{ sub @tone by {anchor}; }} dropAnchor;',
+                  'lookup chooseAnchor useExtension {']
+        for count in (16,8,4,2,1):
+            tokens=['@source','@tone','@gender']*(count-1)+['@source','@tone']
+            lines.append('sub '+' '.join(token+"'" for token in tokens)+' lookup dropAnchor;')
+        lines += ['} chooseAnchor;', 'lookup collectRTL useExtension {']
+    else:
+        lines+=['lookup markStart {', 'ignore sub @any @source @tone\';',f"sub @source @tone' by {start};",'} markStart;',
+                f'lookup dropAnchor {{ sub @tone by {anchor}; sub {start} by {anchor}; }} dropAnchor;',
+                'lookup chooseAnchor useExtension {']
+        for count in (16,8,4,2):
+            tokens=[start,'@gender']+['@source','@tone','@gender']*(count-2)+['@source','@tone']
+            lines.append('sub '+' '.join(token+"'" for token in tokens)+' lookup dropAnchor;')
+        lines += [f"sub {start}' lookup dropAnchor;",'} chooseAnchor;',
+                  f'lookup resetStart {{ sub {start} by {tones[0]}; }} resetStart;',
+                  'lookup collectRTL useExtension {']
     for bucket in range(5):lines.append(f"rsub @b{bucket} {anchor}' by {active[-bucket%5]};")
     for bucket in range(5):
         for future in range(5):
@@ -55,7 +63,8 @@ def build_prefix(source,info,markers,target):
             lines.append(f"rsub @b{bucket} @tone' @gender @source {active[future]} by {active[value]};")
     lines+=['} collectRTL;','lookup finishPrefix {']
     for a,t in zip(active,tones):lines.append(f'sub {a} by {t};')
-    lines+=['} finishPrefix;','feature ZZZZ { lookup markStart; lookup chooseAnchor; lookup resetStart; lookup collectRTL; lookup finishPrefix; } ZZZZ;']
+    stages='lookup chooseAnchor; lookup collectRTL; lookup finishPrefix;' if blocks else 'lookup markStart; lookup chooseAnchor; lookup resetStart; lookup collectRTL; lookup finishPrefix;'
+    lines+=['} finishPrefix;',f'feature ZZZZ {{ {stages} }} ZZZZ;']
     temp=TTFont();temp.setGlyphOrder(order+names)
     addOpenTypeFeaturesFromString(temp,'\n'.join(lines),tables=['GSUB'])
     extra=deepcopy(temp['GSUB'].table.LookupList.Lookup)
@@ -81,21 +90,29 @@ def build_prefix(source,info,markers,target):
     return dict(path=str(target),sha256=sha256(target.read_bytes()).hexdigest(),temporary_gids=[font.getGlyphID(n) for n in names],hash_stage_indices=[root+s for s in stages])
 
 
-def proof(hb,path,markers,temporary):
-    text='🐈🚗🍎📚💡🐟🏠🚀'*3;checks=[]
+def proof(hb,path,markers,temporary,blocks=False):
+    text='🐈🚗🍎📚💡🐟🏠🚀'*13;checks=[]
     font=TTFont(path);cmap=font.getBestCmap();tone_ids=markers['tone_marker_gids'];values={g:i for i,g in enumerate(tone_ids)}
     shaper=hb.open(path.read_bytes())
     try:
-        for length in (1,2,3,4,7,8,15,16,17,24):
+        for length in (1,2,3,4,7,8,15,16,17,24,31,32,33,97):
             sample=text[:length];buckets=[font.getGlyphID(cmap[ord(c)])%5 for c in sample]
             reach=max(n for n in (1,2,4,8,16) if n<=length)
             expected=[0]*length;expected[reach-1]=-buckets[reach-1]%5
             for i in range(reach-2,-1,-1):expected[i]=(2*expected[i+1]+buckets[i]+1)%5
+            if blocks:
+                offset=0;anchors=[]
+                while offset<length:
+                    size=max(n for n in (1,2,4,8,16) if n<=length-offset)
+                    end=offset+size
+                    expected[end-1]=-buckets[end-1]%5
+                    for i in range(end-2,offset-1,-1):expected[i]=(2*expected[i+1]+buckets[i]+1)%5
+                    offset=end;anchors.append(end)
             glyphs,_=shaper.signature(sample.encode(),False,settings({'expansion','suffix_hash'}))
             actual=[values[g[0]] for g in glyphs if g[0] in values]
             assert actual==expected,(length,actual,expected)
             assert not any(g[0] in temporary for g in glyphs)
-            checks.append(dict(length=length,anchor_source=reach,states=actual))
+            checks.append(dict(length=length,anchor_source=reach,states=actual,**({'anchor_sources':anchors} if blocks else {})))
         glyphs,_=shaper.signature(('🏃'*40).encode(),False,settings(TAGS))
         assert not any(g[0] in set(temporary+tone_ids+markers['gender_marker_gids']) for g in glyphs)
         assert len({g[0] for g in glyphs})>5
@@ -107,20 +124,25 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--site',type=Path,required=True);p.add_argument('--upstream',type=Path,required=True)
     p.add_argument('--work',type=Path,default=Path('build/pass-prefix'));p.add_argument('--output',type=Path,required=True);p.add_argument('--chromium',default='/usr/bin/chromium');p.add_argument('--trials',type=int,default=3)
     p.add_argument('--guard-only',action='store_true',help='Isolate the start-detection guard, without entropy collection')
-    args=p.parse_args();args.work.mkdir(parents=True,exist_ok=True)
+    p.add_argument('--blocks',action='store_true',help='Use disjoint 16-source entropy blocks, without start guard; forward LFSRs stay continuous')
+    args=p.parse_args()
+    if args.blocks and args.guard_only:p.error('--blocks and --guard-only are exclusive')
+    args.work.mkdir(parents=True,exist_ok=True)
     meta=json.loads((args.site/'build.json').read_text());pub='DEImoji-COLRv1.ttf';markers=meta['modifiers'][pub];hb=hbbench.HarfBuzz()
     original=args.site/'fonts'/pub;diagnostic=args.work/'diagnostic.ttf';info=partition(original,meta,pub,diagnostic)
-    prefix=args.work/'prefix.ttf';details=build_prefix(diagnostic,info,markers,prefix);checks=proof(hb,prefix,markers,details['temporary_gids'])
+    prefix=args.work/'prefix.ttf';details=build_prefix(diagnostic,info,markers,prefix,args.blocks);checks=proof(hb,prefix,markers,details['temporary_gids'],args.blocks)
     local=args.work/'local.ttf';seed_variant(diagnostic,info,markers,'local',local)
     guard=args.work/'guard.ttf';f=TTFont(prefix,recalcBBoxes=False,recalcTimestamp=False)
     feature=next(r.Feature for r in f['GSUB'].table.FeatureList.FeatureRecord if r.FeatureTag=='DHSH')
-    feature.LookupListIndex=[details['hash_stage_indices'][i] for i in (0,2)];feature.LookupCount=2
+    feature.LookupListIndex=[details['hash_stage_indices'][i] for i in ((0,2) if not args.blocks else (0,))];feature.LookupCount=len(feature.LookupListIndex)
     f.save(guard);f.close()
     paths=[args.upstream/'Noto-COLRv1.ttf',original,local,prefix,guard]
     configs=[('upstream',0,{'calt':1}),('original_off',1,{'calt':0}),('original_on',1,{'calt':1}),('local_full',2,settings(TAGS)),('prefix_full',3,settings(TAGS)),('prefix_hash_only',3,settings({'expansion','suffix_hash','sweep'}))]
     if args.guard_only:configs=[('guard_full',4,settings(TAGS)),('guard_hash_only',4,settings({'expansion','suffix_hash','sweep'}))]
-    report=dict(guard_only=args.guard_only,source_commit=meta['commit'],harfbuzz=hb.lib.hb_version_string().decode(),trials=args.trials,format='COLRv1',prefix=details,proof=checks,
+    if args.blocks:configs=[(name.replace('prefix','blocks'),i,f) for name,i,f in configs]
+    report=dict(blocks=args.blocks,guard_only=args.guard_only,source_commit=meta['commit'],harfbuzz=hb.lib.hb_version_string().decode(),trials=args.trials,format='COLRv1',prefix=details,proof=checks,
                 method='3200 glyphs, warmed fonts; layout excludes painting. Fresh text per trial prevents paragraph-cache reuse. Prefix anchor at longest available 16/8/4/2/1 source count; no entropy collection beyond anchor.',font_inputs=[dict(path=str(path),sha256=sha256(path.read_bytes()).hexdigest()) for path in paths],cases=[])
+    if args.blocks:report['method']='Disjoint greedy blocks of 16/8/4/2/1 original sources; entire block consumed as input. RTL entropy stops at each unprocessed anchor. Continuous existing forward LFSRs. Three warmed layout trials on 3200 sources; runner browser trials move one explicit male runner near the start to defeat identical-paragraph caching.'
     ids=set(markers['tone_marker_gids']+markers['gender_marker_gids']+details['temporary_gids'])
     server=ThreadingHTTPServer(('127.0.0.1',0),render.Handler);server.fonts={f'/font/{i}.ttf':path for i,path in enumerate(paths)}
     Thread(target=server.serve_forever,daemon=True).start()

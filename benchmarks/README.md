@@ -394,3 +394,46 @@ python web/benchmark_prefix.py --site build/rear-cross-live \
   --upstream build/upstream-fonts --guard-only \
   --output benchmarks/prefix-guard.json
 ```
+
+### Separate entropy blocks; continuous forward LFSRs
+
+[`blocks.json`](blocks.json) uses `benchmark_prefix.py --blocks`. It consumes a
+whole block of 16 expanded source units as lookup input, replacing the last tone
+slot with an anchor. Short tails use longest-first blocks of 8, 4, 2 and 1.
+Anchors are excluded from ordinary tone matching. This uses no start guard and
+no overlapping lookahead windows. Reverse collection stops at each still
+unprocessed anchor, starts the preceding block there, and finally converts all
+temporary states back to ordinary tone states. The existing forward LFSRs remain
+continuous across these blocks; they are not restarted at anchors.
+
+COLRv1, 3,200 source glyphs, three warmed browser layout trials:
+
+| Configuration | Unaffected wrapped | Runners wrapped | Runners one line |
+| --- | ---: | ---: | ---: |
+| upstream | 1.4 ms | 1.4 ms | 1.0 ms |
+| original, calt off | 1.7 ms | 1.4 ms | 1.0 ms |
+| original, calt on | 863.3 ms | 984.7 ms | 19.8 ms |
+| local seeds, full pipeline | 25.5 ms | 935.6 ms | 19.1 ms |
+| block seeds, full pipeline | 18.1 ms | 1,012.8 ms | 21.3 ms |
+| block seeds, expansion/hash/sweep only | 2.9 ms | 2.8 ms | 2.5 ms |
+
+Block seeding leaves 200 safe starts in 3,200 output glyphs: the other 3,000 are
+unsafe within their blocks. A separate 64-source check confirms the safe positions
+are exactly 0, 16, 32 and 48. Thus the seeding pass now provides genuinely separate
+regions and avoids the paragraph-wide wrapping cost on unaffected text. Runner
+feedback still connects all 3,199 boundaries in the full pipeline; it remains
+unchanged for this experiment.
+
+Independent state checks cover singleton, short-tail and multiple-block strings
+through length 97. All temporary glyphs are removed, full-pipeline runners vary,
+and unaffected glyph/position/cluster signatures equal rules-off output through
+length 3,200. Font hashes and all timing samples are in the report. Browser runner
+trials use the same early explicit-runner variation as the prefix benchmark to
+avoid identical-text caching; direct HarfBuzz diagnostics use plain runners.
+This remains a diagnostic implementation; the published font is unchanged.
+
+```sh
+python web/benchmark_prefix.py --site build/rear-cross-live \
+  --upstream build/upstream-fonts --blocks --work build/pass-blocks \
+  --output benchmarks/blocks.json
+```
