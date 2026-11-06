@@ -1,0 +1,1233 @@
+{
+  "source_commit": "15efc48a752231c48c22181c0d80f16bbc144b7e",
+  "harfbuzz": "10.2.0",
+  "trials": 3,
+  "format": "COLRv1",
+  "variants": [
+    {
+      "path": "build/pass-fenced/fenced-16.ttf",
+      "sha256": "92dc9cec856c1d43aa6c5847fe52a44e6e1dfbc6d8268aed54179aa775e6a8ed",
+      "span": 16,
+      "temporary_gids": [
+        42992,
+        42993,
+        42994,
+        42995,
+        42996,
+        42997,
+        42998,
+        42999,
+        43000,
+        43001,
+        43002,
+        43003,
+        43004
+      ],
+      "fence_gid": 43003,
+      "proof": {
+        "lengths_checked": [
+          1,
+          15,
+          16,
+          17,
+          15,
+          16,
+          17,
+          39
+        ],
+        "both_generators_equal_independently_shaped_blocks": true,
+        "private_glyph_cleanup": true,
+        "safe_boundary_indices": [
+          0,
+          16
+        ],
+        "unaffected_signatures_match": true
+      }
+    },
+    {
+      "path": "build/pass-fenced/fenced-32.ttf",
+      "sha256": "d5b3b9c6cd571853db942b831c4d01ea2102d0ce39b92b17ebccf1631b8e58f4",
+      "span": 32,
+      "temporary_gids": [
+        42992,
+        42993,
+        42994,
+        42995,
+        42996,
+        42997,
+        42998,
+        42999,
+        43000,
+        43001,
+        43002,
+        43003,
+        43004,
+        43005
+      ],
+      "fence_gid": 43004,
+      "proof": {
+        "lengths_checked": [
+          1,
+          15,
+          16,
+          17,
+          31,
+          32,
+          33,
+          71
+        ],
+        "both_generators_equal_independently_shaped_blocks": true,
+        "private_glyph_cleanup": true,
+        "safe_boundary_indices": [
+          0,
+          32
+        ],
+        "unaffected_signatures_match": true
+      }
+    },
+    {
+      "path": "build/pass-fenced/fenced-64.ttf",
+      "sha256": "f5b9034ce4df7a1985565136261692b302985ea1dcb58543a68d92e2f5981ddd",
+      "span": 64,
+      "temporary_gids": [
+        42992,
+        42993,
+        42994,
+        42995,
+        42996,
+        42997,
+        42998,
+        42999,
+        43000,
+        43001,
+        43002,
+        43003,
+        43004,
+        43005,
+        43006,
+        43007
+      ],
+      "fence_gid": 43006,
+      "proof": {
+        "lengths_checked": [
+          1,
+          15,
+          16,
+          17,
+          63,
+          64,
+          65,
+          135
+        ],
+        "both_generators_equal_independently_shaped_blocks": true,
+        "private_glyph_cleanup": true,
+        "safe_boundary_indices": [
+          0,
+          64
+        ],
+        "unaffected_signatures_match": true
+      }
+    },
+    {
+      "path": "build/pass-fenced/fenced-128.ttf",
+      "sha256": "369f31db95479034a3d7c5cc962e6e3fa649cab63ab1e6a1cf8096081fca35de",
+      "span": 128,
+      "temporary_gids": [
+        42992,
+        42993,
+        42994,
+        42995,
+        42996,
+        42997,
+        42998,
+        42999,
+        43000,
+        43001,
+        43002,
+        43003,
+        43004,
+        43005,
+        43006,
+        43007,
+        43008,
+        43009,
+        43010,
+        43011
+      ],
+      "fence_gid": 43010,
+      "proof": {
+        "lengths_checked": [
+          1,
+          15,
+          16,
+          17,
+          127,
+          128,
+          129,
+          263
+        ],
+        "both_generators_equal_independently_shaped_blocks": true,
+        "private_glyph_cleanup": true,
+        "safe_boundary_indices": [
+          0,
+          128
+        ],
+        "unaffected_signatures_match": true
+      }
+    }
+  ],
+  "font_inputs": [
+    {
+      "path": "build/upstream-fonts/Noto-COLRv1.ttf",
+      "sha256": "b8e25ea68db82f9e4d0aee921f4420be2be39887bd5c893a2ad98710531f9d0c"
+    },
+    {
+      "path": "build/rear-cross-live/fonts/DEImoji-COLRv1.ttf",
+      "sha256": "ccc4fd925b28744e2d9a8b580a5473908cc2775c9486f2e1094ef384598dfb63"
+    },
+    {
+      "path": "build/pass-fenced/fenced-16.ttf",
+      "sha256": "92dc9cec856c1d43aa6c5847fe52a44e6e1dfbc6d8268aed54179aa775e6a8ed"
+    },
+    {
+      "path": "build/pass-fenced/fenced-32.ttf",
+      "sha256": "d5b3b9c6cd571853db942b831c4d01ea2102d0ce39b92b17ebccf1631b8e58f4"
+    },
+    {
+      "path": "build/pass-fenced/fenced-64.ttf",
+      "sha256": "f5b9034ce4df7a1985565136261692b302985ea1dcb58543a68d92e2f5981ddd"
+    },
+    {
+      "path": "build/pass-fenced/fenced-128.ttf",
+      "sha256": "369f31db95479034a3d7c5cc962e6e3fa649cab63ab1e6a1cf8096081fca35de"
+    }
+  ],
+  "cases": [
+    {
+      "input": "unaffected",
+      "configuration": "upstream",
+      "harfbuzz": {
+        "median_ms": 0.1581,
+        "min_batch_ms": 0.1261,
+        "max_batch_ms": 0.2274,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 0
+      },
+      "wrapped": {
+        "median_layout_ms": 1.7000000178813934,
+        "samples": [
+          {
+            "forced_layout_ms": 2,
+            "two_raf_latency_ms": 38.69999998807907,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1.7000000178813934,
+            "two_raf_latency_ms": 50,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1.5,
+            "two_raf_latency_ms": 39,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 0.9000000059604645,
+        "samples": [
+          {
+            "forced_layout_ms": 0.9000000059604645,
+            "two_raf_latency_ms": 29,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 0.9000000059604645,
+            "two_raf_latency_ms": 29.19999998807907,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 1.0999999940395355,
+            "two_raf_latency_ms": 29.5,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "unaffected",
+      "configuration": "original_off",
+      "harfbuzz": {
+        "median_ms": 0.1267,
+        "min_batch_ms": 0.1222,
+        "max_batch_ms": 0.1379,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 0
+      },
+      "wrapped": {
+        "median_layout_ms": 1.4000000059604645,
+        "samples": [
+          {
+            "forced_layout_ms": 1.4000000059604645,
+            "two_raf_latency_ms": 35.5,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1.7000000178813934,
+            "two_raf_latency_ms": 33.20000001788139,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1,
+            "two_raf_latency_ms": 44.30000001192093,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 0.9000000059604645,
+        "samples": [
+          {
+            "forced_layout_ms": 0.800000011920929,
+            "two_raf_latency_ms": 11.900000005960464,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 0.9000000059604645,
+            "two_raf_latency_ms": 30.099999994039536,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 1,
+            "two_raf_latency_ms": 30.30000001192093,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "unaffected",
+      "configuration": "original_on",
+      "harfbuzz": {
+        "median_ms": 15.2678,
+        "min_batch_ms": 15.1064,
+        "max_batch_ms": 15.4009,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3199
+      },
+      "wrapped": {
+        "median_layout_ms": 823.5,
+        "samples": [
+          {
+            "forced_layout_ms": 819,
+            "two_raf_latency_ms": 820.1000000238419,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 823.5,
+            "two_raf_latency_ms": 824.5999999940395,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 827.4000000059605,
+            "two_raf_latency_ms": 828.4000000059605,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 17.5,
+        "samples": [
+          {
+            "forced_layout_ms": 17.5,
+            "two_raf_latency_ms": 22,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 17.69999998807907,
+            "two_raf_latency_ms": 27.5,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 16.299999982118607,
+            "two_raf_latency_ms": 29.5,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "unaffected",
+      "configuration": "fenced_16",
+      "harfbuzz": {
+        "median_ms": 15.6283,
+        "min_batch_ms": 15.6061,
+        "max_batch_ms": 16.6433,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3000
+      },
+      "wrapped": {
+        "median_layout_ms": 18,
+        "samples": [
+          {
+            "forced_layout_ms": 18,
+            "two_raf_latency_ms": 61.30000001192093,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 17.100000023841858,
+            "two_raf_latency_ms": 23.80000001192093,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 23.599999994039536,
+            "two_raf_latency_ms": 24.5,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 18.400000005960464,
+        "samples": [
+          {
+            "forced_layout_ms": 20.099999994039536,
+            "two_raf_latency_ms": 29.30000001192093,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 18.400000005960464,
+            "two_raf_latency_ms": 30.400000005960464,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 18.200000017881393,
+            "two_raf_latency_ms": 29.599999994039536,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "unaffected",
+      "configuration": "fenced_32",
+      "harfbuzz": {
+        "median_ms": 17.1749,
+        "min_batch_ms": 17.1373,
+        "max_batch_ms": 17.177,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3100
+      },
+      "wrapped": {
+        "median_layout_ms": 17.899999976158142,
+        "samples": [
+          {
+            "forced_layout_ms": 17.19999998807907,
+            "two_raf_latency_ms": 56.69999998807907,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 18.399999976158142,
+            "two_raf_latency_ms": 26.299999982118607,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 17.899999976158142,
+            "two_raf_latency_ms": 24.599999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 17.599999994039536,
+        "samples": [
+          {
+            "forced_layout_ms": 17.599999994039536,
+            "two_raf_latency_ms": 26.30000001192093,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 17.099999994039536,
+            "two_raf_latency_ms": 29.799999982118607,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 22.19999998807907,
+            "two_raf_latency_ms": 29.599999994039536,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "unaffected",
+      "configuration": "fenced_64",
+      "harfbuzz": {
+        "median_ms": 17.6297,
+        "min_batch_ms": 16.9023,
+        "max_batch_ms": 18.3405,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3150
+      },
+      "wrapped": {
+        "median_layout_ms": 53.5,
+        "samples": [
+          {
+            "forced_layout_ms": 55.599999994039536,
+            "two_raf_latency_ms": 56.5,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 53.5,
+            "two_raf_latency_ms": 54.5,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 51.900000005960464,
+            "two_raf_latency_ms": 53.099999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 17.600000023841858,
+        "samples": [
+          {
+            "forced_layout_ms": 17.299999982118607,
+            "two_raf_latency_ms": 29.399999976158142,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 18.69999998807907,
+            "two_raf_latency_ms": 29.599999994039536,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 17.600000023841858,
+            "two_raf_latency_ms": 29.600000023841858,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "unaffected",
+      "configuration": "fenced_128",
+      "harfbuzz": {
+        "median_ms": 16.9479,
+        "min_batch_ms": 16.8852,
+        "max_batch_ms": 17.4772,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3175
+      },
+      "wrapped": {
+        "median_layout_ms": 59.20000001788139,
+        "samples": [
+          {
+            "forced_layout_ms": 61.70000001788139,
+            "two_raf_latency_ms": 62.80000001192093,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 58.60000002384186,
+            "two_raf_latency_ms": 59.5,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 59.20000001788139,
+            "two_raf_latency_ms": 60.30000001192093,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 18.69999998807907,
+        "samples": [
+          {
+            "forced_layout_ms": 16.69999998807907,
+            "two_raf_latency_ms": 20.599999994039536,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 19.69999998807907,
+            "two_raf_latency_ms": 29.19999998807907,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 18.69999998807907,
+            "two_raf_latency_ms": 29,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "unaffected",
+      "configuration": "fenced_64_hash_only",
+      "harfbuzz": {
+        "median_ms": 1.6914,
+        "min_batch_ms": 1.6748,
+        "max_batch_ms": 1.7055,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3150
+      },
+      "wrapped": {
+        "median_layout_ms": 5.100000023841858,
+        "samples": [
+          {
+            "forced_layout_ms": 7.100000023841858,
+            "two_raf_latency_ms": 42,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 5.0999999940395355,
+            "two_raf_latency_ms": 34.099999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 5.100000023841858,
+            "two_raf_latency_ms": 41.60000002384186,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 2.9000000059604645,
+        "samples": [
+          {
+            "forced_layout_ms": 3.7000000178813934,
+            "two_raf_latency_ms": 29.5,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 2.9000000059604645,
+            "two_raf_latency_ms": 28.700000017881393,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 2.4000000059604645,
+            "two_raf_latency_ms": 29,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "runners",
+      "configuration": "upstream",
+      "harfbuzz": {
+        "median_ms": 0.244,
+        "min_batch_ms": 0.2421,
+        "max_batch_ms": 0.2492,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 0
+      },
+      "wrapped": {
+        "median_layout_ms": 1.5,
+        "samples": [
+          {
+            "forced_layout_ms": 1.5,
+            "two_raf_latency_ms": 41.599999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1.5999999940395355,
+            "two_raf_latency_ms": 31.599999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1.2999999821186066,
+            "two_raf_latency_ms": 30.599999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 1.0999999940395355,
+        "samples": [
+          {
+            "forced_layout_ms": 1.199999988079071,
+            "two_raf_latency_ms": 30.400000005960464,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 1.0999999940395355,
+            "two_raf_latency_ms": 29.899999976158142,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 1.0999999940395355,
+            "two_raf_latency_ms": 29.80000001192093,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "runners",
+      "configuration": "original_off",
+      "harfbuzz": {
+        "median_ms": 0.2423,
+        "min_batch_ms": 0.2418,
+        "max_batch_ms": 0.2452,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 0
+      },
+      "wrapped": {
+        "median_layout_ms": 1.300000011920929,
+        "samples": [
+          {
+            "forced_layout_ms": 1.300000011920929,
+            "two_raf_latency_ms": 46.099999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1.600000023841858,
+            "two_raf_latency_ms": 40.10000002384186,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1.100000023841858,
+            "two_raf_latency_ms": 30.600000023841858,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 1.0999999940395355,
+        "samples": [
+          {
+            "forced_layout_ms": 1.0999999940395355,
+            "two_raf_latency_ms": 29.19999998807907,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 1.199999988079071,
+            "two_raf_latency_ms": 30,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 1,
+            "two_raf_latency_ms": 29.80000001192093,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "runners",
+      "configuration": "original_on",
+      "harfbuzz": {
+        "median_ms": 19.2711,
+        "min_batch_ms": 18.866,
+        "max_batch_ms": 19.8675,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3199
+      },
+      "wrapped": {
+        "median_layout_ms": 1005.1999999880791,
+        "samples": [
+          {
+            "forced_layout_ms": 983.0999999940395,
+            "two_raf_latency_ms": 984,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1005.1999999880791,
+            "two_raf_latency_ms": 1006.6999999880791,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 1065.699999988079,
+            "two_raf_latency_ms": 1067.699999988079,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 19.099999994039536,
+        "samples": [
+          {
+            "forced_layout_ms": 19.399999976158142,
+            "two_raf_latency_ms": 20,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 19,
+            "two_raf_latency_ms": 27.19999998807907,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 19.099999994039536,
+            "two_raf_latency_ms": 29.30000001192093,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "runners",
+      "configuration": "fenced_16",
+      "harfbuzz": {
+        "median_ms": 20.4882,
+        "min_batch_ms": 20.3762,
+        "max_batch_ms": 21.3129,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3000
+      },
+      "wrapped": {
+        "median_layout_ms": 29.599999994039536,
+        "samples": [
+          {
+            "forced_layout_ms": 23.69999998807907,
+            "two_raf_latency_ms": 63.099999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 49.400000005960464,
+            "two_raf_latency_ms": 50.400000005960464,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 29.599999994039536,
+            "two_raf_latency_ms": 30.69999998807907,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 22.599999994039536,
+        "samples": [
+          {
+            "forced_layout_ms": 22.599999994039536,
+            "two_raf_latency_ms": 23.30000001192093,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 21.69999998807907,
+            "two_raf_latency_ms": 26.299999982118607,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 22.799999982118607,
+            "two_raf_latency_ms": 29.899999976158142,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "runners",
+      "configuration": "fenced_32",
+      "harfbuzz": {
+        "median_ms": 20.7798,
+        "min_batch_ms": 19.7886,
+        "max_batch_ms": 20.9696,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3100
+      },
+      "wrapped": {
+        "median_layout_ms": 19.400000005960464,
+        "samples": [
+          {
+            "forced_layout_ms": 22.5,
+            "two_raf_latency_ms": 30,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 19.30000001192093,
+            "two_raf_latency_ms": 51.70000001788139,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 19.400000005960464,
+            "two_raf_latency_ms": 50.60000002384186,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 20.099999994039536,
+        "samples": [
+          {
+            "forced_layout_ms": 22.099999994039536,
+            "two_raf_latency_ms": 25.799999982118607,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 19.900000005960464,
+            "two_raf_latency_ms": 29.19999998807907,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 20.099999994039536,
+            "two_raf_latency_ms": 30,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "runners",
+      "configuration": "fenced_64",
+      "harfbuzz": {
+        "median_ms": 21.2486,
+        "min_batch_ms": 19.5156,
+        "max_batch_ms": 21.2546,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3150
+      },
+      "wrapped": {
+        "median_layout_ms": 61.80000001192093,
+        "samples": [
+          {
+            "forced_layout_ms": 66,
+            "two_raf_latency_ms": 67.19999998807907,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 61.80000001192093,
+            "two_raf_latency_ms": 62.70000001788139,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 56.30000001192093,
+            "two_raf_latency_ms": 57.599999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 21,
+        "samples": [
+          {
+            "forced_layout_ms": 21,
+            "two_raf_latency_ms": 21.599999994039536,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 20.200000017881393,
+            "two_raf_latency_ms": 20.700000017881393,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 21.30000001192093,
+            "two_raf_latency_ms": 23.400000005960464,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "runners",
+      "configuration": "fenced_128",
+      "harfbuzz": {
+        "median_ms": 19.8743,
+        "min_batch_ms": 19.5893,
+        "max_batch_ms": 21.0681,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3175
+      },
+      "wrapped": {
+        "median_layout_ms": 82.40000000596046,
+        "samples": [
+          {
+            "forced_layout_ms": 90.2999999821186,
+            "two_raf_latency_ms": 91.2999999821186,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 82.40000000596046,
+            "two_raf_latency_ms": 83.40000000596046,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 79.5,
+            "two_raf_latency_ms": 80.60000002384186,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 20.400000005960464,
+        "samples": [
+          {
+            "forced_layout_ms": 20.299999982118607,
+            "two_raf_latency_ms": 30,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 20.400000005960464,
+            "two_raf_latency_ms": 29.900000005960464,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 21.599999994039536,
+            "two_raf_latency_ms": 29.69999998807907,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    },
+    {
+      "input": "runners",
+      "configuration": "fenced_64_hash_only",
+      "harfbuzz": {
+        "median_ms": 2.1445,
+        "min_batch_ms": 2.0858,
+        "max_batch_ms": 2.1922,
+        "glyphs": 3200,
+        "private_markers_remaining": 0,
+        "unsafe_to_break_glyphs": 3150
+      },
+      "wrapped": {
+        "median_layout_ms": 7.200000017881393,
+        "samples": [
+          {
+            "forced_layout_ms": 7.0999999940395355,
+            "two_raf_latency_ms": 46.599999994039536,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 7.700000017881393,
+            "two_raf_latency_ms": 40.900000005960464,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          },
+          {
+            "forced_layout_ms": 7.200000017881393,
+            "two_raf_latency_ms": 41.5,
+            "height": 4000,
+            "scroll_width": 1280,
+            "all_visible": true
+          }
+        ]
+      },
+      "nowrap": {
+        "median_layout_ms": 3.800000011920929,
+        "samples": [
+          {
+            "forced_layout_ms": 3.2999999821186066,
+            "two_raf_latency_ms": 29.399999976158142,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 4.5,
+            "two_raf_latency_ms": 27.700000017881393,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          },
+          {
+            "forced_layout_ms": 3.800000011920929,
+            "two_raf_latency_ms": 28,
+            "height": 40,
+            "scroll_width": 127500,
+            "all_visible": false
+          }
+        ]
+      }
+    }
+  ],
+  "method": "3200 glyphs; same warmed layout harness as prefix benchmark. Browser runner trials move one explicit male runner near start; HB uses plain runners. Fences persist through both generators and are swept before folding.",
+  "chromium": "154.0.8037.57"
+}

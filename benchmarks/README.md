@@ -437,3 +437,61 @@ python web/benchmark_prefix.py --site build/rear-cross-live \
   --upstream build/upstream-fonts --blocks --work build/pass-blocks \
   --output benchmarks/blocks.json
 ```
+
+### Fences retained through both LFSRs
+
+[`fenced.json`](fenced.json) tests entropy blocks of 16, 32, 64 and 128 source
+units with a real private fence after each complete block. Fences stay in the
+buffer during gender seeding and both forward feedback passes. They are outside
+all feedback classes, so backtracking cannot cross them. A dedicated lookup
+removes fences before folding, ahead of the existing modifier assembly rules.
+No visible source characters or Unicode sentinels are added.
+
+Long blocks are formed by phasing the existing 16-source anchors. A forward
+phase pass recognizes up to eight successive anchors, then starts a fresh phase
+cycle without a successful backward match across that cycle boundary. This
+avoids exceeding HarfBuzz's input-context length limit by trying to consume all
+128 expanded units in one match. RTL entropy passes through intermediate phase
+markers and resets at terminal ones. The final complete-block endpoint retains
+its entropy state while a separate fence is inserted after its gender slot, so
+the endpoint's own tone/gender feedback remains eligible. Short tails receive
+available entropy; at span 16 they retain the greedy 8/4/2/1 tail partitions.
+
+COLRv1, 3,200 source glyphs, three warmed browser layout trials:
+
+| Configuration | Unaffected wrapped | Runners wrapped | Runners one line |
+| --- | ---: | ---: | ---: |
+| upstream | 1.7 ms | 1.5 ms | 1.1 ms |
+| original, calt off | 1.4 ms | 1.3 ms | 1.1 ms |
+| original, calt on | 823.5 ms | 1,005.2 ms | 19.1 ms |
+| fenced 16 | 18.0 ms | 29.6 ms | 22.6 ms |
+| fenced 32 | 17.9 ms | 19.4 ms | 20.1 ms |
+| fenced 64 | 53.5 ms | 61.8 ms | 21.0 ms |
+| fenced 128 | 59.2 ms | 82.4 ms | 20.4 ms |
+| fenced 64, seeding only | 5.1 ms | 7.2 ms | 3.8 ms |
+
+The 32-source configuration removes most of the runner wrapping penalty. Larger
+blocks still bound the cost, but force more reshaping around each line break.
+These measurements do not trace individual browser reshape calls, and small
+ordering differences such as 16 versus 32 should not be overinterpreted from
+three trials. Raw samples are retained in the report.
+
+Verification independently computes seed states for short tails and multiple
+blocks, compares both generators' raw states against separately shaped blocks,
+and checks final safe boundaries occur exactly at block starts. Two-block runner
+checks have safe indices `[0, span]` for every tested span. Private glyph cleanup
+passes on all benchmark inputs, and unaffected glyph/position/cluster signatures
+match rules-off shaping through length 3,200. Fencing restarts the generators:
+identical equally sized blocks can repeat their output, rather than preserving
+the original whole-run period. This is an experiment, not a published font change.
+
+As in the prefix benchmark, browser runner trials move one explicit male runner
+near the start to prevent identical-text paragraph caching; direct HarfBuzz
+measurements use unmodified runners. The browser tests measure layout separately
+from painting. Font hashes, HarfBuzz/Chromium versions and proof results are in
+the checked-in report.
+
+```sh
+python web/benchmark_fenced.py --site build/rear-cross-live \
+  --upstream build/upstream-fonts --output benchmarks/fenced.json
+```
