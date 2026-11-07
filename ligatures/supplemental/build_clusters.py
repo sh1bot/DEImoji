@@ -138,34 +138,63 @@ def party(source, variant):
     return result
 
 
-def burst(stage,cx,cy):
+def burst(variant,cx,cy):
+    """Five different launches: ignition, bloom, opening, willow, fading embers."""
     group=ET.Element(T('g'))
-    colors=('#F48FB1','#4FC3F7','#FFD54F','#FF8A80')
+    palettes=(('#FFF59D','#FFD54F','#FFB300'),('#FFB3DE','#F062C0','#CE48A0'),
+              ('#C5F6FF','#4FC3F7','#039BE5'),('#DCE775','#AED581','#66BB6A'),
+              ('#FFCCBC','#FF8A65','#EF5350'))
+    colors=palettes[variant]
     def path(d,color,width):
         ET.SubElement(group,T('path'),d=d,fill='none',stroke=color,
                       attrib={'stroke-width':str(width),'stroke-linecap':'round'})
-    if stage=='opening':
-        # Compact straight jets and a brilliant core, before the long trails.
-        for i in range(18):
-            a=2*math.pi*i/18+.14+(i%3-1)*.035
-            r=19+(i%4)*3
-            x,y=math.cos(a),math.sin(a)
-            path(f'M{cx+x*8:.2f} {cy+y*8:.2f} Q{cx+x*r*.72-y*2:.2f} {cy+y*r*.72+x*2:.2f} {cx+x*r:.2f} {cy+y*r:.2f}',colors[i%4],2.8)
-            if i%3==0:
-                ET.SubElement(group,T('circle'),cx=f'{cx+x*(r+4):.2f}',cy=f'{cy+y*(r+4):.2f}',r='1.3',fill='#FFF9C4')
-        ET.SubElement(group,T('circle'),cx=str(cx),cy=str(cy),r='4',fill='#FFF9C4')
-        path(f'M{cx} {cy+39} Q{cx-4} {cy+55} {cx-1} {cy+67}','#FFD54F',2)
-    else:
-        # The core has burnt out; separated sparks curve down under gravity.
-        for i in range(16):
-            a=2*math.pi*i/16-.2
-            x,y=math.cos(a),math.sin(a)
-            r=23+(i%3)*3
-            x0,y0=cx+x*r,cy+y*r
-            x1,y1=cx+x*(r+8),cy+y*(r+8)+14
-            path(f'M{x0:.2f} {y0:.2f} Q{cx+x*(r+7):.2f} {cy+y*(r+7):.2f} {x1:.2f} {y1:.2f}',colors[i%4],2.8)
-            ET.SubElement(group,T('circle'),cx=f'{x1:.2f}',cy=f'{y1+6:.2f}',r='1.6',fill='#FFF9C4')
+    count=(12,24,18,20,13)[variant]
+    for i in range(count):
+        a=2*math.pi*i/count+variant*.21
+        x,y=math.cos(a),math.sin(a)
+        r=(15,29,22,29,31)[variant]+(i%3)*2
+        if variant==0:
+            path(f'M{cx+x*4:.2f} {cy+y*4:.2f} L{cx+x*r:.2f} {cy+y*r:.2f}',colors[i%3],2.8)
+        elif variant in (1,2):
+            start=6 if variant==1 else 10
+            path(f'M{cx+x*start:.2f} {cy+y*start:.2f} Q{cx+x*r*.7-y*3:.2f} {cy+y*r*.7+x*3:.2f} {cx+x*r:.2f} {cy+y*r:.2f}',colors[i%3],3 if variant==1 else 2.5)
+            ET.SubElement(group,T('circle'),cx=f'{cx+x*(r+5):.2f}',cy=f'{cy+y*(r+5):.2f}',r='1.4',fill=colors[0])
+        elif variant==3:
+            path(f'M{cx+x*7:.2f} {cy+y*7:.2f} Q{cx+x*r:.2f} {cy+y*r-7:.2f} {cx+x*r*1.05:.2f} {cy+y*r+22:.2f}',colors[i%3],2.5)
+            ET.SubElement(group,T('circle'),cx=f'{cx+x*r*1.05:.2f}',cy=f'{cy+y*r+27:.2f}',r='1.1',fill=colors[0])
+        else:
+            path(f'M{cx+x*r:.2f} {cy+y*r:.2f} q{x*4:.2f} {y*4+3:.2f} {x*6:.2f} {y*6+9:.2f}',colors[i%3],2.3)
+            ET.SubElement(group,T('circle'),cx=f'{cx+x*(r+7):.2f}',cy=f'{cy+y*(r+7)+15:.2f}',r='1.5',fill=colors[(i+1)%3])
+    if variant in (0,1,2):
+        ET.SubElement(group,T('circle'),cx=str(cx),cy=str(cy),r=str((4,2,3)[variant]),fill=colors[0])
+    if variant in (0,2):path(f'M{cx} {cy+25} Q{cx-5} {cy+43} {cx-2} {cy+58}',colors[1],1.7)
     return group
+
+
+def fireworks(count,position='isolated'):
+    width={2:188,3:250}[count]
+    root=ET.Element(T('svg'),width=str(width),height='128',viewBox=f'0 0 {width} 128')
+    defs=ET.SubElement(root,T('defs'))
+    gradient=ET.SubElement(defs,T('linearGradient'),id='sky',x1='0',y1='0',x2='0',y2='128',gradientUnits='userSpaceOnUse')
+    for offset,color in (('0','#171728'),('.46','#064D90'),('1','#102137')):
+        ET.SubElement(gradient,T('stop'),offset=offset,attrib={'stop-color':color})
+    left=position in ('isolated','start');right=position in ('isolated','end')
+    x0,x1,y0,y1,r=(3.8 if left else 0),(width-3.8 if right else width),3.87,124.22,7.52
+    d=f'M{x0+r if left else x0} {y0} H{x1-r if right else x1} '
+    d+=f'Q{x1} {y0} {x1} {y0+r} V{y1-r} Q{x1} {y1} {x1-r} {y1} ' if right else f'V{y1} '
+    d+=f'H{x0+r if left else x0} '
+    d+=f'Q{x0} {y1} {x0} {y1-r} V{y0+r} Q{x0} {y0} {x0+r} {y0} Z' if left else f'V{y0} Z'
+    ET.SubElement(root,T('path'),d=d,fill='url(#sky)')
+    clip=ET.SubElement(defs,T('clipPath'),id='skyclip');ET.SubElement(clip,T('path'),d=d)
+    for side,enabled in (('left',left),('right',right)):
+        if not enabled:continue
+        grad=ET.SubElement(defs,T('linearGradient'),id=side,x1='0' if side=='left' else '1',y1='0',x2='1' if side=='left' else '0',y2='0')
+        ET.SubElement(grad,T('stop'),offset='0',attrib={'stop-color':'#171728','stop-opacity':'.65'})
+        ET.SubElement(grad,T('stop'),offset='1',attrib={'stop-color':'#171728','stop-opacity':'0'})
+        ET.SubElement(root,T('rect'),x=str(x0 if side=='left' else x1-22),y=str(y0),width='22',height=str(y1-y0),fill=f'url(#{side})',attrib={'clip-path':'url(#skyclip)'})
+    for variant,cx,cy in (((0,45,42),(1,141,71)) if count==2 else ((2,43,44),(3,124,58),(4,207,48))):
+        root.append(burst(variant,cx,cy))
+    return root
 
 
 def compose(family, count):
@@ -181,16 +210,7 @@ def compose(family, count):
                       ('translate(72 0) scale(.72)', 'translate(-10 10) scale(.94)',
                        'translate(116 7) scale(.96)'))
     elif family == 'fireworks':
-        # Stretch only the background. Bursts retain circular proportions.
-        root.append(copy_art(source,f'{family}{count}_sky_',f'scale({width/128} 1)',range(2,len(source))))
-        if count==2:
-            root.append(copy_art(source,'fireworks2_full_','translate(-2 9) scale(.90)',(0,1)))
-            root.append(burst('opening',143,43))
-        else:
-            root.append(burst('falling',45,51))
-            root.append(copy_art(source,'fireworks3_full_','translate(63 3) scale(.94)',(0,1)))
-            root.append(burst('opening',211,39))
-        return root
+        return fireworks(count)
     elif family == 'popper':
         placements = (('translate(59 -1) scale(.96) rotate(8 64 64)',
                        'translate(-1 8) scale(.94) rotate(-5 64 64)') if count==2 else
@@ -240,6 +260,13 @@ def main():
                                 style='font:14px sans-serif;fill:#333')
             label.text=f'{family} × {count}'
             entries.append(dict(name=name,codepoint=cp,size=count))
+    for count in (2,3):
+        for position in ('start','middle','end'):
+            name=f'fireworks{count}_{position}'
+            svg=fireworks(count,position);path=ART/'svg'/f'{name}.svg'
+            ET.ElementTree(svg).write(path,encoding='utf-8',xml_declaration=True)
+            subprocess.run(['inkscape',str(path),'--export-height=128','--export-filename='+str(ART/'png/128'/f'{name}.png')],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            entries.append(dict(name=name,codepoint=0x1F386,size=count,position=position))
     ET.ElementTree(gallery).write(work/'gallery.svg')
     subprocess.run(['inkscape',str(work/'gallery.svg'),'--export-filename='+str(ART/'preview.png')],check=True,
                    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -279,7 +306,7 @@ wght = 400
     subprocess.run([sys.executable,'-m','nanoemoji.nanoemoji','--build_dir',str(work/'colr'),str(config)],check=True,env=env)
     shutil.copyfile(work/'colr/Clusters-COLRv1.ttf',ART/'Clusters-COLRv1.ttf')
     files=sorted(p for p in ART.rglob('*') if p.is_file() and p.name!='manifest.json')
-    manifest=dict(version=1,style='noto-fixed-clusters-v1',source_commit=ORIGIN,entries=entries,
+    manifest=dict(version=2,style='noto-fixed-clusters-v2',source_commit=ORIGIN,entries=entries,
                   files={str(p.relative_to(ART)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files})
     (ART/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 

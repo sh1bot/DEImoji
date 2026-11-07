@@ -6,14 +6,16 @@ from fontTools.ttLib.tables import otTables as ot
 
 ART = Path(__file__).resolve().parent/'ligatures/supplemental/clusters'
 FAMILIES = {'headstone':0x1FAA6, 'fireworks':0x1F386, 'popper':0x1F389, 'fire':0x1F525}
-NAMES = tuple(f'{family}{size}' for family in FAMILIES for size in (2,3))
+BASE_NAMES = tuple(f'{family}{size}' for family in FAMILIES for size in (2,3))
+JOIN_NAMES = tuple(f'fireworks{size}_{position}' for size in (2,3) for position in ('start','middle','end'))
+NAMES = BASE_NAMES + JOIN_NAMES
 # Close the margins between silhouettes, leaving singleton-singleton untouched.
-OVERLAP = {0x1FAA6:.28, 0x1F386:.025, 0x1F389:.08, 0x1F525:.22}
+OVERLAP = {0x1FAA6:.28, 0x1F386:79/1024, 0x1F389:.08, 0x1F525:.22}
 
 
 def verify_bundle():
     manifest=json.loads((ART/'manifest.json').read_text())
-    if manifest['version'] != 1 or [e['name'] for e in manifest['entries']] != list(NAMES):
+    if manifest['version'] != 2 or [e['name'] for e in manifest['entries']] != list(NAMES):
         raise ValueError('Unknown fixed-cluster artwork bundle')
     for name,expected in manifest['files'].items():
         if hashlib.sha256((ART/name).read_bytes()).hexdigest()!=expected:
@@ -28,7 +30,7 @@ def add_fixed_cluster_artwork(font):
         return None
     if any(g.startswith('DEImojiFixed') for g in font.getGlyphOrder()):
         raise ValueError('Fixed artwork requires a clean baseline')
-    info=dict(version=1,bundle=verify_bundle(),style='noto-fixed-clusters-v1',
+    info=dict(version=2,bundle=verify_bundle(),style='noto-fixed-clusters-v2',
               original_glyph_count=len(font.getGlyphOrder()),
               advance_max=font['hhea'].advanceWidthMax,
               bounds={k:getattr(font['head'],k) for k in ('xMin','yMin','xMax','yMax')},
@@ -51,13 +53,14 @@ def add_fixed_cluster_artwork(font):
             entries.append(dict(name=f'{family}{size}',codepoint=cp,size=size,gid=font.getGlyphID(output)))
         table.ligatures[base].sort(key=lambda lig:-len(lig.Component))
     info['entries']=entries
+    info['joining_gids']={name:font.getGlyphID(output) for name,output in zip(JOIN_NAMES,outputs[len(BASE_NAMES):])}
     info['glyph_count']=len(font.getGlyphOrder())-info['original_glyph_count']
     return info
 
 
 def remove_fixed_cluster_artwork(font,info):
     from supplemental_artwork import _tables, _remove_artwork_tail
-    if info['version']!=1:
+    if info['version'] not in (1,2):
         raise ValueError('Unknown fixed-cluster metadata')
     order=font.getGlyphOrder()
     expected={order[e['gid']]:(font.getBestCmap()[e['codepoint']],e['size']) for e in info['entries']}
@@ -77,4 +80,28 @@ def remove_fixed_cluster_artwork(font,info):
                 del table.ligatures[base]
     if found!=set(expected):
         raise ValueError('Remove contextual cluster rules before artwork')
-    _remove_artwork_tail(font,info,set(expected))
+    outputs=set(expected)|{order[gid] for gid in info.get('joining_gids',{}).values()}
+    _remove_artwork_tail(font,info,outputs)
+
+
+def firework_join_names(font):
+    names={name:'DEImojiFixed'+name.title() for name in ('fireworks2','fireworks3',*JOIN_NAMES)}
+    return names if set(names.values()).issubset(font.getGlyphOrder()) else {}
+
+
+def firework_join_source(font):
+    names=firework_join_names(font)
+    if not names:return '',[]
+    lines=['@fireworkJoined = ['+' '.join(names.values())+'];']
+    for size in (2,3):
+        base=names[f'fireworks{size}'];end=names[f'fireworks{size}_end']
+        start=names[f'fireworks{size}_start'];middle=names[f'fireworks{size}_middle']
+        lines += [f'lookup fireLeft{size} {{ sub {base} by {end}; }} fireLeft{size};',
+                  f'lookup fireRight{size} {{ sub {base} by {start}; sub {end} by {middle}; }} fireRight{size};']
+    lines += ['lookup fireJoinLeft {']
+    for size in (2,3):lines.append(f"sub @fireworkJoined {names[f'fireworks{size}']}' lookup fireLeft{size};")
+    lines += ['} fireJoinLeft;','lookup fireJoinRight {']
+    for size in (2,3):
+        for ending in ('','_end'):lines.append(f"sub {names[f'fireworks{size}'+ending]}' lookup fireRight{size} @fireworkJoined;")
+    lines += ['} fireJoinRight;']
+    return '\n'.join(lines),['fireJoinLeft','fireJoinRight']

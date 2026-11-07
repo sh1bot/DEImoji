@@ -886,5 +886,28 @@ class DecorativeClusterTests(unittest.TestCase):
             self.assertEqual(tuple(map(int,svg.get('viewBox').split())),(0,0,w,h))
             self.assertTrue(136<w<=255 and h==128)
 
+
+class FireworkJoinTests(unittest.TestCase):
+    def test_start_middle_end_and_separators(self):
+        from fixed_cluster_artwork import firework_join_names,firework_join_source,JOIN_NAMES
+        names=['DEImojiFixed'+n.title() for n in ('fireworks2','fireworks3',*JOIN_NAMES)]
+        glyphs=['.notdef','space']+names
+        fb=FontBuilder(1024,isTTF=True);fb.setupGlyphOrder(glyphs)
+        fb.setupCharacterMap({32:'space',97:names[0],98:names[1]})
+        fb.setupGlyf({g:TTGlyphPen(None).glyph() for g in glyphs});fb.setupHorizontalMetrics({g:(1000,0) for g in glyphs})
+        fb.setupHorizontalHeader(ascent=950,descent=-250)
+        fb.setupNameTable({'familyName':'Fireworks Test','styleName':'Regular'})
+        fb.setupOS2();fb.setupPost();fb.setupMaxp();font=fb.font
+        source,roots=firework_join_source(font)
+        addOpenTypeFeaturesFromString(font,'languagesystem DFLT dflt;\n'+source+'\nfeature calt { '+''.join('lookup '+r+';' for r in roots)+' } calt;')
+        n=firework_join_names(font)
+        for text,expected in [('a',['fireworks2']),('b',['fireworks3']),
+                              ('ab',['fireworks2_start','fireworks3_end']),
+                              ('baa',['fireworks3_start','fireworks2_middle','fireworks2_end']),
+                              ('aaaa',['fireworks2_start','fireworks2_middle','fireworks2_middle','fireworks2_end'])]:
+            self.assertEqual(shape(font,text),[n[k] for k in expected])
+            self.assertEqual(shape(font,text,calt=False),[n['fireworks2' if c=='a' else 'fireworks3'] for c in text])
+        self.assertEqual(shape(font,'a ab b'),[n['fireworks2'],'space',n['fireworks2_start'],n['fireworks3_end'],'space',n['fireworks3']])
+
 if __name__ == '__main__':
     unittest.main()

@@ -159,6 +159,16 @@ def check_font_package(site):
                 expected.extend(base if size==1 else outputs[cp,size] for size in reference(n))
                 expected.append(cmap[32])
             expected=reference_cluster_stream(font,plain)
+            if cp==0x1F386:
+                joins={f'fireworks{n}':outputs[cp,n] for n in (2,3)}
+                joins.update({key:order[gid] for key,gid in fixed['joining_gids'].items()})
+                reverse={joins[f'fireworks{n}']:n for n in (2,3)}
+                raw=expected[:]
+                for i,glyph in enumerate(raw):
+                    if glyph not in reverse:continue
+                    left=i>0 and raw[i-1] in reverse;right=i+1<len(raw) and raw[i+1] in reverse
+                    position='_middle' if left and right else '_end' if left else '_start' if right else ''
+                    expected[i]=joins[f'fireworks{reverse[glyph]}'+position]
             assert shape(font,text)==expected, ('decorative LFSR grouping',name,cp)
             assert shape(font,text,calt=False)==plain
         mixed_text='💩'*23+'🌻'*40+'🎉'*21+'🔥'*40
@@ -167,6 +177,9 @@ def check_font_package(site):
         # Startup follows the last observed bit, rather than repeating four trios.
         for cp in FIXED_FAMILIES.values():
             actual36=shape(font,chr(cp)*36)
+            if cp==0x1F386:
+                isolated={order[gid]:outputs[cp,2 if key.startswith('fireworks2_') else 3] for key,gid in fixed['joining_gids'].items()}
+                actual36=[isolated.get(g,g) for g in actual36]
             assert actual36[:5]==[outputs[cp,size] for size in (3,2,3,2,3)]
         noise_mix='🏃'*8+' 🌻🌻🌻🌻🌻 '+'💩'*15+'🏃'*8
         assert shape(font,noise_mix)==reference_variations(font,noise_mix)
@@ -176,6 +189,11 @@ def check_font_package(site):
                 assert font['CBDT'].strikeData[0][glyph].imageData==(FIXED_ART/'png/128'/(entry['name']+'.png')).read_bytes()
             else:
                 assert glyph in painted, ('missing fixed paint',name,entry)
+        for asset,gid in fixed.get('joining_gids',{}).items():
+            glyph=order[gid]
+            if 'CBDT' in font:
+                assert font['CBDT'].strikeData[0][glyph].imageData==(FIXED_ART/'png/128'/(asset+'.png')).read_bytes()
+            else:assert glyph in painted, ('missing joined firework paint',name,asset)
         checked.append(name)
     return dict(commit=metadata['commit'], font_hashes=metadata['font_hashes'],
                 page_hashes=metadata['page_hashes'],

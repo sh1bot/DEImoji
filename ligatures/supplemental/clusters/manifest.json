@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "style": "noto-fixed-clusters-v1",
+  "version": 2,
+  "style": "noto-fixed-clusters-v2",
   "source_commit": "585853a395a28317139d571038985d1e97388450",
   "entries": [
     {
@@ -42,27 +42,75 @@
       "name": "fire3",
       "codepoint": 128293,
       "size": 3
+    },
+    {
+      "name": "fireworks2_start",
+      "codepoint": 127878,
+      "size": 2,
+      "position": "start"
+    },
+    {
+      "name": "fireworks2_middle",
+      "codepoint": 127878,
+      "size": 2,
+      "position": "middle"
+    },
+    {
+      "name": "fireworks2_end",
+      "codepoint": 127878,
+      "size": 2,
+      "position": "end"
+    },
+    {
+      "name": "fireworks3_start",
+      "codepoint": 127878,
+      "size": 3,
+      "position": "start"
+    },
+    {
+      "name": "fireworks3_middle",
+      "codepoint": 127878,
+      "size": 3,
+      "position": "middle"
+    },
+    {
+      "name": "fireworks3_end",
+      "codepoint": 127878,
+      "size": 3,
+      "position": "end"
     }
   ],
   "files": {
-    "Clusters-COLRv1.ttf": "d6bf9d6fcf41b428a01acc557e062bbae8f341d46643337465ac0170aa0760da",
+    "Clusters-COLRv1.ttf": "1463997b9141d7a24361ce35443feb15935a31cbedc96e3661c9803f7bda608c",
     "png/128/fire2.png": "4a0da2792bb16825f672c9eb1f25c8640b4cd62755db0cdf7a62a80be6afce71",
     "png/128/fire3.png": "3145fe840dec8c9b80849dd8f0135286f9c758f89b19a9ded4dd1d37e0952e7b",
-    "png/128/fireworks2.png": "11f0623bdd18dba7c56694185c79cc552651d7338f1e4e806434b0e7ae3c0800",
-    "png/128/fireworks3.png": "5b504ab09b08351b07f0dc06d5cfee60205c55e3c96fc33ac3f9501dedc15bfb",
+    "png/128/fireworks2.png": "26e1ea90cc28e227a2231747b554023cbb0aa8734fde21f3a949f7c153211adf",
+    "png/128/fireworks2_end.png": "2dec7b990d2b727a25042157597b8f9e83c92d34932c1c074373076d60d0305b",
+    "png/128/fireworks2_middle.png": "b770ef08d922e78960902e6df7d91c281e888eb2c317deecce9f76552b38fe45",
+    "png/128/fireworks2_start.png": "c5cee4c357a5c234e1f1b420844888cd45a1bd3863868e2b68fa8e0b566399bc",
+    "png/128/fireworks3.png": "609c9f13764a53ff8760e3a7c7df9d657ebc063a6a305ac781f19eeb1c5e7ae3",
+    "png/128/fireworks3_end.png": "1fae29cdf928a8f4f4eb685044e7c5badb0b0e5d42b3a4feb7190f0b08ae689e",
+    "png/128/fireworks3_middle.png": "46147d2c456b2fa301062e329818cbb1b70b5b144c3e0b9342e2878a34bca1b4",
+    "png/128/fireworks3_start.png": "b8a9a1674299354b4caac94e576807f806720909457665c6173147456263a2cf",
     "png/128/headstone2.png": "05690ecad45dc7ddd1b651e9a6c87b537f975e1995e674c8e3e2bce1255baafc",
     "png/128/headstone3.png": "7ce0ac1163c5c925ee3ef0f5e2539abc396cccefa6e44b3d2e6a84c4f344a0f2",
     "png/128/popper2.png": "e73f57f572e8803b2a2b40863d271adee3186071ec6718842eedf686e9f9a4e7",
     "png/128/popper3.png": "8dd01c1e8f0fddc7a43499f416b3b5f9ce57b902d171be09c2cf9d34f265f456",
-    "preview.png": "ce48754eb626c449c81062b344857256c902ac124d0848ec4a391592acf586e6",
+    "preview.png": "c13b0ea96fbfc3b9e0a611409063464827ac085c345196d0cc816e38aa6e5290",
     "source/emoji_u1f386.svg": "b4c1ba902c69a69884c3dd2115d58375a3f1e703e557b687b6d0d7cda17f20d5",
     "source/emoji_u1f389.svg": "4ab7ad6e03994f59b270eca28efc08e408d74a868aa025bb4d4576c195d1e522",
     "source/emoji_u1f525.svg": "dbea451b6cba787df0bb9bc84ceec1bed96e499e8b876b80682ce323f83b1a1b",
     "source/emoji_u1faa6.svg": "6dbac786e1cd68331876c79d782c9ddf450db6cbb70e88e5ebcdd10fd3f79b3f",
     "svg/fire2.svg": "2fa6aa962e967a8883dc1216b370375033c8d815c1ef90670c39a2b7afb82a7c",
     "svg/fire3.svg": "d608e51a2f10e168e06e567d45f21c8be0d9f47402dad411351c02e0df4d9263",
-    "svg/fireworks2.svg": "38979cb151cc187c86ccb696a33c744efc044555202ec6831943c2661c308410",
-    "svg/fireworks3.svg": "1d21261b566902d9fe9a00f19fac43f0807dafdc3edbcdbe364e0cdb19a4f39f",
+    "svg/fireworks2.svg": "82a3240f9d8c0ce48df9de0720311b80c24f56e1cd00618eb2df366d11780dfb",
+    "svg/fireworks2_end.svg": "851b8368b7407e9049bf1ee07d8252fbbc700f1717c6f0e433c8fde572b5a4c8",
+    "svg/fireworks2_middle.svg": "c6d41e6a4242f1f741507f8414129f60b7ba8dc0c2cbd713101c725615b04d17",
+    "svg/fireworks2_start.svg": "a077fd730af95a7b4972e07bc38be4a8f9079efa572fb65a928a5d99c2cc8ccd",
+    "svg/fireworks3.svg": "14a6a2eb821bd92710769987845d4cc212b299ba384bfd55e2dc690440df5fca",
+    "svg/fireworks3_end.svg": "9a84496695a358e36415d865dad9265697437688c35e0cb5b68e3e899b74aaf1",
+    "svg/fireworks3_middle.svg": "f97bf4f205a60fc106836e4381c0f7b7bed9673466cf567d7eda73e1429eb66c",
+    "svg/fireworks3_start.svg": "2621a24e58833e3eaf04c903c2e4d1f45ed405b6d0c49ce5125caf77e69ac734",
     "svg/headstone2.svg": "616cc74b17ed86898a61012de67069707182512b6f03546cc9bf036297286990",
     "svg/headstone3.svg": "23b75afedda6f7c8a821f8e143d64a139f304506c887d2f92b7f8311c4b4d3cb",
     "svg/popper2.svg": "3df6db6ef7634275717995e7fc1e8a3cbb1568c04cfcbf5762d41857ab473270",

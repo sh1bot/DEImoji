@@ -233,6 +233,9 @@ def add_supplemental_artwork(font):
                 names.extend(lig.LigGlyph for lig in table.ligatures.get(base, [])
                              if tuple(lig.Component) in ((base,), (base, base)))
             names.extend(alt for cluster in list(names[1:]) for alt in variants.get(cluster, []))
+            if cp == 0x1F386:
+                from fixed_cluster_artwork import firework_join_names
+                names.extend(firework_join_names(font).values())
             if len(names) == 1:
                 continue
             families.append((list(dict.fromkeys(names)),

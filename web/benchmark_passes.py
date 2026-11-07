@@ -43,16 +43,16 @@ def partition(source,metadata,published,target):
     table=font['GSUB'].table;records=table.FeatureList.FeatureRecord
     calts=[r for r in records if r.FeatureTag=='calt']
     roots=metadata['modifiers'][published]['calt_roots']
-    if len(calts)!=1 or len(roots)!=8:raise ValueError('Unknown calt pipeline')
+    if len(calts)!=1 or len(roots)<8:raise ValueError('Unknown calt pipeline')
     indices=calts[0].Feature.LookupListIndex
-    if indices[-8:]!=roots or len(indices)!=9:raise ValueError('Unexpected clustering roots')
-    indices=indices[:]
+    if indices[-len(roots):]!=roots or len(indices)!=len(roots)+1:raise ValueError('Unexpected clustering roots')
+    indices=[[indices[0]]]+[[i] for i in roots[:7]]+[roots[7:]]
     old_records=records[:]
     calts[0].Feature.LookupListIndex=[];calts[0].Feature.LookupCount=0
     if set(TAGS.values()).intersection(r.FeatureTag for r in records):raise ValueError('Private feature collision')
     for (name,tag),index in zip(PASSES,indices):
         record=ot.FeatureRecord();record.FeatureTag=tag;record.Feature=ot.Feature()
-        record.Feature.FeatureParams=None;record.Feature.LookupListIndex=[index];record.Feature.LookupCount=1
+        record.Feature.FeatureParams=None;record.Feature.LookupListIndex=index[:];record.Feature.LookupCount=len(index)
         records.append(record)
     records.sort(key=lambda r:r.FeatureTag)
     remap={i:records.index(record) for i,record in enumerate(old_records)}
@@ -69,7 +69,7 @@ def partition(source,metadata,published,target):
     target.parent.mkdir(parents=True,exist_ok=True);font.save(target)
     return dict(source=str(source),source_sha256=sha256(data).hexdigest(),diagnostic=str(target),
                 diagnostic_sha256=sha256(target.read_bytes()).hexdigest(),
-                roots={name:dict(tag=tag,lookup=index) for (name,tag),index in zip(PASSES,indices)})
+                roots={name:dict(tag=tag,lookup=index[0],lookup_indices=index) for (name,tag),index in zip(PASSES,indices)})
 
 
 def actual_subtables(lookup):
