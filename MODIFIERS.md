@@ -183,8 +183,10 @@ poop, with short tails adjusted to avoid singletons. They do not use the
 base-3/base-5 diversity generators. Headstones mix arched,
 rounded and bevelled shapes, shuffled inscriptions and smaller rear stones.
 A ringed Celtic cross sits behind the round stone in the pair and in the
-foreground of the trio. Fireworks share a panoramic sky and show opening, full-bloom and
-falling-spark stages. Middle poppers/flames are mirrored; streamers and confetti
+foreground of the trio. Fireworks use five distinct explosions across the pair
+and trio. Matching vertical sky gradients and overlap kerning conceal the
+rounded interior corners, without contextual background variants. Clear sky
+margins keep all sparks outside the overlapping regions. Middle poppers/flames are mirrored; streamers and confetti
 have different positions and colours.
 
 `ligatures/supplemental/build_clusters.py` composes the pinned Noto vectors and

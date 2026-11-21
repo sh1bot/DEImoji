@@ -18,18 +18,20 @@ The source SVGs are pinned in `clusters/source/` (see `clusters/manifest.json` f
 are installed into cached native fonts. The mini font's output glyphs are
 unencoded. `clusters/preview.png` shows all eight isolated compositions.
 
-Fireworks additionally have start, middle and end backgrounds for each size.
-Two contextual lookups run after modifier assembly: a left neighbour selects an
-end, then a right neighbour selects a start or turns an end into a middle.
-Only adjacent firework clusters join; isolated clusters and native singletons
-keep their normal rendering. Interior edges are square and untinted; only outer
-edges have rounded corners and edge tint. All versions share the same vertical
-sky gradient. GPOS tightens firework cluster boundaries by 79/1024 em, overlapping
-the matching sky slightly to cover raster edge antialiasing. Singleton–singleton
-spacing is unchanged. Both CBDT and COLRv1 include these six additional glyphs.
+Fireworks use one rounded background for the pair and one for the trio.
+Both have the same vertical sky gradient and no side tint. Their painted spark
+bounds are cropped to the clear overlap strip, with a small antialiasing
+allowance; burst positions are preserved relative to one another at 87.5% scale.
+The 128px bitmap canvases are 180px and 255px wide, within the CBDT width limit.
+GPOS tightens adjacent firework clusters by 217/1024 em (about 23.14 source
+pixels). This hides the interior corner rounding while keeping every spark
+outside the overlapping background region. Rasterizers may still differ in
+antialiasing or bitmap-resampling edge pixels. Isolated clusters retain rounded
+outer corners. Singleton artwork and singleton–singleton spacing are unchanged.
 
-The normal full-length RTL seed collection remains enabled. These joining rules
-run after it and do not use the experimental entropy anchors or LFSR fences.
+No start/middle/end glyphs or contextual background joining lookups are used.
+The normal full-length RTL seed collection remains enabled; this artwork change
+does not use experimental entropy anchors or LFSR fences.
 
 Regenerate with Inkscape, nanoemoji and ninja installed:
 

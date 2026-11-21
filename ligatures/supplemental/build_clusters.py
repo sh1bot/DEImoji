@@ -171,29 +171,25 @@ def burst(variant,cx,cy):
     return group
 
 
-def fireworks(count,position='isolated'):
-    width={2:188,3:250}[count]
+def fireworks(count):
+    # Measured painted bounds include stroke caps and the outermost sparks.
+    # Keep the original relative burst positions, crop unused sky, and reserve
+    # only the clear strip needed for overlapping two rounded backgrounds.
+    scale=.875
+    spark_x,spark_width={2:(27.15,153.2),3:(10.68,239.48)}[count]
+    margin,radius,edge_allowance,spark_allowance=3.8,7.52,.5,3.25
+    guard=margin+2*radius+edge_allowance+spark_allowance
+    width=math.ceil(spark_width*scale+2*guard)
+    assert width<=255  # CBDT width field at the native 128px strike.
     root=ET.Element(T('svg'),width=str(width),height='128',viewBox=f'0 0 {width} 128')
     defs=ET.SubElement(root,T('defs'))
     gradient=ET.SubElement(defs,T('linearGradient'),id='sky',x1='0',y1='0',x2='0',y2='128',gradientUnits='userSpaceOnUse')
     for offset,color in (('0','#171728'),('.46','#064D90'),('1','#102137')):
         ET.SubElement(gradient,T('stop'),offset=offset,attrib={'stop-color':color})
-    left=position in ('isolated','start');right=position in ('isolated','end')
-    x0,x1,y0,y1,r=(3.8 if left else 0),(width-3.8 if right else width),3.87,124.22,7.52
-    d=f'M{x0+r if left else x0} {y0} H{x1-r if right else x1} '
-    d+=f'Q{x1} {y0} {x1} {y0+r} V{y1-r} Q{x1} {y1} {x1-r} {y1} ' if right else f'V{y1} '
-    d+=f'H{x0+r if left else x0} '
-    d+=f'Q{x0} {y1} {x0} {y1-r} V{y0+r} Q{x0} {y0} {x0+r} {y0} Z' if left else f'V{y0} Z'
-    ET.SubElement(root,T('path'),d=d,fill='url(#sky)')
-    clip=ET.SubElement(defs,T('clipPath'),id='skyclip');ET.SubElement(clip,T('path'),d=d)
-    for side,enabled in (('left',left),('right',right)):
-        if not enabled:continue
-        grad=ET.SubElement(defs,T('linearGradient'),id=side,x1='0' if side=='left' else '1',y1='0',x2='1' if side=='left' else '0',y2='0')
-        ET.SubElement(grad,T('stop'),offset='0',attrib={'stop-color':'#171728','stop-opacity':'.65'})
-        ET.SubElement(grad,T('stop'),offset='1',attrib={'stop-color':'#171728','stop-opacity':'0'})
-        ET.SubElement(root,T('rect'),x=str(x0 if side=='left' else x1-22),y=str(y0),width='22',height=str(y1-y0),fill=f'url(#{side})',attrib={'clip-path':'url(#skyclip)'})
+    ET.SubElement(root,T('rect'),x=str(margin),y='3.87',width=str(width-2*margin),height='120.35',rx=str(radius),fill='url(#sky)')
+    group=ET.SubElement(root,T('g'),id='sparks',transform=f'translate({guard-spark_x*scale} {64*(1-scale)}) scale({scale})')
     for variant,cx,cy in (((0,45,42),(1,141,71)) if count==2 else ((2,43,44),(3,124,58),(4,207,48))):
-        root.append(burst(variant,cx,cy))
+        group.append(burst(variant,cx,cy))
     return root
 
 
@@ -260,13 +256,6 @@ def main():
                                 style='font:14px sans-serif;fill:#333')
             label.text=f'{family} × {count}'
             entries.append(dict(name=name,codepoint=cp,size=count))
-    for count in (2,3):
-        for position in ('start','middle','end'):
-            name=f'fireworks{count}_{position}'
-            svg=fireworks(count,position);path=ART/'svg'/f'{name}.svg'
-            ET.ElementTree(svg).write(path,encoding='utf-8',xml_declaration=True)
-            subprocess.run(['inkscape',str(path),'--export-height=128','--export-filename='+str(ART/'png/128'/f'{name}.png')],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-            entries.append(dict(name=name,codepoint=0x1F386,size=count,position=position))
     ET.ElementTree(gallery).write(work/'gallery.svg')
     subprocess.run(['inkscape',str(work/'gallery.svg'),'--export-filename='+str(ART/'preview.png')],check=True,
                    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -306,7 +295,7 @@ wght = 400
     subprocess.run([sys.executable,'-m','nanoemoji.nanoemoji','--build_dir',str(work/'colr'),str(config)],check=True,env=env)
     shutil.copyfile(work/'colr/Clusters-COLRv1.ttf',ART/'Clusters-COLRv1.ttf')
     files=sorted(p for p in ART.rglob('*') if p.is_file() and p.name!='manifest.json')
-    manifest=dict(version=2,style='noto-fixed-clusters-v2',source_commit=ORIGIN,entries=entries,
+    manifest=dict(version=3,style='noto-fixed-clusters-v3',source_commit=ORIGIN,entries=entries,
                   files={str(p.relative_to(ART)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files})
     (ART/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 

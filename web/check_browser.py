@@ -72,7 +72,7 @@ def main():
                         return [after - before, parseFloat(getComputedStyle(node).fontSize)];
                     }""")
                     # Chromium versions differ in fractional glyph-advance rounding.
-                    assert abs(overlap[0] - overlap[1] * {'🧟': .22, '🌻': .35, '💩': .04, '🪦':.28, '🎆':79/1024, '🎉':.08, '🔥':.22}[family]) < .6, (family, fmt, overlap)
+                    assert abs(overlap[0] - overlap[1] * {'🧟': .22, '🌻': .35, '💩': .04, '🪦':.28, '🎆':217/1024, '🎉':.08, '🔥':.22}[family]) < .6, (family, fmt, overlap)
                     if family == '🎆':
                         page.locator('#text').fill('🎆'*12)
                         page.locator('#clustered .emoji-run').screenshot(path=str(args.site/f'fireworks-proof-{fmt}.png'))
