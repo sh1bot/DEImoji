@@ -63,7 +63,7 @@ function updateText() {
 }
 
 function updatePreset() {
-  const emoji = { flowers: '🌻', zombies: '🧟', person: '🧑', old: '🧓', runners: '🏃', poop: '💩', headstones: '🪦', fireworks: '🎆', poppers: '🎉', fire: '🔥' }[$('preset').value];
+  const emoji = { flowers: '🌻', zombies: '🧟', person: '🧑', old: '🧓', runners: '🏃', poop: '💩', headstones: '🪦', fireworks: '🎆', poppers: '🎉', fire: '🔥', moneybags: '💰' }[$('preset').value];
   $('text').value = emoji.repeat(Number($('count').value));
   $('count-value').textContent = $('count').value;
   updateText();
@@ -117,7 +117,7 @@ async function initialize() {
     const rules = metadata.modifiers?.['DEImoji-COLRv1.ttf'];
     const art = metadata.artwork?.['DEImoji-COLRv1.ttf'];
     $('build-details').textContent = [
-      art?.clusters ? 'Headstones, fireworks, poppers and fire: mixed pairs + trios' : '',
+      art?.clusters ? 'Headstones, fireworks, poppers, fire and moneybags: mixed pairs + trios' : '',
       art?.zombies ? 'Zombies: five pairs + five trios' : '',
       art?.style === 'noto-white-smile-v2' ? 'Poop heaps: white-smile artwork' : 'Poop heaps: original artwork',
       rules?.binary_period ? `Pair/trio period: ${rules.binary_period}` : '',

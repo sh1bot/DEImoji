@@ -1,6 +1,6 @@
 # Fixed decorative clusters
 
-Noto-derived pairs and trios for 🪦, 🎆, 🎉 and 🔥. Headstones mix arched, rounded and bevelled stones with a Celtic
+Noto-derived pairs and trios for 🪦, 🎆, 🎉, 🔥 and 💰. Headstones mix arched, rounded and bevelled stones with a Celtic
 cross (ring plus cross), behind in the pair and in front in the trio, with shuffled
 inscriptions and a smaller rear row. Fireworks use five distinct explosions across the pair and trio: gold ignition,
 pink full bloom, cyan opening, green willow trails and coral fading embers,
@@ -13,10 +13,18 @@ alternating startup and the period-31 binary LFSR to mix pairs and trios,
 with one fixed artwork choice for each size. The diversity generators do not
 select extra variants.
 
+Moneybags use the original Noto gold bag and dollar sign, staggered and slightly
+rotated into overlapping pairs/trios. The trio has a smaller raised rear bag.
+Two bags face the other way, with readable unreflected dollar signs and neck/
+side-fold shadows kept on the right under the same upper-left lighting.
+They share the period-31 grouping history, with one artwork per size and no
+additional diversity variants. Adjacent moneybag clusters use 18% em negative
+kerning; singleton artwork and singleton–singleton spacing stay unchanged.
+
 The source SVGs are pinned in `clusters/source/` (see `clusters/manifest.json` for the commit).
 `clusters/svg/` contains editable compositions; `clusters/png/128/` and `clusters/Clusters-COLRv1.ttf`
 are installed into cached native fonts. The mini font's output glyphs are
-unencoded. `clusters/preview.png` shows all eight isolated compositions.
+unencoded. `clusters/preview.png` shows all ten isolated compositions.
 
 Fireworks use one rounded background for the pair and one for the trio.
 Both have the same vertical sky gradient and no side tint. Their painted spark

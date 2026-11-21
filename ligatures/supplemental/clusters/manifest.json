@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "style": "noto-fixed-clusters-v3",
+  "version": 4,
+  "style": "noto-fixed-clusters-v4",
   "source_commit": "585853a395a28317139d571038985d1e97388450",
   "entries": [
     {
@@ -42,21 +42,34 @@
       "name": "fire3",
       "codepoint": 128293,
       "size": 3
+    },
+    {
+      "name": "moneybags2",
+      "codepoint": 128176,
+      "size": 2
+    },
+    {
+      "name": "moneybags3",
+      "codepoint": 128176,
+      "size": 3
     }
   ],
   "files": {
-    "Clusters-COLRv1.ttf": "283c7f8416454f5edf490b4a8e7fa88542f26c04be9bd05947b1208c2aaa9aed",
+    "Clusters-COLRv1.ttf": "7afe16c4eb8c4f5981a6a7ff2b4bd5582810bf8906cca5f30f57aaf57a2ce664",
     "png/128/fire2.png": "4a0da2792bb16825f672c9eb1f25c8640b4cd62755db0cdf7a62a80be6afce71",
     "png/128/fire3.png": "3145fe840dec8c9b80849dd8f0135286f9c758f89b19a9ded4dd1d37e0952e7b",
     "png/128/fireworks2.png": "83a2c01bc0bdf9b00a731aa3c78e420327a0bcb25e74ed904be4857388fabed7",
     "png/128/fireworks3.png": "62ad992fc5e3571d5bc326839377d50763518c59e3a789025b17ffea7d0fe5ac",
     "png/128/headstone2.png": "05690ecad45dc7ddd1b651e9a6c87b537f975e1995e674c8e3e2bce1255baafc",
     "png/128/headstone3.png": "7ce0ac1163c5c925ee3ef0f5e2539abc396cccefa6e44b3d2e6a84c4f344a0f2",
+    "png/128/moneybags2.png": "15a6fa8987a3458213ebfeda222aa73680006c2d6c66bb3a98df0fcd9819e682",
+    "png/128/moneybags3.png": "be260d4e71318e5511b4805fe24aa910dfc9201b1df83066e0a33eb912a2f517",
     "png/128/popper2.png": "e73f57f572e8803b2a2b40863d271adee3186071ec6718842eedf686e9f9a4e7",
     "png/128/popper3.png": "8dd01c1e8f0fddc7a43499f416b3b5f9ce57b902d171be09c2cf9d34f265f456",
-    "preview.png": "18b4e7c8e924a44057e4e7910a7232e14c9cefb0973aecbfdbf5e19f51ff0f35",
+    "preview.png": "e33578d8d3bbf63e806659137227bc1eff7a21e4001f1d6c66009f59874582e8",
     "source/emoji_u1f386.svg": "b4c1ba902c69a69884c3dd2115d58375a3f1e703e557b687b6d0d7cda17f20d5",
     "source/emoji_u1f389.svg": "4ab7ad6e03994f59b270eca28efc08e408d74a868aa025bb4d4576c195d1e522",
+    "source/emoji_u1f4b0.svg": "75b9bbdcac486261435af6d77b599e43265c8dcd017be9bfb704c9e12a2d41f2",
     "source/emoji_u1f525.svg": "dbea451b6cba787df0bb9bc84ceec1bed96e499e8b876b80682ce323f83b1a1b",
     "source/emoji_u1faa6.svg": "6dbac786e1cd68331876c79d782c9ddf450db6cbb70e88e5ebcdd10fd3f79b3f",
     "svg/fire2.svg": "2fa6aa962e967a8883dc1216b370375033c8d815c1ef90670c39a2b7afb82a7c",
@@ -65,6 +78,8 @@
     "svg/fireworks3.svg": "6db60b5c70d60a44bcea6c2d0df101b50b56fd567065ae05c697258e9afecd0f",
     "svg/headstone2.svg": "616cc74b17ed86898a61012de67069707182512b6f03546cc9bf036297286990",
     "svg/headstone3.svg": "23b75afedda6f7c8a821f8e143d64a139f304506c887d2f92b7f8311c4b4d3cb",
+    "svg/moneybags2.svg": "15479f1844f6b253b3023733797054743ea79d835b15a4192cc60a62456f2f44",
+    "svg/moneybags3.svg": "0a19cb203e417f6ef53e73d8797a1afca55be60c1e3273021526d1f4ee2ff108",
     "svg/popper2.svg": "3df6db6ef7634275717995e7fc1e8a3cbb1568c04cfcbf5762d41857ab473270",
     "svg/popper3.svg": "fcf76eebc24811b9f59d91fffed3a1ecd80852747653a350d1fc60c17ff3f93c"
   }

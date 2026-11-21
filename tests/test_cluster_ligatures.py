@@ -871,9 +871,9 @@ class DecorativeClusterTests(unittest.TestCase):
                     self.assertEqual(shape(font,chr(cp)*n),expected)
                     self.assertEqual(shape(font,chr(cp)*n,calt=False),[base]*n)
             self.assertEqual(set(shape(font,chr(cp)*36)),{base+'2',base+'3'})
-        mixed='🪦🪦🔥🔥🔥🎉🎉🎉🎉🎆🎆'
+        mixed='🪦🪦🔥🔥🔥🎉🎉🎉🎉🎆🎆💰💰💰💰💰'
         self.assertEqual(shape(font,mixed),reference_clusters(font,mixed))
-        long='🪦'*20+'🎆'*25+'🎉'*30+'🔥'*40
+        long='🪦'*20+'🎆'*25+'🎉'*30+'🔥'*40+'💰'*47
         self.assertEqual(shape(font,long),reference_clusters(font,long))
         data=BytesIO();font.save(data);font=TTFont(BytesIO(data.getvalue()))
         remove_cluster_ligatures(font)
@@ -887,11 +887,27 @@ class DecorativeClusterTests(unittest.TestCase):
             self.assertTrue(136<w<=255 and h==128)
 
 
+
+class MoneybagArtworkTests(unittest.TestCase):
+    def test_pile_is_not_clipped_by_canvas(self):
+        from fixed_cluster_artwork import ART
+        from PIL import Image
+        for size in (2,3):
+            with self.subTest(size=size), Image.open(ART/'png/128'/f'moneybags{size}.png') as image:
+                alpha=image.convert('RGBA').getchannel('A')
+                box=alpha.getbbox()
+                self.assertIsNotNone(box)
+                self.assertGreaterEqual(box[0],2)
+                self.assertGreaterEqual(box[1],2)
+                self.assertLessEqual(box[2],image.width-2)
+                self.assertLessEqual(box[3],image.height-2)
+
+
 class FireworkBackgroundTests(unittest.TestCase):
     def test_matching_sky_edges_and_bitmap_width(self):
         from fixed_cluster_artwork import ART,NAMES,OVERLAP
         from PIL import Image
-        self.assertEqual(len(NAMES),8)
+        self.assertEqual(len(NAMES),10)
         self.assertEqual(OVERLAP[0x1F386],217/1024)
         ns='{http://www.w3.org/2000/svg}'
         for size,width in ((2,180),(3,255)):

@@ -161,7 +161,7 @@ def check_font_package(site):
             expected=reference_cluster_stream(font,plain)
             assert shape(font,text)==expected, ('decorative LFSR grouping',name,cp)
             assert shape(font,text,calt=False)==plain
-        mixed_text='💩'*23+'🌻'*40+'🎉'*21+'🔥'*40
+        mixed_text='💩'*23+'🌻'*40+'🎉'*21+'🔥'*40+'💰'*47
         expected=reference_clusters(font,mixed_text)
         assert shape(font,mixed_text)==expected, ('shared binary history',name)
         # Startup follows the last observed bit, rather than repeating four trios.

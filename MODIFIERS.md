@@ -8,7 +8,7 @@ artwork, without generating Unicode skin-tone or ZWJ gender sequences.
 
 Native `ccmp` assembles explicit user sequences before private states exist.
 Typed choices are preserved, including person gender aliases. Turning `calt`
-off restores plain rendering and disables clustering in all seven families.
+off restores plain rendering and disables clustering in all eight families.
 
 ## Eligibility and noise
 
@@ -177,7 +177,7 @@ all five source buckets, in both TTFs and WOFF2. The report records this coverag
 
 ## Fixed decorative clusters
 
-Plain 🪦, 🎆, 🎉 and 🔥 have one artwork choice for pairs and one for trios.
+Plain 🪦, 🎆, 🎉, 🔥 and 💰 have one artwork choice for pairs and one for trios.
 They use the same period-31 binary LFSR grouping as zombies, sunflowers and
 poop, with short tails adjusted to avoid singletons. They do not use the
 base-3/base-5 diversity generators. Headstones mix arched,
@@ -186,7 +186,8 @@ A ringed Celtic cross sits behind the round stone in the pair and in the
 foreground of the trio. Fireworks use five distinct explosions across the pair
 and trio. Matching vertical sky gradients and overlap kerning conceal the
 rounded interior corners, without contextual background variants. Clear sky
-margins keep all sparks outside the overlapping regions. Middle poppers/flames are mirrored; streamers and confetti
+margins keep all sparks outside the overlapping regions. Moneybags form overlapping piles with readable dollar signs and a smaller rear
+bag in the trio. Middle poppers/flames are mirrored; streamers and confetti
 have different positions and colours.
 
 `ligatures/supplemental/build_clusters.py` composes the pinned Noto vectors and

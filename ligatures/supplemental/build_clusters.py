@@ -24,7 +24,7 @@ NS = 'http://www.w3.org/2000/svg'
 ET.register_namespace('', NS)
 T = lambda tag: f'{{{NS}}}{tag}'
 ORIGIN = '585853a395a28317139d571038985d1e97388450'
-FAMILIES = {'headstone':0x1FAA6, 'fireworks':0x1F386, 'popper':0x1F389, 'fire':0x1F525}
+FAMILIES = {'headstone':0x1FAA6, 'fireworks':0x1F386, 'popper':0x1F389, 'fire':0x1F525, 'moneybags':0x1F4B0}
 
 
 def copy_art(root, prefix, transform, skip=()):
@@ -138,6 +138,30 @@ def party(source, variant):
     return result
 
 
+def moneybag(source,mirrored=False):
+    if not mirrored:return source
+    result=ET.Element(T('svg'),viewBox='0 0 128 128')
+    visible=deepcopy(source[1]);main=visible[0]
+    # Currency is a printed mark, not part of the reflected silhouette.
+    currency=[main[3],main[4]]
+    for node in currency:main.remove(node)
+    side_shadow=visible[-1];visible.remove(side_shadow)
+    flap=main[2][0]
+    # The broad native right-hand shadow would move onto the lit left side.
+    # Replace it on the opposite side of the fabric. The small inner crease
+    # remains attached to its fold, now on the right of the mirrored opening.
+    flap.remove(flap[1])
+    ET.SubElement(flap,T('path'),fill='#E2A610',d='M68.3 8.59 C63.5 12.4 64.7 30.9 69.5 36.9 C71.9 39.9 76.3 41.2 81.1 40.8 L82.4 36.8 C74.6 33.7 69.1 20.2 68.3 8.59 Z')
+    mirror=ET.SubElement(result,T('g'),transform='translate(128 0) scale(-1 1)')
+    mirror.append(visible)
+    lettering=ET.SubElement(result,T('g'),transform='rotate(-28 64 80)')
+    lettering.extend(currency)
+    # Keep the shallow side-fold shadow on the viewer's right, where the
+    # original upper-left lighting places it, rather than reflecting it left.
+    side_shadow.set('transform','translate(4 0)');result.append(side_shadow)
+    return result
+
+
 def burst(variant,cx,cy):
     """Five different launches: ignition, bloom, opening, willow, fading embers."""
     group=ET.Element(T('g'))
@@ -198,7 +222,8 @@ def compose(family, count):
     width = {('headstone',2):180, ('headstone',3):238,
              ('fireworks',2):188, ('fireworks',3):250,
              ('popper',2):184, ('popper',3):244,
-             ('fire',2):174, ('fire',3):230}[family,count]
+             ('fire',2):174, ('fire',3):230,
+             ('moneybags',2):180, ('moneybags',3):206}[family,count]
     root = ET.Element(T('svg'),width=str(width),height='128',viewBox=f'0 0 {width} 128')
     if family == 'headstone':
         # Rear stone first: staggered crowns and bases, shared ground level.
@@ -207,6 +232,14 @@ def compose(family, count):
                        'translate(116 7) scale(.96)'))
     elif family == 'fireworks':
         return fireworks(count)
+    elif family == 'moneybags':
+        # Keep the dollar signs readable. The rear bag is
+        # smaller and higher; the front bags overlap into one connected pile.
+        placements=(('translate(66 3) scale(.87) rotate(7 64 64)',
+                     'translate(-3 13) scale(.89) rotate(-6 64 64)') if count==2 else
+                    ('translate(48 -2) scale(.77) rotate(6 64 64)',
+                     'translate(-3 15) scale(.88) rotate(-6 64 64)',
+                     'translate(83 13) scale(.90) rotate(5 64 64)'))
     elif family == 'popper':
         placements = (('translate(59 -1) scale(.96) rotate(8 64 64)',
                        'translate(-1 8) scale(.94) rotate(-5 64 64)') if count==2 else
@@ -227,9 +260,17 @@ def compose(family, count):
             member=party(source,i if count==2 else i+2)
             if i==0:
                 transform+=' translate(128 0) scale(-1 1)'
+        elif family=='moneybags':
+            member=moneybag(source,(count==2 and i==0) or (count==3 and i==2))
         elif family=='fire' and i==0:
             transform+=' translate(128 0) scale(-1 1)'
         root.append(copy_art(member,f'{family}{count}_p{i}_',transform, (0,1) if family=='fireworks' else ()))
+    if family=='moneybags':
+        # Crop the unused side space, retaining a narrow clear edge for GPOS.
+        crop={2:(3,174),3:(3,194)}[count]
+        group=ET.Element(T('g'),transform=f'translate({-crop[0]} 0)')
+        for child in list(root):root.remove(child);group.append(child)
+        root.append(group);root.set('width',str(crop[1]));root.set('viewBox',f'0 0 {crop[1]} 128')
     return root
 
 
@@ -239,8 +280,9 @@ def main():
     for folder in ('svg','png/128'):
         (ART/folder).mkdir(parents=True,exist_ok=True)
     entries=[]
-    gallery=ET.Element(T('svg'),width='760',height='640',viewBox='0 0 760 640')
-    ET.SubElement(gallery,T('rect'),width='760',height='640',fill='#fafafa')
+    height=160*len(FAMILIES)
+    gallery=ET.Element(T('svg'),width='760',height=str(height),viewBox=f'0 0 760 {height}')
+    ET.SubElement(gallery,T('rect'),width='760',height=str(height),fill='#fafafa')
     for row,(family,cp) in enumerate(FAMILIES.items()):
         for count in (2,3):
             name=f'{family}{count}'
@@ -295,7 +337,7 @@ wght = 400
     subprocess.run([sys.executable,'-m','nanoemoji.nanoemoji','--build_dir',str(work/'colr'),str(config)],check=True,env=env)
     shutil.copyfile(work/'colr/Clusters-COLRv1.ttf',ART/'Clusters-COLRv1.ttf')
     files=sorted(p for p in ART.rglob('*') if p.is_file() and p.name!='manifest.json')
-    manifest=dict(version=3,style='noto-fixed-clusters-v3',source_commit=ORIGIN,entries=entries,
+    manifest=dict(version=4,style='noto-fixed-clusters-v4',source_commit=ORIGIN,entries=entries,
                   files={str(p.relative_to(ART)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files})
     (ART/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 

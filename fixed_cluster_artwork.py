@@ -5,15 +5,15 @@ from pathlib import Path
 from fontTools.ttLib.tables import otTables as ot
 
 ART = Path(__file__).resolve().parent/'ligatures/supplemental/clusters'
-FAMILIES = {'headstone':0x1FAA6, 'fireworks':0x1F386, 'popper':0x1F389, 'fire':0x1F525}
+FAMILIES = {'headstone':0x1FAA6, 'fireworks':0x1F386, 'popper':0x1F389, 'fire':0x1F525, 'moneybags':0x1F4B0}
 NAMES = tuple(f'{family}{size}' for family in FAMILIES for size in (2,3))
 # Close the margins between silhouettes, leaving singleton-singleton untouched.
-OVERLAP = {0x1FAA6:.28, 0x1F386:217/1024, 0x1F389:.08, 0x1F525:.22}
+OVERLAP = {0x1FAA6:.28, 0x1F386:217/1024, 0x1F389:.08, 0x1F525:.22, 0x1F4B0:.18}
 
 
 def verify_bundle():
     manifest=json.loads((ART/'manifest.json').read_text())
-    if manifest['version'] != 3 or [e['name'] for e in manifest['entries']] != list(NAMES):
+    if manifest['version'] != 4 or [e['name'] for e in manifest['entries']] != list(NAMES):
         raise ValueError('Unknown fixed-cluster artwork bundle')
     for name,expected in manifest['files'].items():
         if hashlib.sha256((ART/name).read_bytes()).hexdigest()!=expected:
@@ -28,7 +28,7 @@ def add_fixed_cluster_artwork(font):
         return None
     if any(g.startswith('DEImojiFixed') for g in font.getGlyphOrder()):
         raise ValueError('Fixed artwork requires a clean baseline')
-    info=dict(version=3,bundle=verify_bundle(),style='noto-fixed-clusters-v3',
+    info=dict(version=4,bundle=verify_bundle(),style='noto-fixed-clusters-v4',
               original_glyph_count=len(font.getGlyphOrder()),
               advance_max=font['hhea'].advanceWidthMax,
               bounds={k:getattr(font['head'],k) for k in ('xMin','yMin','xMax','yMax')},
@@ -57,11 +57,12 @@ def add_fixed_cluster_artwork(font):
 
 def remove_fixed_cluster_artwork(font,info):
     from supplemental_artwork import _tables, _remove_artwork_tail
-    if info['version'] not in (1,2,3):
+    if info['version'] not in (1,2,3,4):
         raise ValueError('Unknown fixed-cluster metadata')
     order=font.getGlyphOrder()
     expected={order[e['gid']]:(font.getBestCmap()[e['codepoint']],e['size']) for e in info['entries']}
-    if len(expected)!=8 or set(expected).intersection(font.getBestCmap().values()):
+    expected_count=len(NAMES) if info['version']==4 else 8
+    if len(expected)!=expected_count or set(expected).intersection(font.getBestCmap().values()):
         raise ValueError('Unexpected fixed-cluster outputs')
     found=set()
     for table in _tables(font):
