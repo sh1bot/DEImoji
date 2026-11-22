@@ -225,11 +225,14 @@ def feature_source(font, tone_bases, gender_bases, assembly):
     lines.append('lookup modifierAssembly useExtension {')
     for sequence, target in sorted(assembly.items(), key=lambda item: (-len(item[0]), item[0])):
         lines.append('sub ' + ' '.join(sequence) + f' by {target};')
-    lines += ['} modifierAssembly;', 'feature calt {',
+    from fixed_cluster_artwork import bitmap_tile_source
+    tile_source,tile_roots=bitmap_tile_source(font)
+    lines += ['} modifierAssembly;',tile_source, 'feature calt {',
               'lookup seedExpand;', 'lookup seedToneRTL;', 'lookup seedGenderFromTone;',
               'lookup toneFeedback;', 'lookup genderFeedback;',
               'lookup foldStates;', 'lookup sweepStates;',
               'lookup modifierAssembly;']
+    lines += ['lookup '+name+';' for name in tile_roots]
     lines.append('} calt;')
     return '\n'.join(lines)
 

@@ -15,6 +15,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 from picosvg.svg_types import SVGPath, SVGCircle
+from picosvg.svg import SVG
 from picosvg.svg_pathops import difference, union
 from picosvg.svg_transform import Affine2D
 
@@ -135,7 +136,20 @@ def party(source, variant):
             if 'fill:' in part.get('style',''):
                 part.set('style','fill:'+colors[(j+variant*2)%len(colors)]+';')
         result[0].remove(node);wrapper.append(node);result[0].append(wrapper)
+    # Keep floating confetti within the native vertical range. This changes
+    # position only: cones, streamers and paper retain their original scale.
+    for wrapper in list(result[0])[1:]:
+        probe=ET.Element(T('svg'),viewBox='-100 -100 328 328')
+        probe.append(deepcopy(wrapper))
+        box=SVG.fromstring(ET.tostring(probe)).topicosvg().bounding_box()
+        if box is None:continue
+        dy=max(2-box.y,min(0,124-(box.y+box.h)))
+        if dy:
+            parent=ET.Element(T('g'),transform=f'translate(0 {dy})')
+            result[0].remove(wrapper);parent.append(wrapper);result[0].append(parent)
     return result
+
+
 
 
 def moneybag(source,mirrored=False):
@@ -221,7 +235,7 @@ def compose(family, count):
     source = ET.parse(ART/'source'/f'emoji_u{FAMILIES[family]:x}.svg').getroot()
     width = {('headstone',2):180, ('headstone',3):238,
              ('fireworks',2):188, ('fireworks',3):250,
-             ('popper',2):192, ('popper',3):255,
+             ('popper',2):255, ('popper',3):400,
              ('fire',2):174, ('fire',3):230,
              ('moneybags',2):180, ('moneybags',3):206}[family,count]
     root = ET.Element(T('svg'),width=str(width),height='128',viewBox=f'0 0 {width} 128')
@@ -241,11 +255,11 @@ def compose(family, count):
                      'translate(-3 15) scale(.88) rotate(-6 64 64)',
                      'translate(83 13) scale(.90) rotate(5 64 64)'))
     elif family == 'popper':
-        placements = (('translate(75 13) scale(.80) rotate(8 64 64)',
-                       'translate(3 19) scale(.80) rotate(-5 64 64)') if count==2 else
-                      ('translate(72 6) scale(.70) rotate(3 64 64)',
-                       'translate(6 30) scale(.70) rotate(-6 64 64)',
-                       'translate(154 23) scale(.70) rotate(9 64 64)'))
+        placements = (('translate(128 3) scale(.96)',
+                       'translate(6 4) scale(.94)') if count==2 else
+                      ('translate(126 3) scale(.96)',
+                       'translate(6 4) scale(.94)',
+                       'translate(266 4) scale(.94)'))
     else:
         # Overlap at the bases, with a taller flame behind two lower flames.
         placements = (('translate(49 -2) scale(.99)', 'translate(-6 21) scale(.83)') if count==2 else
@@ -281,8 +295,8 @@ def main():
         (ART/folder).mkdir(parents=True,exist_ok=True)
     entries=[]
     height=160*len(FAMILIES)
-    gallery=ET.Element(T('svg'),width='760',height=str(height),viewBox=f'0 0 760 {height}')
-    ET.SubElement(gallery,T('rect'),width='760',height=str(height),fill='#fafafa')
+    gallery=ET.Element(T('svg'),width='880',height=str(height),viewBox=f'0 0 880 {height}')
+    ET.SubElement(gallery,T('rect'),width='880',height=str(height),fill='#fafafa')
     for row,(family,cp) in enumerate(FAMILIES.items()):
         for count in (2,3):
             name=f'{family}{count}'
@@ -292,9 +306,9 @@ def main():
             subprocess.run(['inkscape',str(path),'--export-height=128',
                             '--export-filename='+str(ART/'png/128'/f'{name}.png')],check=True,
                            stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-            svg.set('x',str(40+(count-2)*350));svg.set('y',str(row*160+4))
+            svg.set('x',str(40+(count-2)*420));svg.set('y',str(row*160+4))
             gallery.append(svg)
-            label=ET.SubElement(gallery,T('text'),x=str(40+(count-2)*350),y=str(row*160+150),
+            label=ET.SubElement(gallery,T('text'),x=str(40+(count-2)*420),y=str(row*160+150),
                                 style='font:14px sans-serif;fill:#333')
             label.text=f'{family} × {count}'
             entries.append(dict(name=name,codepoint=cp,size=count))
@@ -337,7 +351,7 @@ wght = 400
     subprocess.run([sys.executable,'-m','nanoemoji.nanoemoji','--build_dir',str(work/'colr'),str(config)],check=True,env=env)
     shutil.copyfile(work/'colr/Clusters-COLRv1.ttf',ART/'Clusters-COLRv1.ttf')
     files=sorted(p for p in ART.rglob('*') if p.is_file() and p.name!='manifest.json')
-    manifest=dict(version=4,style='noto-fixed-clusters-v4',source_commit=ORIGIN,entries=entries,
+    manifest=dict(version=5,style='noto-fixed-clusters-v5',source_commit=ORIGIN,entries=entries,
                   files={str(p.relative_to(ART)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files})
     (ART/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 

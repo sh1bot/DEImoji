@@ -6,8 +6,8 @@ inscriptions and a smaller rear row. Fireworks use five distinct explosions acro
 pink full bloom, cyan opening, green willow trails and coral fading embers,
 with different heights and ray layouts. Poppers vary paper colours/positions and
 reverse the middle cone; each of the five poppers has a distinct permutation
-of three streamer shapes across the same outward-facing slots. Cones use 80% scale in the pair and 70% in the wider trio, with more room
-for their bodies and streamer clouds. Cluster-boundary kerning is only 2%
+of three streamer shapes across the same outward-facing slots. Cones retain their original 94–96% scales in wider 255px pair and 400px trio
+canvases, with more room for their bodies and streamer clouds. Cluster-boundary kerning is only 2%
 of an em. Cone stripes and shading are unchanged. The middle flame also curls the opposite way. The native singleton is
 unchanged. These families share binary history with every other cluster family, using
 alternating startup and the period-31 binary LFSR to mix pairs and trios,
@@ -25,7 +25,10 @@ kerning; singleton artwork and singleton–singleton spacing stay unchanged.
 The source SVGs are pinned in `clusters/source/` (see `clusters/manifest.json` for the commit).
 `clusters/svg/` contains editable compositions; `clusters/png/128/` and `clusters/Clusters-COLRv1.ttf`
 are installed into cached native fonts. The mini font's output glyphs are
-unencoded. `clusters/preview.png` shows all ten isolated compositions.
+unencoded. The wide popper trio is stored as one COLRv1 glyph. CBDT's 255px
+bitmap width limit is handled by splitting the image at an empty vertical strip
+and emitting the two pieces after grouping, seeding and modifier assembly.
+Their advances meet exactly, with kerning only between complete clusters. `clusters/preview.png` shows all ten isolated compositions.
 
 Fireworks use one rounded background for the pair and one for the trio.
 Both have the same vertical sky gradient and no side tint. Their painted spark

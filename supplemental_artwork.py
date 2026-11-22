@@ -56,7 +56,30 @@ def _append_metrics(font, names, metrics, vertical):
                                       max(advance for advance, bearing in metrics))
 
 
-def _append_bitmaps(font, info, art=ART, assets=NAMES, output_names=None, base_cp=0x1F4A9):
+def _bitmap_tiles(png):
+    """Split wide transparent artwork on blank columns, without rescaling it."""
+    from io import BytesIO
+    from PIL import Image
+    image=Image.open(BytesIO(png)).convert('RGBA')
+    width,height=image.size
+    if height!=128 or width<1:raise ValueError('Unexpected supplemental bitmap size')
+    if width<=255:return [png]
+    alpha=image.getchannel('A')
+    blank=[alpha.crop((x,0,x+1,height)).getbbox() is None for x in range(width)]
+    cuts=[0];start=0
+    while width-start>255:
+        candidates=[x for x in range(start+2,min(start+255,width-2)+1)
+                    if all(blank[x-1:x+2])]
+        if not candidates:raise ValueError('Wide bitmap needs a clear vertical tile boundary')
+        start=max(candidates);cuts.append(start)
+    cuts.append(width);result=[]
+    for start,end in zip(cuts,cuts[1:]):
+        out=BytesIO();image.crop((start,0,end,height)).save(out,format='PNG')
+        result.append(out.getvalue())
+    return result
+
+
+def _append_bitmaps(font, info, art=ART, assets=NAMES, output_names=None, base_cp=0x1F4A9, allow_split=False):
     base = font.getBestCmap()[base_cp]
     if len(font['CBDT'].strikeData) != 1 or len(font['CBLC'].strikes) != 1:
         raise ValueError('Supplemental bitmap artwork expects the native 128px strike')
@@ -64,8 +87,14 @@ def _append_bitmaps(font, info, art=ART, assets=NAMES, output_names=None, base_c
     old = font['CBDT'].strikeData[0][base]
     if old.metrics.height != 128:
         raise ValueError('Unexpected native bitmap height')
-    names = output_names or ['DEImojiPoop2', 'DEImojiPoop3']
-    pngs = [(art / 'png/128' / (name + '.png')).read_bytes() for name in assets]
+    primary = list(output_names or ['DEImojiPoop2', 'DEImojiPoop3'])
+    source_pngs = [(art / 'png/128' / (name + '.png')).read_bytes() for name in assets]
+    pieces=[_bitmap_tiles(png) if allow_split else [png] for png in source_pngs]
+    names=primary[:];pngs=[tiles[0] for tiles in pieces];expansions={}
+    for name,tiles in zip(primary,pieces):
+        if len(tiles)>1:
+            extra=[name+'BitmapPart'+str(i) for i in range(1,len(tiles))]
+            names.extend(extra);pngs.extend(tiles[1:]);expansions[name]=[name,*extra]
     sizes = [struct.unpack('>II', png[16:24]) for png in pngs]
     if any(h != 128 or not 0 < w <= 255 for w, h in sizes):
         raise ValueError('Supplemental bitmap exceeds CBDT metrics')
@@ -74,8 +103,10 @@ def _append_bitmaps(font, info, art=ART, assets=NAMES, output_names=None, base_c
     glyf = font['glyf'] if 'glyf' in font else None
     _append_metrics(font, names, [(round(w * advance_scale), 0) for w, h in sizes], vertical)
     if glyf is not None:
-        for name in names:
-            glyf.glyphs[name] = TTGlyphPen(None).glyph()
+        for name in names:glyf.glyphs[name] = TTGlyphPen(None).glyph()
+    if expansions:
+        info['bitmap_expansions']={str(font.getGlyphID(name)):[font.getGlyphID(g) for g in parts]
+                                   for name,parts in expansions.items()}
     info['bitmap'] = dict(subtables=len(strike.indexSubTables),
                           end=strike.bitmapSizeTable.endGlyphIndex,
                           width=strike.bitmapSizeTable.hori.widthMax)
@@ -93,7 +124,7 @@ def _append_bitmaps(font, info, art=ART, assets=NAMES, output_names=None, base_c
         glyph.metrics.width = glyph.metrics.Advance = w
         glyph.imageData = png
         font['CBDT'].strikeData[0][name] = glyph
-    return names
+    return primary
 
 
 def _remap(value, glyphs, colors, layer_offset):
@@ -223,6 +254,8 @@ def add_supplemental_artwork(font):
     # Family-specific kerning closes the measured gaps between visible silhouettes.
     if 'GPOS' not in font:
         from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
+        from fixed_cluster_artwork import bitmap_expansions
+        endings={head:parts[-1] for head,parts in bitmap_expansions(font,info.get('clusters')).items()}
         families = []
         for cp in (0x1F9DF, 0x1F33B, 0x1F4A9, *OVERLAP):
             base = font.getBestCmap().get(cp)
@@ -235,16 +268,18 @@ def add_supplemental_artwork(font):
             names.extend(alt for cluster in list(names[1:]) for alt in variants.get(cluster, []))
             if len(names) == 1:
                 continue
-            families.append((list(dict.fromkeys(names)),
+            names=list(dict.fromkeys(names))
+            families.append((names, [endings.get(g,g) for g in names],
                              {0x1F9DF: .22, 0x1F33B: .35, 0x1F4A9: .04, **OVERLAP}[cp]))
         lines = ['languagesystem DFLT dflt;']
-        for i, (names, fraction) in enumerate(families):
+        for i, (names, ends, fraction) in enumerate(families):
             lines.append(f"@overlap{i} = [{' '.join(names)}];")
             lines.append(f"@clusters{i} = [{' '.join(names[1:])}];")
+            lines.append(f"@ends{i} = [{' '.join(ends[1:])}];")
         lines.append('feature kern {')
-        for i, (names, fraction) in enumerate(families):
+        for i, (names, ends, fraction) in enumerate(families):
             amount = round(font['head'].unitsPerEm * fraction)
-            lines.append(f'pos @clusters{i} @overlap{i} -{amount};')
+            lines.append(f'pos @ends{i} @overlap{i} -{amount};')
             lines.append(f'pos {names[0]} @clusters{i} -{amount};')
         lines.append('} kern;')
         addOpenTypeFeaturesFromString(font, '\n'.join(lines), tables=['GPOS'])

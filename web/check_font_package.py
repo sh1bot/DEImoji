@@ -20,6 +20,12 @@ from fixed_cluster_artwork import FAMILIES as FIXED_FAMILIES, ART as FIXED_ART, 
 from zombie_artwork import variant_mappings, verify_bundle as verify_zombies, ART as ZOMBIES, NAMES as ZOMBIE_NAMES
 
 
+def painted_outputs(font,glyphs,artwork):
+    from fixed_cluster_artwork import bitmap_expansions
+    expansions=bitmap_expansions(font,artwork.get('clusters'))
+    return [part for glyph in glyphs for part in expansions.get(glyph,[glyph])]
+
+
 def check_font_package(site):
     metadata = json.loads((site / 'build.json').read_text())
     bundle = _verify_bundle()
@@ -159,21 +165,50 @@ def check_font_package(site):
                 expected.extend(base if size==1 else outputs[cp,size] for size in reference(n))
                 expected.append(cmap[32])
             expected=reference_cluster_stream(font,plain)
+            expected=painted_outputs(font,expected,metadata['artwork'][published])
             assert shape(font,text)==expected, ('decorative LFSR grouping',name,cp)
             assert shape(font,text,calt=False)==plain
+        # Wide bitmap pieces must abut without an extra internal kern. Check
+        # actual advances, not just the logical cluster glyph sequence.
+        from io import BytesIO
+        from benchmark_fonts import HarfBuzz
+        binary=BytesIO();font.save(binary);positioned=HarfBuzz().open(binary.getvalue())
+        try:
+            for length in (3,36):
+                groups=reference(length)
+                units=[outputs[0x1F389,size] for size in groups]
+                painted_units=painted_outputs(font,units,metadata['artwork'][published])
+                expected_advance=sum(font['hmtx'][g][0] for g in painted_units)
+                expected_advance-=round(font['head'].unitsPerEm*.02)*(len(groups)-1)
+                glyphs,_=positioned.signature(('🎉'*length).encode(),True,{'kern':1})
+                assert sum(g[1] for g in glyphs)==expected_advance, ('popper tile positioning',name,length)
+        finally:positioned.close()
         mixed_text='💩'*23+'🌻'*40+'🎉'*21+'🔥'*40+'💰'*47
         expected=reference_clusters(font,mixed_text)
+        expected=painted_outputs(font,expected,metadata['artwork'][published])
         assert shape(font,mixed_text)==expected, ('shared binary history',name)
         # Startup follows the last observed bit, rather than repeating four trios.
         for cp in FIXED_FAMILIES.values():
             actual36=shape(font,chr(cp)*36)
-            assert actual36[:5]==[outputs[cp,size] for size in (3,2,3,2,3)]
+            prefix=painted_outputs(font,[outputs[cp,size] for size in (3,2,3,2,3)],metadata['artwork'][published])
+            assert actual36[:len(prefix)]==prefix
         noise_mix='🏃'*8+' 🌻🌻🌻🌻🌻 '+'💩'*15+'🏃'*8
         assert shape(font,noise_mix)==reference_variations(font,noise_mix)
         for entry in fixed['entries']:
             glyph=order[entry['gid']]
             if 'CBDT' in font:
-                assert font['CBDT'].strikeData[0][glyph].imageData==(FIXED_ART/'png/128'/(entry['name']+'.png')).read_bytes()
+                expansion=fixed.get('bitmap_expansions',{}).get(str(entry['gid']))
+                if expansion:
+                    from PIL import Image
+                    from io import BytesIO
+                    tiles=[Image.open(BytesIO(font['CBDT'].strikeData[0][order[gid]].imageData)).convert('RGBA') for gid in expansion]
+                    assert all(t.width<=255 and t.height==128 for t in tiles)
+                    image=Image.new('RGBA',(sum(t.width for t in tiles),128));x=0
+                    for tile in tiles:image.paste(tile,(x,0));x+=tile.width
+                    with Image.open(FIXED_ART/'png/128'/(entry['name']+'.png')) as original:
+                        assert image.size==original.size and image.tobytes()==original.convert('RGBA').tobytes()
+                else:
+                    assert font['CBDT'].strikeData[0][glyph].imageData==(FIXED_ART/'png/128'/(entry['name']+'.png')).read_bytes()
             else:
                 assert glyph in painted, ('missing fixed paint',name,entry)
         checked.append(name)
@@ -188,7 +223,7 @@ def check_font_package(site):
                 gender_seed_buckets_checked=[0,1,2,3,4],
                 gender_states_in_first_four_repeats=3,
                 distant_noneligible_noise_checked=True,
-                fixed_cluster_artwork_checked=8, fixed_cluster_grouping='binary-lfsr-period-31',
+                fixed_cluster_artwork_checked=len(FIXED_FAMILIES)*2, fixed_cluster_grouping='binary-lfsr-period-31',
                 binary_startup='opposite-previous', binary_shared_history=True, binary_degree=5, binary_period=31,
                 feedback_context='all-expanded-source-glyphs', marker_layout='residue-aligned',
                 zombie_compositions_checked=10, zombie_grouping_input_length=4000,
@@ -215,5 +250,13 @@ def zombie_proof_font(site, fmt, fixed=False):
     font['cmap'] = newTable('cmap');font['cmap'].tableVersion=0;font['cmap'].tables=[table]
     for tag in ('GSUB','GPOS'):
         if tag in font:del font[tag]
+    if fixed:
+        from fixed_cluster_artwork import bitmap_expansions
+        expansions=bitmap_expansions(font,metadata['artwork'][filename]['clusters'])
+        if expansions:
+            from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
+            source=['languagesystem DFLT dflt;','feature ccmp {']
+            source += [f"sub {head} by {' '.join(parts)};" for head,parts in expansions.items()]
+            source.append('} ccmp;');addOpenTypeFeaturesFromString(font,'\n'.join(source),tables=['GSUB'])
     data=BytesIO();font.save(data)
     return 'data:font/ttf;base64,'+base64.b64encode(data.getvalue()).decode()

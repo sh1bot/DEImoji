@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="128" viewBox="0 0 192 128"><g transform="translate(75 13) scale(.80) rotate(8 64 64) translate(128 0) scale(-1 1)"><g>
+<svg xmlns="http://www.w3.org/2000/svg" width="255" height="128" viewBox="0 0 255 128"><g transform="translate(128 3) scale(.96) translate(128 0) scale(-1 1)"><g>
 	<g>
 		<g>
 			<path style="fill:#FFC107;" d="M7.45,123.27c2.27,2.46,11.62-1.83,19-5.27c5.53-2.57,27.66-11.65,38.66-16.36     c2.97-1.27,7.29-2.93,10.4-7.02c2.76-3.64,10.08-19.1-4.66-34.76c-14.96-15.9-30.37-11.51-36.13-7.43     c-3.39,2.4-6.15,7.81-7.39,10.56c-5.24,11.62-12.71,32.91-15.75,41.28C9.35,110.44,5.2,120.83,7.45,123.27z" />
@@ -32,9 +32,6 @@
 	</g><g transform="translate(0 3) rotate(-8 64 64)"><g>
 		<path style="fill:#03A9F4;" d="M16.29,34.6c-5.28-0.71-10.66-5.19-11.25-5.7l5.19-6.09c1.57,1.33,4.9,3.56,7.13,3.86L16.29,34.6z" />
 	</g>
-	</g><g transform="translate(7 -3) rotate(9 64 64)"><g>
-		<path style="fill:#F48FB1;" d="M25.61,21.27l-7.6-2.49c0.87-2.66,1.1-5.53,0.65-8.3l7.9-1.27C27.21,13.23,26.88,17.4,25.61,21.27z    " />
-	</g>
 	</g><g transform="translate(-1 8) rotate(-25 64 64)"><g>
 		
 			<rect x="74.11" y="14.35" transform="matrix(0.9769 -0.2137 0.2137 0.9769 -2.3917 17.1437)" style="fill:#F44336;" width="8" height="10.56" />
@@ -52,14 +49,17 @@
 	</g><g transform="translate(-3 1) rotate(-8 64 64)"><g>
 		<path style="fill:#F48FB1;" d="M120.37,102.89c-2.99-0.45-6.05-0.63-9.07-0.52l-0.27-8c3.51-0.12,7.06,0.08,10.53,0.61    L120.37,102.89z" />
 	</g>
-	</g><g transform="translate(4 -5) rotate(9 64 64)"><g>
+	</g><g transform="translate(-4 6) rotate(-25 64 64)"><rect x="88.29" y="65.14" transform="matrix(0.6583 0.7527 -0.7527 0.6583 84.0086 -46.0064)" style="fill:#FB8C00;" width="8.78" height="8.78" />
+</g><g transform="translate(0 0.972000002861023)"><g transform="translate(7 -3) rotate(9 64 64)"><g>
+		<path style="fill:#F48FB1;" d="M25.61,21.27l-7.6-2.49c0.87-2.66,1.1-5.53,0.65-8.3l7.9-1.27C27.21,13.23,26.88,17.4,25.61,21.27z    " />
+	</g>
+	</g></g><g transform="translate(0 -0.17600250244140625)"><g transform="translate(4 -5) rotate(9 64 64)"><g>
 		
 			<rect x="112.29" y="109.43" transform="matrix(0.7026 -0.7116 0.7116 0.7026 -47.1516 116.922)" style="fill:#F44336;" width="8" height="10.87" />
 	</g>
 	
-		</g><g transform="translate(-4 6) rotate(-25 64 64)"><rect x="88.29" y="65.14" transform="matrix(0.6583 0.7527 -0.7527 0.6583 84.0086 -46.0064)" style="fill:#FB8C00;" width="8.78" height="8.78" />
-</g></g>
-</g><g transform="translate(3 19) scale(.80) rotate(-5 64 64)"><g>
+		</g></g></g>
+</g><g transform="translate(6 4) scale(.94)"><g>
 	<g>
 		<g>
 			<path style="fill:#FFC107;" d="M7.45,123.27c2.27,2.46,11.62-1.83,19-5.27c5.53-2.57,27.66-11.65,38.66-16.36     c2.97-1.27,7.29-2.93,10.4-7.02c2.76-3.64,10.08-19.1-4.66-34.76c-14.96-15.9-30.37-11.51-36.13-7.43     c-3.39,2.4-6.15,7.81-7.39,10.56c-5.24,11.62-12.71,32.91-15.75,41.28C9.35,110.44,5.2,120.83,7.45,123.27z" />
@@ -89,9 +89,6 @@
 	<g transform="translate(-2 -1) rotate(4 64 64)"><g>
 		<polygon style="fill:#F48FB1;" points="31.53,48.64 21.19,43.57 26.34,36.13 34.45,41.5   " />
 	</g>
-	</g><g transform="translate(5 -7) rotate(21 64 64)"><g>
-		<path style="fill:#F44336;" d="M16.29,34.6c-5.28-0.71-10.66-5.19-11.25-5.7l5.19-6.09c1.57,1.33,4.9,3.56,7.13,3.86L16.29,34.6z" />
-	</g>
 	</g><g transform="translate(-3 4) rotate(-13 64 64)"><g>
 		<path style="fill:#FB8C00;" d="M25.61,21.27l-7.6-2.49c0.87-2.66,1.1-5.53,0.65-8.3l7.9-1.27C27.21,13.23,26.88,17.4,25.61,21.27z    " />
 	</g>
@@ -109,14 +106,17 @@
 	</g><g transform="translate(-5 -3) rotate(4 64 64)"><g>
 		<path style="fill:#F44336;" d="M97.55,113.03l-7.95-0.94c0.34-2.83-1.77-6.3-2.35-7.07l6.4-4.8    C94.13,100.85,98.3,106.62,97.55,113.03z" />
 	</g>
-	</g><g transform="translate(2 8) rotate(21 64 64)"><g>
-		<path style="fill:#FB8C00;" d="M120.37,102.89c-2.99-0.45-6.05-0.63-9.07-0.52l-0.27-8c3.51-0.12,7.06,0.08,10.53,0.61    L120.37,102.89z" />
-	</g>
 	</g><g transform="translate(-6 2) rotate(-13 64 64)"><g>
 		
 			<rect x="112.29" y="109.43" transform="matrix(0.7026 -0.7116 0.7116 0.7026 -47.1516 116.922)" style="fill:#FFC107;" width="8" height="10.87" />
 	</g>
 	
 		</g><g transform="translate(1 -4) rotate(4 64 64)"><rect x="88.29" y="65.14" transform="matrix(0.6583 0.7527 -0.7527 0.6583 84.0086 -46.0064)" style="fill:#03A9F4;" width="8.78" height="8.78" />
-</g></g>
+</g><g transform="translate(0 2.7239999771118164)"><g transform="translate(5 -7) rotate(21 64 64)"><g>
+		<path style="fill:#F44336;" d="M16.29,34.6c-5.28-0.71-10.66-5.19-11.25-5.7l5.19-6.09c1.57,1.33,4.9,3.56,7.13,3.86L16.29,34.6z" />
+	</g>
+	</g></g><g transform="translate(0 -4.50799560546875)"><g transform="translate(2 8) rotate(21 64 64)"><g>
+		<path style="fill:#FB8C00;" d="M120.37,102.89c-2.99-0.45-6.05-0.63-9.07-0.52l-0.27-8c3.51-0.12,7.06,0.08,10.53,0.61    L120.37,102.89z" />
+	</g>
+	</g></g></g>
 </g></svg>

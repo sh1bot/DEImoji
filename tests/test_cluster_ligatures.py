@@ -884,8 +884,35 @@ class DecorativeClusterTests(unittest.TestCase):
             data=(ART/'png/128'/f'{name}.png').read_bytes()
             w,h=struct.unpack('>II',data[16:24])
             self.assertEqual(tuple(map(int,svg.get('viewBox').split())),(0,0,w,h))
-            self.assertTrue(136<w<=255 and h==128)
+            self.assertTrue(136<w and h==128)
+            if w>255:self.assertTrue(name.startswith('popper'))
 
+
+
+class WideBitmapTests(unittest.TestCase):
+    def test_transparent_tiles_reconstruct_full_size_popper(self):
+        from supplemental_artwork import _bitmap_tiles
+        from fixed_cluster_artwork import ART
+        from PIL import Image
+        original=Image.open(ART/'png/128/popper3.png').convert('RGBA')
+        self.assertGreater(original.width,255)
+        tiles=[Image.open(BytesIO(data)).convert('RGBA') for data in _bitmap_tiles((ART/'png/128/popper3.png').read_bytes())]
+        self.assertGreater(len(tiles),1)
+        self.assertTrue(all(t.width<=255 for t in tiles))
+        joined=Image.new('RGBA',original.size);x=0
+        for tile in tiles:
+            joined.paste(tile,(x,0));x+=tile.width
+            if x<original.width:
+                self.assertIsNone(original.getchannel('A').crop((x-1,0,x+1,128)).getbbox())
+        self.assertEqual(x,original.width)
+        self.assertEqual(joined.tobytes(),original.tobytes())
+
+    def test_opaque_wide_art_is_not_cut_through(self):
+        from supplemental_artwork import _bitmap_tiles
+        from PIL import Image
+        out=BytesIO();Image.new('RGBA',(300,128),'gold').save(out,format='PNG')
+        with self.assertRaisesRegex(ValueError,'clear vertical tile boundary'):
+            _bitmap_tiles(out.getvalue())
 
 
 class PileArtworkBoundsTests(unittest.TestCase):
