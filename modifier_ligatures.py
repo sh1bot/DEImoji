@@ -72,10 +72,11 @@ def discover(font):
                 (len(seq) == 2 and seq[1] in tones or
                  seq[0] in gender_bases and len(seq) == 4 and seq[1] in tones
                  and seq[2:] in tails)}
-    # Adult and older person use separate woman/man codepoints, rather than
+    # Child, adult and older person use separate gendered codepoints, rather than
     # native ZWJ gender ligatures. Fold generated states directly into those
     # existing toned glyphs; accept explicit font-level suffix aliases too.
-    for codepoints in ((0x1F9D1, 0x1F469, 0x1F468), (0x1F9D3, 0x1F475, 0x1F474)):
+    for codepoints in ((0x1F9D2, 0x1F467, 0x1F466),
+                       (0x1F9D1, 0x1F469, 0x1F468), (0x1F9D3, 0x1F475, 0x1F474)):
         people = [cmap.get(cp) for cp in codepoints]
         if not all(base in tone_bases for base in people):
             continue

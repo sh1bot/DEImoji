@@ -451,12 +451,12 @@ def make_modifier_font():
     font = make_font()
     gendered = ('runner', 'swimmer', 'cyclist', 'climber')
     bases = ('runner', 'woman', 'man', 'person', 'thumb', 'swimmer', 'cyclist', 'climber',
-             'old', 'oldwoman', 'oldman')
+             'old', 'oldwoman', 'oldman', 'child', 'girl', 'boy')
     names = ['runner', 'woman', 'man', 'person', 'thumb', 'male', 'swimmer', 'cyclist',
              'unused', 'climber'] + ['skin' + str(i) for i in range(5)]
     names += [b + str(t) + str(g) for b in bases for t in range(5)
               for g in (range(3) if b in gendered else range(1))]
-    names += ['old', 'oldwoman', 'oldman']
+    names += ['old', 'oldwoman', 'oldman', 'child', 'girl', 'boy']
     font.setGlyphOrder(font.getGlyphOrder() + names)
     for name in names:
         font['glyf'].glyphs[name] = TTGlyphPen(None).glyph()
@@ -468,6 +468,7 @@ def make_modifier_font():
                                0x1F9D1: 'person', 0x1F44D: 'thumb', 0x2642: 'male',
                                0x1F3CA: 'swimmer', 0x1F6B4: 'cyclist', 0x1F9D7: 'climber',
                                0x1F9D3: 'old', 0x1F475: 'oldwoman', 0x1F474: 'oldman',
+                               0x1F9D2: 'child', 0x1F467: 'girl', 0x1F466: 'boy',
                                **{0x1F3FB + t: 'skin' + str(t) for t in range(5)}})
     rules = []
     for t in range(5):
@@ -644,6 +645,23 @@ class ModifierTests(unittest.TestCase):
                 text = '🧑' + chr(0x1F3FB+t) + '\u200d' + sign
                 self.assertEqual(shape(self.font, text), [f'{base}{t}0'])
 
+    def test_child_variants_share_history_and_preserve_explicit_choices(self):
+        for text in ('🧒'*4,'🧒'*1252,'🧒🏃🧑🧓'*20):
+            self.assertEqual(shape(self.font,text),reference_variations(self.font,text))
+        actual=shape(self.font,'🧒'*1252)
+        self.assertEqual({g[:-2] for g in actual},{'child','girl','boy'})
+        self.assertEqual({g[-2] for g in actual},set('01234'))
+        self.assertEqual(shape(self.font,'🧒'*4,calt=False),['child']*4)
+        for sign,base,character in (('♀','girl','👧'),('♂','boy','👦')):
+            self.assertEqual(shape(self.font,'🧒\u200d'+sign),[base])
+            for tone in range(5):
+                modifier=chr(0x1F3FB+tone)
+                self.assertEqual(shape(self.font,'🧒'+modifier+'\u200d'+sign),[f'{base}{tone}0'])
+                self.assertEqual(shape(self.font,character+modifier),[f'{base}{tone}0'])
+                self.assertEqual(shape(self.font,character+modifier),shape(self.font,character+modifier,calt=False))
+                self.assertEqual(shape(self.font,'🧒'+modifier),shape(self.font,'🧒'+modifier,calt=False))
+            self.assertTrue(all(g.startswith(base) for g in shape(self.font,character*40)))
+
     def test_older_person_gender_variants_and_explicit_choices(self):
         for text in ('🧓'*4, '🧓'*1252, '🧓🏃🧑'*20):
             self.assertEqual(shape(self.font,text),reference_variations(self.font,text))
@@ -804,7 +822,7 @@ class ZombieVariantTests(unittest.TestCase):
         self.assertEqual(shape(self.font,'🧟'*40,calt=False),['z']*40)
         self.assertEqual(shape(self.font,'🧟\u200d♀'),shape(self.font,'🧟\u200d♀',calt=False))
         self.assertEqual(self.info['custom_bases'],2)
-        self.assertEqual(self.info['tone_bases'],11)
+        self.assertEqual(self.info['tone_bases'],14)
 
     def test_mixed_people_and_crowds_keep_both_histories(self):
         from modifier_ligatures import discover

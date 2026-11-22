@@ -63,7 +63,7 @@ function updateText() {
 }
 
 function updatePreset() {
-  const emoji = { flowers: '🌻', zombies: '🧟', person: '🧑', old: '🧓', runners: '🏃', poop: '💩', headstones: '🪦', fireworks: '🎆', poppers: '🎉', fire: '🔥', moneybags: '💰' }[$('preset').value];
+  const emoji = { flowers: '🌻', zombies: '🧟', person: '🧑', child: '🧒', old: '🧓', runners: '🏃', poop: '💩', headstones: '🪦', fireworks: '🎆', poppers: '🎉', fire: '🔥', moneybags: '💰' }[$('preset').value];
   $('text').value = emoji.repeat(Number($('count').value));
   $('count-value').textContent = $('count').value;
   updateText();

@@ -14,9 +14,11 @@ off restores plain rendering and disables clustering in all eight families.
 
 Artwork eligibility comes from native GSUB ligatures. A tone base must have all
 five tone outputs. A gender base must also have both gender outputs for every
-tone. The current full fonts supply 135 tone bases and 51 gender bases, including
-adult and older person. Their gender choices reuse the separate woman/man and
-older woman/older man artwork. Plain 🧓 can select 🧓, 👵 or 👴 at every tone;
+tone. The current full fonts supply 135 tone bases and 52 gender bases, including
+child, adult and older person. Their gender choices reuse the separate
+girl/boy, woman/man and older woman/older man artwork. Plain 🧒 can select
+🧒, 👧 or 👦 at every tone; child gender suffix aliases preserve any typed tone.
+Plain 🧓 can select 🧓, 👵 or 👴 at every tone;
 explicit typed older-person gender suffixes use the same aliases as adult
 person, including a tone already assembled by native ccmp. Typed 👵/👴 retain
 their gender, and explicit skin tones remain as typed.

@@ -79,6 +79,24 @@ def check_font_package(site):
                 for suffix in ('','\ufe0f'):
                     typed = chr(target_cp)+tone+suffix
                     assert shape(font,typed) == shape(font,typed,calt=False), ('explicit older person',name)
+        child=cmap[0x1F9D2]
+        assert child in genders, ('child missing gender mappings',name)
+        children=shape(font,'🧒'*1252)
+        assert children==reference_variations(font,'🧒'*1252), ('child feedback',name)
+        choices=[set(tones[child])]+[set(row[g] for row in genders[child]) for g in (0,1)]
+        assert all(set(children).intersection(group) for group in choices), ('child gender coverage',name)
+        assert set(children)==set(tones[child])|set(g for row in genders[child] for g in row), ('child tone/gender coverage',name)
+        for cp,target_cp,g in ((0x2640,0x1F467,0),(0x2642,0x1F466,1)):
+            for suffix in ('','\ufe0f'):
+                assert shape(font,'🧒\u200d'+chr(cp)+suffix)==[cmap[target_cp]]
+                for t in range(5):
+                    modifier=chr(0x1F3FB+t);target=genders[child][t][g]
+                    assert shape(font,'🧒'+modifier+'\u200d'+chr(cp)+suffix)==[target]
+                    typed=chr(target_cp)+modifier+suffix
+                    assert shape(font,typed)==shape(font,typed,calt=False), ('explicit child',name)
+                    assert shape(font,'🧒'+modifier)==shape(font,'🧒'+modifier,calt=False)
+        for cp in (0x1F467,0x1F466):
+            assert set(shape(font,chr(cp)*40)).issubset(set(tones[cmap[cp]])), ('explicit child gender changed',name)
         # Inspect actual private gender seeds before either feedback pass.
         # Cover every source bucket, rather than checking only one runner ID.
         cmap = font.getBestCmap()
@@ -228,6 +246,7 @@ def check_font_package(site):
                 feedback_context='all-expanded-source-glyphs', marker_layout='residue-aligned',
                 zombie_compositions_checked=10, zombie_grouping_input_length=4000,
                 zombie_artwork_bundle=verify_zombies(),
+                child_genders_checked=True, child_feedback_outputs_checked=1252,
                 older_person_genders_checked=True,
                 older_person_feedback_outputs_checked=1252,
                 private_state_cleanup=True, bitmap_artwork_bytes_verified=True)

@@ -158,6 +158,8 @@ def main():
                 assert page.locator('#text').input_value()==emoji*36
             page.select_option('#preset', 'poop')
             assert page.locator('#text').input_value() == '💩' * 36
+            page.select_option('#preset', 'child')
+            assert page.locator('#text').input_value()=='🧒'*36
             page.select_option('#preset', 'old')
             assert page.locator('#text').input_value() == '🧓' * 36
             page.select_option('#preset', 'runners')
@@ -167,6 +169,7 @@ def main():
                 page.wait_for_function(loaded)
                 for text, should_differ in (('🏃' * 8, True), ('🧑' * 8, True),
                                             ('🏃', True), ('🧑', True), ('🧓' * 8, True),
+                                            ('🧒'*8, True), ('👧🏻👦🏿', False), ('🧒🏽', False),
                                             ('👵🏻👴🏿', False),
                                             ('🏃🏽‍♀️🏃🏻‍♂️🏃🏿', False)):
                     page.locator('#text').fill(text)
