@@ -235,7 +235,7 @@ def compose(family, count):
     source = ET.parse(ART/'source'/f'emoji_u{FAMILIES[family]:x}.svg').getroot()
     width = {('headstone',2):180, ('headstone',3):238,
              ('fireworks',2):188, ('fireworks',3):250,
-             ('popper',2):255, ('popper',3):400,
+             ('popper',2):224, ('popper',3):330,
              ('fire',2):174, ('fire',3):230,
              ('moneybags',2):180, ('moneybags',3):206}[family,count]
     root = ET.Element(T('svg'),width=str(width),height='128',viewBox=f'0 0 {width} 128')
@@ -255,11 +255,11 @@ def compose(family, count):
                      'translate(-3 15) scale(.88) rotate(-6 64 64)',
                      'translate(83 13) scale(.90) rotate(5 64 64)'))
     elif family == 'popper':
-        placements = (('translate(128 3) scale(.96)',
-                       'translate(6 4) scale(.94)') if count==2 else
-                      ('translate(126 3) scale(.96)',
-                       'translate(6 4) scale(.94)',
-                       'translate(266 4) scale(.94)'))
+        placements = (('translate(108 10) scale(.86)',
+                       'translate(6 10) scale(.86)') if count==2 else
+                      ('translate(106 10) scale(.86)',
+                       'translate(6 10) scale(.86)',
+                       'translate(217 10) scale(.86)'))
     else:
         # Overlap at the bases, with a taller flame behind two lower flames.
         placements = (('translate(49 -2) scale(.99)', 'translate(-6 21) scale(.83)') if count==2 else

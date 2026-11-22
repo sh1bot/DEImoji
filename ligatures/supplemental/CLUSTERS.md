@@ -6,8 +6,9 @@ inscriptions and a smaller rear row. Fireworks use five distinct explosions acro
 pink full bloom, cyan opening, green willow trails and coral fading embers,
 with different heights and ray layouts. Poppers vary paper colours/positions and
 reverse the middle cone; each of the five poppers has a distinct permutation
-of three streamer shapes across the same outward-facing slots. Cones retain their original 94–96% scales in wider 255px pair and 400px trio
-canvases, with more room for their bodies and streamer clouds. Cluster-boundary kerning is only 2%
+of three streamer shapes across the same outward-facing slots. Cones use a consistent 86% scale on 224px pair and 330px trio canvases. This
+modest reduction leaves room for their bodies and streamer clouds without the
+large gaps of the full-size layout. Cluster-boundary kerning is only 2%
 of an em. Cone stripes and shading are unchanged. The middle flame also curls the opposite way. The native singleton is
 unchanged. These families share binary history with every other cluster family, using
 alternating startup and the period-31 binary LFSR to mix pairs and trios,
