@@ -55,7 +55,7 @@
     }
   ],
   "files": {
-    "Clusters-COLRv1.ttf": "a50e1968ec561124ef861ef801f18375d1dd6ca20db4c905aab7ecfcd74b0d69",
+    "Clusters-COLRv1.ttf": "2eec26c4bd2fd3e9ca9ec13d7d0223e00eb484807a71073e35dc3d5350269e3d",
     "png/128/fire2.png": "4a0da2792bb16825f672c9eb1f25c8640b4cd62755db0cdf7a62a80be6afce71",
     "png/128/fire3.png": "3145fe840dec8c9b80849dd8f0135286f9c758f89b19a9ded4dd1d37e0952e7b",
     "png/128/fireworks2.png": "83a2c01bc0bdf9b00a731aa3c78e420327a0bcb25e74ed904be4857388fabed7",
@@ -64,9 +64,9 @@
     "png/128/headstone3.png": "7ce0ac1163c5c925ee3ef0f5e2539abc396cccefa6e44b3d2e6a84c4f344a0f2",
     "png/128/moneybags2.png": "15a6fa8987a3458213ebfeda222aa73680006c2d6c66bb3a98df0fcd9819e682",
     "png/128/moneybags3.png": "be260d4e71318e5511b4805fe24aa910dfc9201b1df83066e0a33eb912a2f517",
-    "png/128/popper2.png": "d4eaeb40a4e335702ee4855a91f4b6f3a5f5170da7fe3b323740d1fb79188b78",
-    "png/128/popper3.png": "ac11820a394309fa2f661a03f702c0a75b3ccba4ed2d0c867d30d8abbbff8828",
-    "preview.png": "4884cebb2538f5be6f5b36a16353039e32ac72c2ea803eec8c6d9591e95d59ea",
+    "png/128/popper2.png": "a9e88b8e0d0378858ce3ab984cf6644cfbae9b7cb7f8ef26b6848d356739ee59",
+    "png/128/popper3.png": "bda0a3528ce6db94a8f653296678a1b5ed869cf92aac23684826487734b69a64",
+    "preview.png": "87a067e71d3708b2e587539b32d0ec3842d009023d8dbe197b39eda0eab24a08",
     "source/emoji_u1f386.svg": "b4c1ba902c69a69884c3dd2115d58375a3f1e703e557b687b6d0d7cda17f20d5",
     "source/emoji_u1f389.svg": "4ab7ad6e03994f59b270eca28efc08e408d74a868aa025bb4d4576c195d1e522",
     "source/emoji_u1f4b0.svg": "75b9bbdcac486261435af6d77b599e43265c8dcd017be9bfb704c9e12a2d41f2",
@@ -80,7 +80,7 @@
     "svg/headstone3.svg": "23b75afedda6f7c8a821f8e143d64a139f304506c887d2f92b7f8311c4b4d3cb",
     "svg/moneybags2.svg": "15479f1844f6b253b3023733797054743ea79d835b15a4192cc60a62456f2f44",
     "svg/moneybags3.svg": "0a19cb203e417f6ef53e73d8797a1afca55be60c1e3273021526d1f4ee2ff108",
-    "svg/popper2.svg": "e43eb9efaef4e86b001f853918bd6caf9c7655d6feacdcd0ae3a2bfb6013b64f",
-    "svg/popper3.svg": "b5f6a6dc4a5d7b66e9d9f26d4ed4a98f632ed9b135fef2cd88dac63ca88db9cf"
+    "svg/popper2.svg": "e56f5cd2c53584f6e0ecf740f278a680dbc53e8ca445a76d4db1d75b248d589e",
+    "svg/popper3.svg": "8a9bf306233e57d19cd96b59aaf70811d1f1e687c3c8e9572da77f20691ec0aa"
   }
 }

@@ -255,11 +255,11 @@ def compose(family, count):
                      'translate(-3 15) scale(.88) rotate(-6 64 64)',
                      'translate(83 13) scale(.90) rotate(5 64 64)'))
     elif family == 'popper':
-        placements = (('translate(108 10) scale(.86)',
-                       'translate(6 10) scale(.86)') if count==2 else
-                      ('translate(106 10) scale(.86)',
-                       'translate(6 10) scale(.86)',
-                       'translate(217 10) scale(.86)'))
+        placements = (('translate(108 7) scale(.86)',
+                       'translate(6 12) scale(.86)') if count==2 else
+                      ('translate(106 5) scale(.86)',
+                       'translate(6 12) scale(.86)',
+                       'translate(217 9) scale(.86)'))
     else:
         # Overlap at the bases, with a taller flame behind two lower flames.
         placements = (('translate(49 -2) scale(.99)', 'translate(-6 21) scale(.83)') if count==2 else
