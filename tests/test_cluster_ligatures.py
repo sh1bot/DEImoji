@@ -888,12 +888,13 @@ class DecorativeClusterTests(unittest.TestCase):
 
 
 
-class MoneybagArtworkTests(unittest.TestCase):
-    def test_pile_is_not_clipped_by_canvas(self):
+class PileArtworkBoundsTests(unittest.TestCase):
+    def test_moneybags_and_poppers_are_not_clipped(self):
         from fixed_cluster_artwork import ART
         from PIL import Image
-        for size in (2,3):
-            with self.subTest(size=size), Image.open(ART/'png/128'/f'moneybags{size}.png') as image:
+        from itertools import product
+        for family,size in product(('moneybags','popper'),(2,3)):
+            with self.subTest(family=family,size=size), Image.open(ART/'png/128'/f'{family}{size}.png') as image:
                 alpha=image.convert('RGBA').getchannel('A')
                 box=alpha.getbbox()
                 self.assertIsNotNone(box)

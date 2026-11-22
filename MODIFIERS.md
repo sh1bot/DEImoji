@@ -188,7 +188,8 @@ and trio. Matching vertical sky gradients and overlap kerning conceal the
 rounded interior corners, without contextual background variants. Clear sky
 margins keep all sparks outside the overlapping regions. Moneybags form overlapping piles with readable dollar signs and a smaller rear
 bag in the trio. Middle poppers/flames are mirrored; streamers and confetti
-have different positions and colours.
+have different positions and colours. Poppers have smaller, more separated cones
+and only 2% em boundary kerning so repeated runs stay airy.
 
 `ligatures/supplemental/build_clusters.py` composes the pinned Noto vectors and
 builds the checked-in unencoded bitmap/COLRv1 pack. `fixed_cluster_artwork.py`

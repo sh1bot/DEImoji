@@ -8,7 +8,7 @@ ART = Path(__file__).resolve().parent/'ligatures/supplemental/clusters'
 FAMILIES = {'headstone':0x1FAA6, 'fireworks':0x1F386, 'popper':0x1F389, 'fire':0x1F525, 'moneybags':0x1F4B0}
 NAMES = tuple(f'{family}{size}' for family in FAMILIES for size in (2,3))
 # Close the margins between silhouettes, leaving singleton-singleton untouched.
-OVERLAP = {0x1FAA6:.28, 0x1F386:217/1024, 0x1F389:.08, 0x1F525:.22, 0x1F4B0:.18}
+OVERLAP = {0x1FAA6:.28, 0x1F386:217/1024, 0x1F389:.02, 0x1F525:.22, 0x1F4B0:.18}
 
 
 def verify_bundle():
